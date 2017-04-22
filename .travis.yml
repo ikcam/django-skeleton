@@ -2,10 +2,10 @@ language: python
 python:
   - "3.4"
   - "3.5"
-  - "nightly" # currently points to 3.6-dev
+  - "3.6"
 
 install: "pip install -r requirements/tests.txt"
 
 script:
- - python manage.py migrate
- - python manage.py test
+  - python manage.py migrate
+  - python manage.py test

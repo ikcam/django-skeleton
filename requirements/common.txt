@@ -10,4 +10,4 @@ django-filter
 djangorestframework
 drf-nested-routers
 Pillow
-
+six
