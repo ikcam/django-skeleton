@@ -1,0 +1,28 @@
+#!/bin/bash
+NAME="myapp"
+DJANGODIR=/var/www/myappdir/htdocs
+SOCKFILE=/var/www/myappdir/run/gunicorn.sock
+LOGFILE=/var/www/myappdir/logs/gunicorn.log
+USER=www-data
+GROUP=www-data
+NUM_WORKERS=3
+DJANGO_SETTINGS_MODULE=myapp.settings
+DJANGO_WSGI_MODULE=myapp.wsgi
+
+echo "Starting $NAME as `whoami`"
+
+cd $DJANGODIR
+source env/bin/activate
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+RUNDIR=$(dirname $SOCKFILE)
+test -d $RUNDIR || mkdir -p $RUNDIR
+
+exec env/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+  --name $NAME \
+  --workers $NUM_WORKERS \
+  --user=$USER --group=$GROUP \
+  --bind=unix:$SOCKFILE \
+  --log-level=debug \
+  --log-file=-

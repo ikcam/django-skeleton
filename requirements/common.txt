@@ -1,0 +1,14 @@
+celery
+django
+django-boilerplate
+django-bootstrap3
+django-addanother
+django-autocomplete_light
+django-ckeditor>=5.2.2 # 5.2.1 fails on Django 1.11
+django-countries
+django-filter
+djangorestframework
+drf-nested-routers
+celery
+Pillow
+

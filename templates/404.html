@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% load core_tags i18n %}
+
+{% block title %}{% trans 'Error 404: Not Found' %}{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>{% trans 'Error 404: Not Found' %}</h1>
+		<p>{% blocktrans %}We couldn't find what you are looking to. Don't worry this will be notified to our staff.{% endblocktrans %}</p>
+		<p>
+			<a class="btn btn-primary btn-lg" href="{% site_url %}">{% trans 'Go Home' %}</a>
+		</p>
+	</div>
+</div>
+{% endblock %}

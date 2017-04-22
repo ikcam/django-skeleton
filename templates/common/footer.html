@@ -1,0 +1,17 @@
+{% load core_tags i18n %}
+
+{% autoescape off %}    
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <p class="small">
+                {% trans "Code + Design + Hosting with" %}
+                <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
+                {% trans "by" %}
+                <a href="http://cubo.pe">Cubo</a>
+            </p>
+            <p class="small">{% trans "Copyright &copy; 2017. All rights reserved for" %} {% site_name %}.</p>
+        </div>
+    </div>
+</footer>
+{% endautoescape %}

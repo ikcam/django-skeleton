@@ -1,0 +1,56 @@
+{% load boilerplate bootstrap3 i18n %}
+
+{% autoescape off %}
+<form {% if form_id %}id="{{ form_id }}"{% endif %} class="form-horizontal" method="POST" action="{{ form_action }}" enctype="multipart/form-data" role="form">
+    {% csrf_token %}
+    
+    {% if form %}
+        {% bootstrap_form form layout="horizontal" %}
+
+        {% for extra_form in extra_form_list  %}
+            {% bootstrap_form extra_form layout="horizontal" %}
+        {% endfor %}
+
+        {% for formset in formset_list  %}
+            {% include 'formset.html' with formset=formset %}
+         {% endfor %} 
+    {% else %}
+        {% blocktrans with model_name=object|model_name %}
+        <p>Are you sure you want to delete the <b>{{ model_name }}: "{{ object }}"</b>?</p>
+        <p>After confirm you <b>won't be able to undo this action</b>. Be careful.</p>
+        <p>Click on "<b>Delete</b>" to confirm this action or click on "<b>Cancel</b>" to get back.</p>
+        {% endblocktrans %}
+
+        {% trans 'You will also delete the following elements:' %}
+        <ul>{{ object|get_deleted_objects|unordered_list }}</ul>
+    {% endif %}
+    
+    {% buttons layout="horizontal" %}
+        {% if form_submit %}
+            <button type="submit" class="btn btn-primary">
+                {{ form_submit }}
+            </button>
+        {% elif form and object %}
+            <button type="submit" class="btn btn-primary">
+                {% trans "Change" %}
+            </button>
+        {% elif form %}
+            <button type="submit" class="btn btn-primary">
+                {% trans "Add" %}
+            </button>
+        {% elif object %}
+            <button type="submit" class="btn btn-danger">
+                {% trans "Delete" %}
+            </button>
+        {% else %}
+            <button type="submit" class="btn btn-primary">
+                {% trans "Submit" %}
+            </button>
+        {% endif %}
+
+        <a class="btn btn-default" href="#" onclick="window.history.back()">
+            {% trans "Back" %}
+        </a>
+    {% endbuttons %}
+</form>
+{% endautoescape %}

@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% load core_tags i18n %}
+
+{% block title %}{% trans 'Error 403: Forbidden' %}{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>{% trans 'Error 403: Forbidden' %}</h1>
+		<p>{% blocktrans %}We are sorry. You don't have enought permissions to access this page.{% endblocktrans %}</p>
+		<p>
+			<a class="btn btn-primary btn-lg" href="{% site_url %}">{% trans 'Go Home' %}</a>
+		</p>
+	</div>
+</div>
+{% endblock %}

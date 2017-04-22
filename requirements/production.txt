@@ -1,0 +1,8 @@
+-r common.txt
+gunicorn
+psycopg2
+django-ses
+mysqlclient
+redis
+flower
+python-memcached

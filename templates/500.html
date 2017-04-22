@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% load core_tags i18n %}
+
+{% block title %}{% trans 'Error 500: Error' %}{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>{% trans 'Error 500: Error' %}</h1>
+		<p>{% blocktrans %}We sorry, an error ocurred. But don't worry. This error will be reported to our developers so it won't happen again.{% endblocktrans %}</p>
+		<p>
+			<a class="btn btn-primary btn-lg" href="{% site_url %}">{% trans 'Go Home' %}</a>		
+		</p>
+	</div>
+</div>
+{% endblock %}
