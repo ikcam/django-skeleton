@@ -9,6 +9,5 @@ django-countries
 django-filter
 djangorestframework
 drf-nested-routers
-celery
 Pillow
 
