@@ -1,0 +1,404 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-21 23:46-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: account/apps.py:7 account/templates/registration/password_change.html:10
+msgid "Account"
+msgstr ""
+
+#: account/forms.py:27
+msgid "Password"
+msgstr ""
+
+#: account/forms.py:31
+msgid "Password confirmation"
+msgstr ""
+
+#: account/forms.py:54
+msgid "Password confirmation doesn't match the password."
+msgstr ""
+
+#: account/forms.py:62
+msgid "A user with that email already exists."
+msgstr ""
+
+#: account/models.py:28
+msgid "User"
+msgstr ""
+
+#: account/models.py:32
+msgid "Activation key"
+msgstr ""
+
+#: account/models.py:36
+msgid "Date key expiration"
+msgstr ""
+
+#: account/models.py:41 account/templates/registration/password_done.html:23
+msgid "Profile"
+msgstr ""
+
+#: account/models.py:42
+msgid "Profiles"
+msgstr ""
+
+#: account/models.py:96
+msgid "Activate your account"
+msgstr ""
+
+#: account/templates/registration/login.html:5
+#: account/templates/registration/login.html:15
+#: account/templates/registration/login.html:18
+#: account/templates/registration/reset_confirm.html:28
+#: account/templates/registration/reset_form.html:22
+#: account/templates/registration/signup.html:24
+msgid "Log in"
+msgstr ""
+
+#: account/templates/registration/login.html:22
+#: account/templates/registration/reset_done.html:5
+#: account/templates/registration/reset_done.html:15
+#: account/templates/registration/reset_form.html:5
+#: account/templates/registration/reset_form.html:15
+#: account/templates/registration/reset_form.html:18
+#: account/templates/registration/signup.html:27
+msgid "Password reset"
+msgstr ""
+
+#: account/templates/registration/login.html:23
+#: account/templates/registration/signup.html:5
+#: account/templates/registration/signup.html:15
+#: account/templates/registration/signup.html:18
+msgid "Sign up"
+msgstr ""
+
+#: account/templates/registration/password_change.html:5
+#: account/templates/registration/password_change.html:11
+#: account/templates/registration/password_change.html:23
+#: account/templates/registration/password_change.html:26
+msgid "Password change"
+msgstr ""
+
+#: account/templates/registration/password_change.html:9
+#: account/templates/registration/reset_done.html:22
+msgid "Home"
+msgstr ""
+
+#: account/templates/registration/password_done.html:5
+#: account/templates/registration/password_done.html:16
+#: account/templates/registration/reset_confirm.html:21
+msgid "Change password"
+msgstr ""
+
+#: account/templates/registration/password_done.html:19
+msgid "Your password was changed."
+msgstr ""
+
+#: account/templates/registration/password_email.html:2
+#: account/templates/registration/password_email_html.html:8
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account at"
+msgstr ""
+
+#: account/templates/registration/password_email.html:4
+#: account/templates/registration/password_email_html.html:13
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: account/templates/registration/password_email.html:8
+#: account/templates/registration/password_email_html.html:21
+msgid "Your username, in case you've forgotten:"
+msgstr ""
+
+#: account/templates/registration/password_email.html:10
+#: account/templates/registration/password_email_html.html:26
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: account/templates/registration/password_email.html:12
+#: account/templates/registration/password_email_html.html:31
+msgid "Team"
+msgstr ""
+
+#: account/templates/registration/password_subject.txt:2
+msgid "Password reset on "
+msgstr ""
+
+#: account/templates/registration/reset_confirm.html:5
+#: account/templates/registration/reset_confirm.html:15
+msgid "Password reset confirmation"
+msgstr ""
+
+#: account/templates/registration/reset_confirm.html:19
+msgid "Enter your your new password twice to restore your account."
+msgstr ""
+
+#: account/templates/registration/reset_confirm.html:24
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: account/templates/registration/reset_done.html:18
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: account/templates/registration/reset_done.html:20
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: account/urls.py:11
+msgid "^groups/autocomplete/$"
+msgstr ""
+
+#: account/urls.py:16
+msgid "^permissions/autocomplete/$"
+msgstr ""
+
+#: account/urls.py:21
+msgid "^users/autocomplete/$"
+msgstr ""
+
+#: account/urls.py:27
+msgid "^activate/(?P<token>[0-9A-Za-z_\\-]+)/$"
+msgstr ""
+
+#: account/urls.py:32
+msgid "^login/$"
+msgstr ""
+
+#: account/urls.py:39
+msgid "^logout/$"
+msgstr ""
+
+#: account/urls.py:44
+msgid "^password-change/$"
+msgstr ""
+
+#: account/urls.py:52
+msgid "^password-change/done/$"
+msgstr ""
+
+#: account/urls.py:59
+msgid "^password-reset/$"
+msgstr ""
+
+#: account/urls.py:70
+msgid "^password-reset/done/$"
+msgstr ""
+
+#: account/urls.py:78
+msgid ""
+"^reset/(?P<uidb64>[0-9A-Za-z_\\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]"
+"{1,20})/$"
+msgstr ""
+
+#: account/urls.py:88
+msgid "^reset/done/$"
+msgstr ""
+
+#: account/urls.py:95
+msgid "^signup/$"
+msgstr ""
+
+#: account/views.py:44
+msgid ""
+"Your activation key has expired. A new token has been generated and sended "
+"to your email."
+msgstr ""
+
+#: account/views.py:54
+msgid "Your account is activated now. You can login now."
+msgstr ""
+
+#: account/views.py:59
+msgid "An error has ocurred."
+msgstr ""
+
+#: myapp/settings.py:141
+msgid "English"
+msgstr ""
+
+#: myapp/settings.py:142
+msgid "Spanish"
+msgstr ""
+
+#: myapp/settings.py:143
+msgid "French"
+msgstr ""
+
+#: myapp/urls.py:36
+msgid "^admin/"
+msgstr ""
+
+#: myapp/urls.py:37
+msgid "^account/"
+msgstr ""
+
+#: templates/400.html:5 templates/400.html:10
+msgid "Error 400: Not Allowed"
+msgstr ""
+
+#: templates/400.html:11
+msgid "We are sorry, this access method it's not allowed on this page."
+msgstr ""
+
+#: templates/400.html:13 templates/403.html:13 templates/404.html:13
+#: templates/500.html:13
+msgid "Go Home"
+msgstr ""
+
+#: templates/403.html:5 templates/403.html:10
+msgid "Error 403: Forbidden"
+msgstr ""
+
+#: templates/403.html:11
+msgid "We are sorry. You don't have enought permissions to access this page."
+msgstr ""
+
+#: templates/404.html:5 templates/404.html:10
+msgid "Error 404: Not Found"
+msgstr ""
+
+#: templates/404.html:11
+msgid ""
+"We couldn't find what you are looking to. Don't worry this will be notified "
+"to our staff."
+msgstr ""
+
+#: templates/500.html:5 templates/500.html:10
+msgid "Error 500: Error"
+msgstr ""
+
+#: templates/500.html:11
+msgid ""
+"We sorry, an error ocurred. But don't worry. This error will be reported to "
+"our developers so it won't happen again."
+msgstr ""
+
+#: templates/common/footer.html:8
+msgid "Code + Design + Hosting with"
+msgstr ""
+
+#: templates/common/footer.html:10 templates/mail/layout.html:280
+msgid "by"
+msgstr ""
+
+#: templates/common/footer.html:13
+msgid "Copyright &copy; 2017. All rights reserved for"
+msgstr ""
+
+#: templates/common/form-filter.html:8 templates/common/menu.html:9
+msgid "Toggle navigation"
+msgstr ""
+
+#: templates/common/form-filter.html:13 templates/common/form-filter.html:20
+msgid "Filter"
+msgstr ""
+
+#: templates/common/form-filter.html:21
+msgid "Reset"
+msgstr ""
+
+#: templates/common/form.html:18
+#, python-format
+msgid ""
+"\n"
+"        <p>Are you sure you want to delete the <b>%(model_name)s: "
+"\"%(object)s\"</b>?</p>\n"
+"        <p>After confirm you <b>won't be able to undo this action</b>. Be "
+"careful.</p>\n"
+"        <p>Click on \"<b>Delete</b>\" to confirm this action or click on "
+"\"<b>Cancel</b>\" to get back.</p>\n"
+"        "
+msgstr ""
+
+#: templates/common/form.html:24
+msgid "You will also delete the following elements:"
+msgstr ""
+
+#: templates/common/form.html:35
+msgid "Change"
+msgstr ""
+
+#: templates/common/form.html:39
+msgid "Add"
+msgstr ""
+
+#: templates/common/form.html:43
+msgid "Delete"
+msgstr ""
+
+#: templates/common/form.html:47
+msgid "Submit"
+msgstr ""
+
+#: templates/common/form.html:52
+msgid "Back"
+msgstr ""
+
+#: templates/common/menu.html:29
+msgid "Admin"
+msgstr ""
+
+#: templates/common/menu.html:32
+msgid "Logout"
+msgstr ""
+
+#: templates/common/menu.html:37
+msgid "Login"
+msgstr ""
+
+#: templates/common/menu.html:38
+msgid "Sign Up"
+msgstr ""
+
+#: templates/mail/key.html:8 templates/mail/key.txt:3
+msgid "Thank you for joining"
+msgstr ""
+
+#: templates/mail/key.html:13 templates/mail/key.txt:5
+msgid "Click on the following link to activate your account:"
+msgstr ""
+
+#: templates/mail/key.html:19
+msgid "Activate now"
+msgstr ""
+
+#: templates/mail/key.html:25
+msgid "In case the upper button doesn't work you can click on the link bellow."
+msgstr ""
+
+#: templates/mail/key.html:36 templates/mail/key.txt:8
+msgid ""
+"If clicking the URL above does not work, copy and paste the URL into a "
+"browser window."
+msgstr ""
+
+#: templates/mail/layout.html:273
+msgid "This is an automatic email from "
+msgstr ""
+
+#: templates/mail/layout.html:278
+msgid "Code + Hosting + Desing with"
+msgstr ""
