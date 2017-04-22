@@ -38,10 +38,10 @@ DATABASES = {
 }
 
 
-STATIC_URL = 'http://localhost/balego/center/static/'
+STATIC_URL = '/static/'
 
 
-MEDIA_URL = 'http://localhost/balego/center/media/'
+MEDIA_URL = '/media/'
 
 
 # Django Debug Toolbar
@@ -56,6 +56,6 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Site info
 
-SITE_URL = 'http://localhost:8000'
+SITE_URL = 'http://stating.myapp.com'
 
-SITE_NAME = 'My App (Beta)'
+SITE_NAME = 'My App (Staging)'

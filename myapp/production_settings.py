@@ -134,6 +134,6 @@ CELERY_TIMEZONE = 'America/Los_Angeles'
 
 # Site info
 
-SITE_URL = 'http://localhost:8000'
+SITE_URL = 'http://myapp.com'
 
 SITE_NAME = 'My App'
