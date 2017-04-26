@@ -7,16 +7,16 @@ logger = get_task_logger(__name__)
 
 
 @app.task(name='profile_tasks')
-def profile_tasks(pk, task):
+def profile_tasks(pk, task, data=None):
     from account.models import Profile
 
     obj = Profile.objects.get(pk=pk)
+    task_func = getattr(obj, task)
 
-    if task == 'key_send':
-        logger.info('Key send: %s' % obj)
-        if obj.key_send():
-            logger.info('Key sended: %s' % obj)
-        else:
-            logger.error('Key not sended: %s' % obj)
+    if callable(task_func):
+        logger.info("{0}: running task {1}".format(obj, task))
+        response = task_func(data) if data else task_func()
     else:
-        logger.warning('Invalid task: %s.' % task)
+        raise Exception("{}: task not callable.".format(task))
+
+    return response

@@ -82,10 +82,10 @@ class Profile(models.Model):
         )
         self.save()
 
-        if settings.DEBUG:
-            self.key_send()
-        else:
+        if settings.APP_ENV == 'production':
             tasks.profile_tasks.delay(self.pk, 'key_send')
+        else:
+            self.key_send()
 
         return True
 
