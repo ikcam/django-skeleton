@@ -3,20 +3,20 @@
 {% load core_tags i18n %}
 
 {% block title %}
-    {% trans "Account" %}
+    {% trans "Profile" %}
 {% endblock title %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
         <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
-        <li class="active">{% trans "Account" %}</li>
+        <li class="active">{% trans "Profile" %}</li>
     </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}
     <div class="page-header">
         <h1>
-            {% trans "Account" %}
+            {% trans "Profile" %}
             <a class="btn btn-xs btn-success" role="button" href="{% url "account:password_change" %}">
                 <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
                 {% trans "Password change" %}
