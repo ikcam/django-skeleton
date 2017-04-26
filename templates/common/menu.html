@@ -29,10 +29,10 @@
                         <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
                         <li class="divider"></li>
                         {% endif %}
+                        <li><a href="{% url 'account:profile_detail' %}">{% trans 'Account' %}</a></li>
                         <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
                     </ul>
                 </li>
-                <li><a href="{% url 'configuration:home' %}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a></li>
             {% else %}
                 <li><a href="{% url 'account:login' %}">{% trans 'Login' %}</a></li>
                 <li><a href="{% url 'account:signup' %}">{% trans 'Sign Up' %}</a></li>

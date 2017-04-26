@@ -10,19 +10,29 @@ urlpatterns = [
     url(
         _(r'^groups/autocomplete/$'),
         autocomplete.GroupAutocomplete.as_view(),
-        name='group-autocomplete'
+        name='group_autocomplete'
     ),
     url(
         _(r'^permissions/autocomplete/$'),
         autocomplete.PermissionAutocomplete.as_view(),
-        name='permission-autocomplete'
+        name='permission_autocomplete'
     ),
     url(
         _(r'^users/autocomplete/$'),
         autocomplete.UserAutocomplete.as_view(),
-        name='user-autocomplete'
+        name='user_autocomplete'
     ),
     # Views
+    url(
+        _(r'^$'),
+        views.ProfileDetail.as_view(),
+        name='profile_detail'
+    ),
+    url(
+        _(r'^change/$'),
+        views.ProfileUpdate.as_view(),
+        name='profile_update'
+    ),
     url(
         _(r'^activate/(?P<token>[0-9A-Za-z_\-]+)/$'),
         views.Activate.as_view(),

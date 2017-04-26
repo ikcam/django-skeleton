@@ -73,3 +73,9 @@ class SignUpForm(forms.ModelForm):
             user.save()
 
         return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        fields = ('username', 'first_name', 'last_name', 'email')
+        model = User

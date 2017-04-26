@@ -2,19 +2,19 @@
 
 {% load core_tags i18n %}
 
-{% block title %}{% trans "Password change" %}{% endblock title %}
+{% block title %}{% trans "Change your account" %}{% endblock title %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
         <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
         <li><a href="{% url "account:profile_detail" %}">{% trans "Account" %}</a></li>
-        <li class="active">{% trans "Password change" %}</li>
+        <li class="active">{% trans "Change your account" %}</li>
     </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}
     <div class="page-header">
-        <h1>{% site_name %}</h1>
+        <h1>{% trans "Change your account" %}</h1>
     </div>
 {% endblock page_header %}
 
@@ -23,10 +23,9 @@
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Password change" %}</h3>
+                    <h3 class="panel-title">{% trans "Change your profile" %}</h3>
                 </div>
                 <div class="panel-body">
-                    {% trans "Password change" as form_submit %}
                     {% include "common/form.html" %}
                 </div>
             </div>
