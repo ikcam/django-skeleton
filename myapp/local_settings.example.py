@@ -41,6 +41,9 @@ DATABASES = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+
 STATIC_URL = 'http://localhost/balego/center/static/'
 
 

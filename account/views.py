@@ -36,7 +36,6 @@ class Activate(NoLoginRequiredMixin, DetailView):
 
         if timezone.now() > obj.date_key_expiration:
             obj.key_generate()
-            obj.key_send()
 
             messages.error(
                 request,

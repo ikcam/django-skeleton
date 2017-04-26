@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% load core_tags i18n %}
+
+{% block title %}{% site_name %}{% endblock title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li class="active">{% trans "Home" %}</li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+    <div class="page-header">
+        <h1>{% site_name %}</h1>
+    </div>
+{% endblock page_header %}

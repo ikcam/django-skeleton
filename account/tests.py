@@ -1,9 +1,12 @@
 from datetime import timedelta
-from django.contrib.auth.models import User
-from django.test import override_settings, TestCase
+from django.contrib.messages.storage import default_storage
+from django.contrib.auth.models import AnonymousUser, User
+from django.core.exceptions import PermissionDenied
+from django.test import override_settings, RequestFactory, TestCase
 from django.utils import timezone
 
 from .models import ACCOUNT_ACTIVATION_HOURS
+from . import views
 
 
 @override_settings(DEBUG=True)
@@ -21,6 +24,7 @@ class ProfileTestCase(TestCase):
             first_name="Bradley", last_name="Cooper",
             is_active=False
         )
+        self.factory = RequestFactory()
 
     def test_user_status(self):
         gclooney = User.objects.get(username="gclooney")
@@ -51,6 +55,13 @@ class ProfileTestCase(TestCase):
     def test_user_key_activation(self):
         gclooney = User.objects.get(username="gclooney")
         bcooper = User.objects.get(username="bcooper")
-
         self.assertFalse(gclooney.profile.key_deactivate())
-        self.assertTrue(bcooper.profile.key_deactivate())
+
+        request = self.factory.get('/fake-path')
+        request.user = AnonymousUser()
+        request._messages = default_storage(request)
+        response = views.Activate.as_view()(
+            request,
+            token=bcooper.profile.activation_key
+        )
+        self.assertEqual(response.status_code, 302)

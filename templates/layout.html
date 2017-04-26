@@ -36,6 +36,10 @@
         <div class="container">
             {% block breadcrumb %}{% endblock breadcrumb %}
 
+            {% block page_header %}{% endblock page_header %}
+
+            {% bootstrap_messages %}
+
             {% block content %}{% endblock content %}
         </div>
 
