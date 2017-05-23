@@ -10,14 +10,14 @@
     <div class="table-responsive collapse in" id="formset-{{ formset.prefix }}">
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
-        
+
         <table class="table table-striped table-condensed table-hover">
             <tbody>
                 {% for form in formset %}
                     {% if forloop.first %}
                     <tr>
                         {% for field in form.visible_fields %}
-                            {% if 'DELETE' not in field.id %}
+                            {% if 'DELETE' not in field.name %}
                                 <th>
                                     {% bootstrap_label field.label %}{% if field.help_text %} <abbr title="{{ field.help_text }}"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></abbr>{% endif %}
                                 </th>
@@ -34,7 +34,7 @@
                             {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
                         </td>
                         {% for field in form.visible_fields %}
-                            {% if 'DELETE' not in field.id %}
+                            {% if 'DELETE' not in field.name %}
                             <td class="field-{{ field.label|slugify }} {% if field.errors %}bg-danger text-danger{% endif %}">
                                 {% bootstrap_field field show_label=False size='sm' form_group_class='' %}
                             </td>

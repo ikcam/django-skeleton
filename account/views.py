@@ -10,7 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from boilerplate.mixins import NoLoginRequiredMixin, UpdateMessageMixin
+from boilerplate.mixins import (
+    CreateMessageMixin, NoLoginRequiredMixin, UpdateMessageMixin
+)
 
 from . import forms
 from .models import Profile
@@ -82,8 +84,12 @@ class ProfileUpdate(LoginRequiredMixin, UpdateMessageMixin, UpdateView):
         return self.request.user
 
 
-class SignUp(NoLoginRequiredMixin, CreateView):
+class SignUp(NoLoginRequiredMixin, CreateMessageMixin, CreateView):
     form_class = forms.SignUpForm
     model = User
     success_url = reverse_lazy('account:login')
+    success_message = _(
+        'Please check your email and activate your account. '
+        'Then you will be able to login.'
+    )
     template_name = 'registration/signup.html'

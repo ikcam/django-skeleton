@@ -3,7 +3,7 @@
 {% autoescape off %}
 <form {% if form_id %}id="{{ form_id }}"{% endif %} class="form-horizontal" method="POST" action="{{ form_action }}" enctype="multipart/form-data" role="form">
     {% csrf_token %}
-    
+
     {% if form %}
         {% bootstrap_form form layout="horizontal" %}
 
@@ -12,8 +12,8 @@
         {% endfor %}
 
         {% for formset in formset_list  %}
-            {% include 'formset.html' with formset=formset %}
-         {% endfor %} 
+            {% include 'common/formset.html' with formset=formset %}
+         {% endfor %}
     {% else %}
         {% blocktrans with model_name=object|model_name %}
         <p>Are you sure you want to delete the <b>{{ model_name }}: "{{ object }}"</b>?</p>
@@ -24,7 +24,7 @@
         {% trans 'You will also delete the following elements:' %}
         <ul>{{ object|get_deleted_objects|unordered_list }}</ul>
     {% endif %}
-    
+
     {% buttons layout="horizontal" %}
         {% if form_submit %}
             <button type="submit" class="btn btn-primary">
