@@ -122,10 +122,5 @@ def post_save_user(sender, instance, created, **kwargs):
             instance.profile.key_generate()
 
 
-def pre_delete_creditcard(sender, instance, **kwargs):
-    if instance.stripe_sid:
-        instance.stripe_remove()
-
-
 signals.post_save.connect(post_save_user, sender=User)
 signals.post_migrate.connect(add_view_permissions)

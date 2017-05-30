@@ -1,7 +1,6 @@
 from datetime import timedelta
 from django.contrib.messages.storage import default_storage
 from django.contrib.auth.models import AnonymousUser, User
-from django.core.exceptions import PermissionDenied
 from django.test import override_settings, RequestFactory, TestCase
 from django.utils import timezone
 
