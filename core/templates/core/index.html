@@ -11,7 +11,37 @@
 {% endblock breadcrumb %}
 
 {% block page_header %}
-    <div class="page-header">
-        <h1>{% site_name %}</h1>
+    <div class="jumbotron">
+      <h1>{% trans "Welcome to" %} {% site_name %}</h1>
+          {% if not request.user.is_authenticated %}
+              <p>
+                  {% blocktrans %}
+                      This is a small but powerfull tool to send invoices and messages to
+                      potencial customers and customers as well.
+                  {% endblocktrans %}
+              </p>
+              <p>
+                {% blocktrans %}
+                    To begin please sign up or login.
+                {% endblocktrans %}
+              </p>
+              <a role="button" class="btn btn-lg btn-primary" href="{% url 'account:login' %}">
+                  {% trans "Log in" %}
+              </a>
+              <a role="button" class="btn btn-lg btn-primary" href="{% url 'account:signup' %}">
+                  {% trans "Sign up" %}
+              </a>
+          {% elif request.user.is_authenticated and not request.user.profile.company %}
+            <p>
+                {% blocktrans %}
+                    Please setup your company.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <a role="button" class="btn btn-lg btn-primary" href="{% url 'core:company_add' %}">
+                    {% trans "Add company" %}
+                </a>
+            </p>
+          {% endif %}
     </div>
 {% endblock page_header %}
