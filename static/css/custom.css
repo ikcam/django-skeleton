@@ -1,1 +1,22 @@
 /* Custom CSS */
+@media print {
+    a[href]:after {
+        content: "";
+    }
+}
+.related-widget-wrapper{
+    padding-right: 16px;
+    position: relative;
+}
+.select2-container {
+    width: 100% !important;
+    min-width: 10em !important;
+}
+.related-widget-wrapper-link{
+    position: absolute;
+    top: 3px;
+    right: 0px;
+}
+.dropdown-menu-big {
+    min-width: 430px;
+}
