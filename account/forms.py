@@ -75,6 +75,17 @@ class SignUpForm(forms.ModelForm):
         return user
 
 
+class SignUpInviteForm(SignUpForm):
+    email = None
+
+    class Meta:
+        fields = (
+            'username', 'password', 'password_confirm', 'first_name',
+            'last_name'
+        )
+        model = User
+
+
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         fields = ('username', 'first_name', 'last_name', 'email')

@@ -1,0 +1,7 @@
+{% load i18n core_tags %}
+
+{% blocktrans %}You're receiving this email because you have been invited to join the company{% endblocktrans %} {{ object.company }}
+
+{% blocktrans %}Click on the following button to join {% endblocktrans %}{{ object.company }}.
+
+{% site_url %}{% url 'account:signup_invite' object.pk object.activation_key %}

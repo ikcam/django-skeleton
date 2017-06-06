@@ -14,6 +14,7 @@ from boilerplate.mail import SendEmail
 from boilerplate.signals import add_view_permissions
 
 from . import tasks
+from core.models import Company
 
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,14 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, primary_key=True, editable=False, related_name='profile',
         verbose_name=_('User')
+    )
+    company = models.ForeignKey(
+        Company, blank=True, null=True, related_name='users_active',
+        on_delete=models.SET_NULL, verbose_name=_("Company")
+    )
+    companies = models.ManyToManyField(
+        Company, blank=True, related_name='users_all',
+        verbose_name=_("Companies")
     )
     activation_key = models.CharField(
         blank=True, null=True, max_length=255,
@@ -43,6 +52,44 @@ class Profile(models.Model):
 
     def __str__(self):
         return '%s' % self.user
+
+    @property
+    def companies_available(self):
+        if self.user.is_staff:
+            return Company.objects.all().exclude(pk=self.company.pk)
+
+        return self.companies.all().exclude(pk=self.company.pk)
+
+    def company_remove(self, company, user):
+        if not isinstance(company, Company):
+            raise Exception(_("company must be a Company instance."))
+
+        # Remove from company list
+        self.companies.remove(company)
+
+        # Remove if in this company
+        if self.company == company:
+            try:
+                self.company = self.companies.all().first()
+            except Exception:
+                self.company = None
+        self.save()
+
+        # Change created objects
+        self.user.invite.delete()
+
+    def company_switch(self, company):
+        if not isinstance(company, Company):
+            raise Exception(_("company must be a Company instance."))
+
+        if (
+            not self.user.is_staff and
+            company not in self.companies.all()
+        ):
+            raise Exception(_("Invalid company."))
+
+        self.company = company
+        self.save()
 
     def key_deactivate(self):
         if self.user.is_active:

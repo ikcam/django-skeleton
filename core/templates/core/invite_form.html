@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% load boilerplate core_tags i18n %}
+
+{% block title %}
+    {% if form and object %}
+        {% trans "Change" %} {{ object }}
+    {% elif form %}
+        {% trans "Add" %} {{ form|form_model_name }}
+    {% else %}
+        {% trans "Delete" %} {{ object }}
+    {% endif %}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
+        <li class="active">
+            {% if form and object %}
+                {% trans "Change" %} {{ object }}
+            {% elif form %}
+                {% trans "Add" %} {{ form|form_model_name }}
+            {% else %}
+                {% trans "Delete" %}
+            {% endif %}
+        </li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+    <div class="page-header">
+        <h1>
+            {% if form and object %}
+                {% trans "Change" %} {{ object }}
+            {% elif form %}
+                {% trans "Add" %} {{ form|form_model_name }}
+            {% else %}
+                {% trans "Delete" %} {{ object }}
+            {% endif %}
+        </h1>
+    </div>
+{% endblock page_header %}
+
+{% block content %}
+    {% include "common/form.html" %}
+{% endblock content %}
+
+{% block scripts_footer %}
+    {{ form.media }}
+
+    {% for extra_form in extra_form_list %}
+        {{ extra_form.media }}
+    {% endfor %}
+
+    {% for formset in formset_list %}
+        {{ formset.media }}
+    {% endfor %}
+{% endblock %}

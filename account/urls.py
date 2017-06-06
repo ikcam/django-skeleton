@@ -104,4 +104,12 @@ urlpatterns = [
     url(
         _(r'^signup/$'), views.SignUp.as_view(), name='signup'
     ),
+    url(
+        _(
+            r'^signup/invite/(?P<pk>[0-9]+)/'
+            r'(?P<token>[0-9A-Za-z_\-]+)/$'
+        ),
+        views.SignUpInvite.as_view(),
+        name='signup_invite'
+    ),
 ]
