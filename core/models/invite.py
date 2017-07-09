@@ -5,34 +5,14 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
-from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from boilerplate.mail import SendEmail
 
-from . import tasks
-from .mixins import AuditableMixin
-
-
-class Company(AuditableMixin, models.Model):
-    name = models.CharField(
-        max_length=50, unique=True, verbose_name=_("Name")
-    )
-    user = models.ForeignKey(
-        User, related_name='companies', editable=False, verbose_name=_("User")
-    )
-
-    class Meta:
-        ordering = ['name', ]
-        verbose_name = _("Company")
-        verbose_name_plural = _("Companies")
-
-    def __str__(self):
-        return "%s" % self.name
-
-    def get_absolute_url(self):
-        return reverse_lazy('core:company_detail')
+from core import tasks
+from core.mixins import AuditableMixin
+from .company import Company
 
 
 class Invite(AuditableMixin, models.Model):
@@ -114,13 +94,6 @@ class Invite(AuditableMixin, models.Model):
         return False
 
 
-def post_save_company(sender, instance, created, **kwargs):
-    if created:
-        instance.user.profile.company = instance
-        instance.user.profile.companies.add(instance)
-        instance.user.profile.save()
-
-
 def post_save_invite(sender, instance, created, **kwargs):
     if created:
         if settings.DEBUG:
@@ -129,5 +102,4 @@ def post_save_invite(sender, instance, created, **kwargs):
             tasks.invite_task.delay(instance.pk, 'send')
 
 
-signals.post_save.connect(post_save_company, sender=Company)
 signals.post_save.connect(post_save_invite, sender=Invite)

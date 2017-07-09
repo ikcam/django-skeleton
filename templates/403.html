@@ -1,17 +1,18 @@
-{% extends 'layout.html' %}
+{% extends 'layout-blank.html' %}
 
 {% load core_tags i18n %}
 
-{% block title %}{% trans 'Error 403: Forbidden' %}{% endblock %}
+{% block title %}{% trans '403 Forbidden' %}{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-	<div class="container">
-		<h1>{% trans 'Error 403: Forbidden' %}</h1>
-		<p>{% blocktrans %}We are sorry. You don't have enought permissions to access this page.{% endblocktrans %}</p>
-		<p>
-			<a class="btn btn-primary btn-lg" href="{% site_url %}">{% trans 'Go Home' %}</a>
-		</p>
+	<div class="middle-box text-center animated fadeInDown">
+		<h1>403</h1>
+		<h3 class="font-bold">{% trans "Forbidden" %}</h3>
+
+		<div class="error-desc">
+			<p>{% blocktrans %}We are sorry. You don't have enought permissions to access this page.{% endblocktrans %}</p>
+
+			<a role="button" class="btn btn-primary"  href="{% site_url %}">{% trans "Go home" %}</a>
+		</div>
 	</div>
-</div>
 {% endblock %}

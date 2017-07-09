@@ -1,4 +1,3 @@
-{% autoescape off %}
 {% load core_tags bootstrap3 i18n staticfiles %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
@@ -14,6 +13,9 @@
 
         <!-- Bootstrap CSS -->
         {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.css" %}" >
+        <link rel="stylesheet" href="{% static "css/animate.css" %}" >
+        <link rel="stylesheet" href="{% static "css/style.css" %}" >
         <link rel="stylesheet" href="{% static "css/custom.css" %}">
 
         {% block css_header %}{% endblock css_header %}
@@ -27,29 +29,44 @@
         {% block scripts_header %}{% endblock scripts_header %}
     </head>
     <body>
-        {% include "common/menu.html" %}
+        <div id="wrapper">
+            {% include "common/menu.html" %}
 
-        <div class="container-fluid">
-            {% block content_fluid %}{% endblock content_fluid %}
+            <div id="page-wrapper" class="gray-bg">
+                {% include "common/top-navigation.html" %}
+
+                <div class="row wrapper border-bottom white-bg page-heading">
+                    <div class="col-sm-8">
+                        {% block page_header %}{% endblock page_header %}
+                        {% if not view.is_popup %}
+                            {% block breadcrumb %}{% endblock breadcrumb %}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="title-action">
+                            {% block page_actions %}{% endblock page_actions %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wrapper wrapper-content animated fadeInRight">
+                    {% bootstrap_messages %}
+
+                    {% block content %}{% endblock content %}
+                </div>
+
+                {% include "common/footer.html" %}
+            </div>
         </div>
-
-        <div class="container">
-            {% block breadcrumb %}{% endblock breadcrumb %}
-
-            {% block page_header %}{% endblock page_header %}
-
-            {% bootstrap_messages %}
-
-            {% block content %}{% endblock content %}
-        </div>
-
-        {% include "common/footer.html" %}
 
         {% block css_footer %}{% endblock css_footer %}
-        
+
         {% bootstrap_javascript jquery=1 %}
+        <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+        <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+        <script src="{% static 'js/inspinia.js' %}"></script>
+        <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
 
         {% block scripts_footer %}{% endblock scripts_footer %}
     </body>
 </html>
-{% endautoescape %}

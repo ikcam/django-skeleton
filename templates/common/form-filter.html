@@ -1,25 +1,17 @@
 {% load i18n bootstrap3 %}
 
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-filter">
-                <span class="sr-only">{% trans 'Toggle navigation' %}</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <spam class="navbar-brand">{% trans 'Filter' %}</span>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-filter">
-            <form class="navbar-form navbar-left" method="get" role="search">
+{% if form %}
+    <div class="ibox">
+        <div class="ibox-title">
+			<h5>{% trans "Filter" %}</h5>
+			{% include "common/ibox/tools.html" %}
+	    </div>
+        <div class="ibox-content">
+            <form class="form-inline" method="get" role="search">
                 {% bootstrap_form form layout='inline' %}
                 <button type="submit" class="btn btn-default">{% trans 'Filter' %}</button>
                 <a class="btn btn-link" href="{{ request.path }}" role="button">{% trans 'Reset' %}</a>
             </form>
-        </div><!-- /.navbar-collapse -->
+        </div>
     </div>
-</nav>
+{% endif %}

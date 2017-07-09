@@ -9,26 +9,25 @@
 {% block breadcrumb %}
     <ol class="breadcrumb">
         <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
-        <li class="active">{% trans "Profile" %}</li>
+        <li class="active"><strong>{% trans "Profile" %}</strong></li>
     </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}
-    <div class="page-header">
-        <h1>
-            {% trans "Profile" %}
-            <a class="btn btn-xs btn-success" role="button" href="{% url "account:password_change" %}">
-                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                {% trans "Password change" %}
-            </a>
-            <a class="btn btn-xs btn-info" role="button" href="{% url "account:profile_update" %}">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                {% trans "Change" %}
-            </a>
-        </h1>
-    </div>
-{% endblock page_header %}
+    <h2>{% trans "Profile" %}</h2>
+{% endblock %}
+
+{% block page_actions %}
+    <a class="btn btn-info" role="button" href="{% url "account:profile_update" %}">
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        {% trans "Change" %}
+    </a>
+    <a class="btn btn-success" role="button" href="{% url "account:password_change" %}">
+        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+        {% trans "Password change" %}
+    </a>
+{% endblock %}
 
 {% block content %}
-    
+
 {% endblock content %}

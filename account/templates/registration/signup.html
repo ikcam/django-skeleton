@@ -1,37 +1,32 @@
-{% extends "layout.html" %}
+{% extends "layout-blank.html" %}
 
 {% load core_tags i18n %}
 
 {% block title %}{% trans "Sign up" %}{% endblock title %}
 
-{% block page_header %}
-    <div class="page-header">
-        <h1>{% site_name %}</h1>
-    </div>
-{% endblock page_header %}
-
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{% trans "Sign up" %}</h3>
-                </div>
-                <div class="panel-body">
-                    {% trans "Sign up" as form_submit %}
-                    {% include "common/form.html" %}
-                </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
-                            <a class="btn btn-link" href="{% url "account:login" %}">{% trans "Log in" %}</a>
-                        </div>
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
-                            <a class="btn btn-link" href="{% url "account:password_reset" %}">{% trans "Password reset" %}</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name">CC+</h1>
             </div>
+            <h3>{% trans "Sign up" %} {% trans "in" %} CC+</h3>
+            <p>{% trans "Create account to see it in action." %}</p>
+            <form class="m-t" method="post" role="form" action="">
+                {% trans "Sign up" as submit_text %}
+                {% include "common/form-simple.html" %}
+
+                <p class="text-muted text-center"><small>{% trans "Already have an account?" %}</small></p>
+                <a class="btn btn-sm btn-white btn-block" href="{% url 'account:login' %}">{% trans "Log in" %}</a>
+            </form>
+            <p class="m-t">
+                <small>
+                    {% trans "Code + Design + Hosting with" %}
+                    <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
+                    {% trans "by" %}
+                    <a href="http://cubo.pe">Cubo</a>
+                </small>
+            </p>
         </div>
     </div>
 {% endblock content %}

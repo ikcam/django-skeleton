@@ -1,4 +1,6 @@
 celery
+culqipy
+dateutils
 django
 django-boilerplate
 django-bootstrap3
@@ -10,4 +12,5 @@ django-filter
 djangorestframework
 drf-nested-routers
 Pillow
+requests
 six

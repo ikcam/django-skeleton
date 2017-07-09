@@ -9,6 +9,13 @@ pip install -U -r requirements.txt
 
 python manage.py migrate
 python manage.py collectstatic --noinput
+python manage.py compilemessages --locale=es
+
+
+supervisorctl reread
+
+supervisorctl update
 
 supervisorctl restart myapp_gunicorn
 supervisorctl restart myapp_celery
+supervisorctl restart myapp_beat

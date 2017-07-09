@@ -137,3 +137,8 @@ CELERY_TIMEZONE = 'America/Los_Angeles'
 SITE_URL = 'http://myapp.com'
 
 SITE_NAME = 'My App'
+
+
+CULQI_PUBLIC_KEY = None
+
+CULQI_PRIVATE_KEY = None

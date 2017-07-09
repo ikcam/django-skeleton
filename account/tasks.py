@@ -6,8 +6,8 @@ from myapp.celery import app
 logger = get_task_logger(__name__)
 
 
-@app.task(name='profile_tasks')
-def profile_tasks(pk, task, data=None):
+@app.task(name='profile_task')
+def profile_task(pk, task, data=None):
     from account.models import Profile
 
     obj = Profile.objects.get(pk=pk)
@@ -15,7 +15,7 @@ def profile_tasks(pk, task, data=None):
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))
-        response = task_func(data) if data else task_func()
+        response = task_func(**data) if data else task_func()
     else:
         raise Exception("{}: task not callable.".format(task))
 

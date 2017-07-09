@@ -23,12 +23,14 @@
     </li>
     {% endif %}
     <li class="active">
-        {% if form and object %}
-            {% trans "Change" %}
-        {% elif form %}
-            {% trans "Add" %} {{ form|form_model_name }}
-        {% else %}
-            {% trans "Delete" %}
-        {% endif %}
+        <strong>
+            {% if form and object %}
+                {% trans "Change" %}
+            {% elif form %}
+                {% trans "Add" %} {{ form|form_model_name }}
+            {% else %}
+                {% trans "Delete" %}
+            {% endif %}
+        </strong>
     </li>
 </ol>

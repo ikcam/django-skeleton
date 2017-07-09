@@ -19,10 +19,20 @@ class GroupAutocomplete(autocomplete.Select2QuerySetView):
 
 class PermissionAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.has_perm('auth.view_permission'):
+        if (
+            not self.request.user.is_authenticated or
+            not self.request.user.profile.company
+        ):
             return Permission.objects.none()
 
-        qs = Permission.objects.all()
+        qs = Permission.objects.exclude(
+            content_type__app_label__in=(
+                'admin',
+            ),
+            content_type__model__in=(
+                'group', 'permission',
+            )
+        )
 
         if self.q:
             qs = qs.filter(
@@ -36,10 +46,15 @@ class PermissionAutocomplete(autocomplete.Select2QuerySetView):
 
 class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if (
+            not self.request.user.is_authenticated or
+            not self.request.user.profile.company
+        ):
             return User.objects.none()
 
-        qs = User.objects.all()
+        qs = User.objects.filter(
+            profile__companies=self.request.user.profile.company
+        ).order_by('username')
 
         if self.q:
             qs = qs.filter(

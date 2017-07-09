@@ -59,3 +59,8 @@ DEBUG_TOOLBAR_CONFIG = {
 SITE_URL = 'http://stating.myapp.com'
 
 SITE_NAME = 'My App (Staging)'
+
+
+CULQI_PUBLIC_KEY = None
+
+CULQI_PRIVATE_KEY = None

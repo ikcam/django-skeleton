@@ -1,61 +1,52 @@
 {% load core_tags i18n %}
 
-{% autoescape off %}
-    <nav class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menu-main">
-                <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% site_url %}">{% site_name %}</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-menu-main">
-            {% if request.user.is_authenticated %}
-            <ul class="nav navbar-nav">
-                <li>
+{% if not view.is_popup %}
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear">
+                                <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
+                                <span class="text-muted text-xs block">{{ request.user.profile.company }} <b class="caret"></b></span>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            {% if request.user.is_staff %}
+                            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+                            <li class="divider"></li>
+                            {% endif %}
+                            {% for company in request.user.profile.companies_available %}
+                                <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
+                                {% if forloop.last %}
+                                    <li class="divider"></li>
+                                {% endif %}
+                            {% endfor %}
+                            <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+                            <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        CC+
+                    </div>
                 </li>
-            </ul>
-            {% endif %}
-            <ul class="nav navbar-nav navbar-right">
-            {% if request.user.is_authenticated %}
-                {% if request.user.profile.company %}
-                    <li><a href="{% url 'core:company_detail' %}">{{ request.user.profile.company }}</a></li>
-                {% else %}
-                    <li>
-                        <a href="{% url 'core:company_add' %}">
-                            {% trans "Add company" %}
+
+                {% with request.resolver_match as resolver_match %}
+                    <li {% if resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
+                        <a href="{% url 'core:dashboard' %}">
+                            <i class="fa fa-home"></i>
+                            <span class="nav-label">{% trans "Dashboard" %}</span>
                         </a>
                     </li>
-                {% endif %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" haspopup="true" aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        {% if request.user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
-                        <li class="divider"></li>
-                        {% endif %}
-                        {% for company in request.user.profile.companies_available %}
-                            <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
-                            {% if forloop.last %}
-                                <li class="divider"></li>
-                            {% endif %}
-                        {% endfor %}
-                        <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
-                        <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
-                    </ul>
-                </li>
-            {% else %}
-                <li><a href="{% url 'account:login' %}">{% trans 'Login' %}</a></li>
-                <li><a href="{% url 'account:signup' %}">{% trans 'Sign Up' %}</a></li>
-            {% endif %}
+                    <li {% if 'core' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+                        <a href="{% url 'core:company_detail' %}">
+                            <i class="fa fa-briefcase"></i>
+                            <span class="nav-label">{% trans "Company" %}</span>
+                        </a>
+                    </li>
+                {% endwith %}
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div>
-</nav>
-{% endautoescape %}
+        </div>
+    </nav>
+{% endif %}

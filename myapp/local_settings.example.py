@@ -65,3 +65,8 @@ DEBUG_TOOLBAR_CONFIG = {
 SITE_URL = 'http://localhost:8000'
 
 SITE_NAME = 'My App (Local)'
+
+
+CULQI_PUBLIC_KEY = None
+
+CULQI_PRIVATE_KEY = None

@@ -13,3 +13,8 @@ def site_name():
 @register.simple_tag()
 def site_url():
     return settings.SITE_URL
+
+
+@register.simple_tag()
+def culqi_public_key():
+    return settings.CULQI_PUBLIC_KEY

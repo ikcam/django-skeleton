@@ -2,15 +2,15 @@
 
 {% load core_tags i18n %}
 
-{% block title %}{% site_name %}{% endblock title %}
+{% block title %}{% site_name %}{% endblock %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li class="active">{% trans "Home" %}</li>
+        <li class="active"><strong>{% trans "Home" %}</strong></li>
     </ol>
-{% endblock breadcrumb %}
+{% endblock %}
 
-{% block page_header %}
+{% block content %}
     <div class="jumbotron">
       <h1>{% trans "Welcome to" %} {% site_name %}</h1>
           {% if not request.user.is_authenticated %}
@@ -44,4 +44,4 @@
             </p>
           {% endif %}
     </div>
-{% endblock page_header %}
+{% endblock %}

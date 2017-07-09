@@ -1,0 +1,39 @@
+{% load core_tags bootstrap3 i18n staticfiles %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        {% block meta_header %}{% endblock meta_header %}
+
+        <title>{% block title %}{% endblock title %} | {% site_name %}</title>
+
+        <!-- Bootstrap CSS -->
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.css" %}" >
+        <link rel="stylesheet" href="{% static "css/animate.css" %}" >
+        <link rel="stylesheet" href="{% static "css/style.css" %}" >
+        <link rel="stylesheet" href="{% static "css/custom.css" %}">
+
+        {% block css_header %}{% endblock css_header %}
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        {% block scripts_header %}{% endblock scripts_header %}
+    </head>
+    <body class="gray-bg">
+        {% bootstrap_messages %}
+
+        {% block content %}{% endblock %}
+
+        {% bootstrap_javascript jquery=1 %}
+        {% block scripts_footer %}{% endblock %}
+    </body>
+</html>

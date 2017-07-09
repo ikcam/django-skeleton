@@ -1,0 +1,11 @@
+{% load bootstrap3 i18n %}
+
+{% csrf_token %}
+
+{% bootstrap_form form %}
+
+{% if submit_text %}
+    <button type="submit" class="btn btn-primary block full-width m-b">{{ submit_text }}</button>
+{% else %}
+    <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Send' %}</button>
+{% endif %}

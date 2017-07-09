@@ -19,3 +19,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 SITE_URL = 'http://tests.myapp.com'
 
 SITE_NAME = 'My App (Tests)'
+
+
+CULQI_PUBLIC_KEY = None
+
+CULQI_PRIVATE_KEY = None

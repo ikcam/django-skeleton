@@ -1,29 +1,30 @@
 from datetime import timedelta
 import hashlib
-import logging
 import random
+import pytz
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.db import models
 from django.db.models import signals
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from boilerplate.mail import SendEmail
 from boilerplate.signals import add_view_permissions
+from rest_framework.authtoken.models import Token
 
 from . import tasks
 from core.models import Company
-
-
-logger = logging.getLogger(__name__)
 
 
 ACCOUNT_ACTIVATION_HOURS = 48
 
 
 class Profile(models.Model):
+    TIMEZONES = [(c, c) for c in pytz.common_timezones]
+
     user = models.OneToOneField(
         User, primary_key=True, editable=False, related_name='profile',
         verbose_name=_('User')
@@ -33,16 +34,19 @@ class Profile(models.Model):
         on_delete=models.SET_NULL, verbose_name=_("Company")
     )
     companies = models.ManyToManyField(
-        Company, blank=True, related_name='users_all',
-        verbose_name=_("Companies")
+        Company, blank=True, through='Colaborator', verbose_name=_("Companies")
     )
     activation_key = models.CharField(
         blank=True, null=True, max_length=255,
         editable=False, verbose_name=_("Activation key")
     )
     date_key_expiration = models.DateTimeField(
-        blank=True, null=True,  editable=False,
+        blank=True, null=True, editable=False,
         verbose_name=_("Date key expiration")
+    )
+    timezone = models.CharField(
+        max_length=100, default=settings.TIME_ZONE,
+        choices=TIMEZONES, verbose_name=_("Timezone")
     )
 
     class Meta:
@@ -64,8 +68,11 @@ class Profile(models.Model):
         if not isinstance(company, Company):
             raise Exception(_("company must be a Company instance."))
 
+        if company.user == self.user:
+            return False
+
         # Remove from company list
-        self.companies.remove(company)
+        self.colaborator_set.get(company=company).delete()
 
         # Remove if in this company
         if self.company == company:
@@ -129,10 +136,10 @@ class Profile(models.Model):
         )
         self.save()
 
-        if settings.APP_ENV == 'production':
-            tasks.profile_tasks.delay(self.pk, 'key_send')
-        else:
+        if settings.DEBUG:
             self.key_send()
+        else:
+            tasks.profile_tasks.delay(self.pk, 'key_send')
 
         return True
 
@@ -150,6 +157,83 @@ class Profile(models.Model):
             return True
         return False
 
+    @cached_property
+    def perms(self):
+        if (
+            not self.company or
+            not self.company.is_active
+        ):
+            return False
+
+        try:
+            perms = self.colaborator_set \
+                .get(company=self.company, is_active=True) \
+                .permissions.all() \
+                .select_related('content_type') \
+                .values('content_type__app_label', 'codename')
+
+            return [
+                '{}:{}'.format(
+                    c['content_type__app_label'], c['codename']
+                ) for c in perms
+            ]
+        except Exception:
+            return []
+
+
+class Colaborator(models.Model):
+    profile = models.ForeignKey(
+        Profile, editable=False, verbose_name=_("Profile")
+    )
+    company = models.ForeignKey(
+        Company, editable=False, related_name='users_all',
+        verbose_name=_("Company")
+    )
+    date_joined = models.DateTimeField(
+        auto_now=True, verbose_name=_("Join date")
+    )
+    is_active = models.BooleanField(
+        default=True, verbose_name=_("Active")
+    )
+    permissions = models.ManyToManyField(
+        Permission, blank=True, verbose_name=_("Permissions")
+    )
+
+    class Meta:
+        ordering = ['profile', ]
+        unique_together = ('profile', 'company')
+        verbose_name = _("Colaborator")
+        verbose_name_plural = _("Colaborators")
+
+    def __str__(self):
+        return "%s" % self.profile
+
+    @property
+    def user(self):
+        return self.profile.user
+
+
+def has_company_perm(self, perm, obj=None):
+    if self.is_superuser:
+        return True
+    elif self == self.profile.company:
+        return True
+    elif self.is_staff:
+        return self.has_perm(perm, obj)
+
+    return perm in self.profile.perms
+
+
+def has_company_perms(self, perm_list, obj=None):
+    if self.is_superuser:
+        return True
+    elif self == self.profile.company:
+        return True
+    elif self.is_staff:
+        return self.has_pemrs(perm_list, obj)
+
+    return all(self.has_company_perm(perm, obj) for perm in perm_list)
+
 
 def user_str(self):
     if self.first_name and self.last_name:
@@ -159,11 +243,14 @@ def user_str(self):
 
 
 User.add_to_class('__str__', user_str)
+User.add_to_class('has_company_perm', has_company_perm)
+User.add_to_class('has_company_perms', has_company_perms)
 
 
 def post_save_user(sender, instance, created, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)
+        Token.objects.get_or_create(user=instance)
 
         if not instance.is_active:
             instance.profile.key_generate()

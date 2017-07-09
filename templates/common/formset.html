@@ -1,13 +1,10 @@
 {% load bootstrap3 boilerplate %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#formset-{{ formset.prefix }}" aria-expanded="true" aria-controls="formset-{{ formset.prefix }}">
-            {{ formset|formset_model_name_plural }}
-            </a>
-        </h4>
+<div class="ibox float-e-margins">
+    <div class="ibox-title">
+        <h5>{{ formset|formset_model_name_plural }}</h5>
+        {% include "common/ibox/tools.html" %}
     </div>
-    <div class="table-responsive collapse in" id="formset-{{ formset.prefix }}">
+    <div class="ibox-content table-responsive collapse in" id="formset-{{ formset.prefix }}">
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
 
@@ -57,5 +54,9 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if forloop.last %}
+			{% include 'common/form-buttons.html' %}
+		{% endif %}
     </div>
 </div>

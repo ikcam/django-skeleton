@@ -1,17 +1,18 @@
-{% extends 'layout.html' %}
+{% extends 'layout-blank.html' %}
 
 {% load core_tags i18n %}
 
-{% block title %}{% trans 'Error 400: Not Allowed' %}{% endblock %}
+{% block title %}{% trans '400 Not Allowed' %}{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <div class="container">
-        <h1>{% trans 'Error 400: Not Allowed' %}</h1>
-        <p>{% blocktrans %}We are sorry, this access method it's not allowed on this page.{% endblocktrans %}</p>
-        <p>
-            <a class="btn btn-primary btn-lg" href="{% site_url %}">{% trans 'Go Home' %}</a>
-        </p>
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>400</h1>
+        <h3 class="font-bold">{% trans "Not Allowed" %}</h3>
+
+        <div class="error-desc">
+            <p>{% blocktrans %}We are sorry, this access method it's not allowed on this page.{% endblocktrans %}</p>
+
+            <a role="button" class="btn btn-primary"  href="{% site_url %}">{% trans "Go home" %}</a>
+        </div>
     </div>
-</div>
 {% endblock %}

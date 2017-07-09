@@ -14,15 +14,13 @@ from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from boilerplate.mixins import (
-    CreateMessageMixin, NoLoginRequiredMixin, UpdateMessageMixin
+    CreateMessageMixin, ExtraFormsAndFormsetsMixin, NoLoginRequiredMixin,
+    UpdateMessageMixin
 )
 
 from core.models import Invite
 from . import forms
 from .models import Profile
-
-
-logger = logging.getLogger(__name__)
 
 
 class Activate(NoLoginRequiredMixin, DetailView):
@@ -80,7 +78,13 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
         return self.request.user
 
 
-class ProfileUpdate(LoginRequiredMixin, UpdateMessageMixin, UpdateView):
+class ProfileUpdate(
+    ExtraFormsAndFormsetsMixin, LoginRequiredMixin, UpdateMessageMixin,
+    UpdateView
+):
+    extra_form_list = (
+        ('profile', 'user', forms.UserProfileForm),
+    )
     form_class = forms.UserUpdateForm
     model = User
     success_message = _("Your profile has been updated successfully.")
@@ -100,6 +104,12 @@ class SignUp(NoLoginRequiredMixin, CreateMessageMixin, CreateView):
         'Then you will be able to login.'
     )
     template_name = 'registration/signup.html'
+
+    def form_valid(self, form):
+        form.instance.first_name = form.cleaned_data.get('first_name')
+        form.instance.last_name = form.cleaned_data.get('last_name')
+        form.instance.email = form.cleaned_data.get('email')
+        return super().form_valid(form)
 
 
 class SignUpInvite(
@@ -141,6 +151,8 @@ class SignUpInvite(
         return super().dispatch(request, *args, **kwargs)
 
     def get_invite(self):
+        logger = logging.getLogger(__name__)
+
         queryset = Invite.objects.filter(
             is_active=True,
             user__isnull=True,
@@ -160,6 +172,10 @@ class SignUpInvite(
 
     def form_valid(self, form):
         invite = self.get_invite()
+
+        form.instance.first_name = form.cleaned_data.get('first_name')
+        form.instance.last_name = form.cleaned_data.get('last_name')
+
         setattr(form.instance, 'email', invite.email)
         setattr(form.instance, 'is_active', True)
         response = super().form_valid(form)

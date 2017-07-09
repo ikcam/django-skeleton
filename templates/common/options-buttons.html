@@ -1,0 +1,58 @@
+{% load boilerplate i18n %}
+
+{% if object.actions %}
+	{% if not actions_grouped %}
+		{% for t,a,c,i in object.actions %}
+			{% if parent_object %}
+			<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_child_action object parent_object a %}">
+				<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
+				{{ t }}
+			</a>
+			{% else %}
+			<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_action object a %}">
+				<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
+				{{ t }}
+			</a>
+			{% endif %}
+		{% endfor %}
+	{% else %}
+	<div class="btn-group">
+		{% for t,a,c,i in object.actions %}
+			{% if forloop.first %}
+				{% if parent_object %}
+					<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_child_action object parent_object a %}">
+						<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
+						{{ t }}
+					</a>
+				{% else %}
+					<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_action object a %}">
+						<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
+						{{ t }}
+					</a>
+				{% endif %}
+				<button type="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span>
+					<span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-right pull-right">
+			{% else %}
+				{% if parent_object %}
+					<li><a href="{% model_child_action object parent_object a %}"><span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span> {{ t }}</a></li>
+				{% else %}
+					<li><a href="{% model_action object a %}"><span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span> {{ t }}</a></li>
+				{% endif %}
+			{% endif %}
+			{% if forloop.last %}
+				</ul>
+			{% endif %}
+		{% endfor %}
+	</div>
+	{% endif %}
+{% elif action_list %}
+	{% for t,a,c,i in action_list %}
+		<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% queryset_action object_list a %}">
+			<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
+			{{ t }}
+		</a>
+	{% endfor %}
+{% endif %}
