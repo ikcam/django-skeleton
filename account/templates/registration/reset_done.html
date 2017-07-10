@@ -14,10 +14,11 @@
 
                     <div class="row">
                         <div class="col-lg-12">
-                            <form class="m-t" method="post" role="form" action="">
-                                {% trans "Password reset" as submit_text %}
-                                {% include "common/form-simple.html" %}
-                            </form>
+                            <p>{% trans "We've emailed you instructions for setting your password, if an account exists with the email you entered. You should receive them shortly." %}</p>
+
+                            <p>{% trans "If you don't receive an email, please make sure you've entered the address you registered with, and check your spam folder." %}</p>
+
+                            <a class="btn btn-primary btn-block" href="{% site_url %}">{% trans "Home" %}</a>
                         </div>
                     </div>
                 </div>

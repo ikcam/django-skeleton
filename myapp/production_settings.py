@@ -138,6 +138,8 @@ SITE_URL = 'http://myapp.com'
 
 SITE_NAME = 'My App'
 
+SITE_SHORT_NAME = 'MA+'
+
 
 CULQI_PUBLIC_KEY = None
 

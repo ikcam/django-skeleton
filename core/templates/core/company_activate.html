@@ -1,0 +1,74 @@
+{% extends "layout-blank.html" %}
+
+{% load core_tags i18n %}
+
+{% block title %}
+    {% trans "Activate your company" %}
+{% endblock %}
+
+{% block content %}
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name">CC+</h1>
+            </div>
+            <h3>{% trans "Activate your company" %}</h3>
+
+            <div class="list-group">
+                <p>{% blocktrans %}You have an overdue invoice, please pay the following invoice in order to activate your company:{% endblocktrans %}</p>
+
+                <p class="text-left">
+                    <strong>{% trans "Invoice" %}</strong>: {{ object }}<br>
+                    <strong>{% trans "Description" %}</strong>: {{ object.description }}<br>
+                </p>
+                <h3><strong>{% trans "Total" %}</strong>: {{ object.total|floatformat:2 }}</h3>
+                <form id="culqi-form" action="" method="post">
+                    {% csrf_token %}
+                    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+                    {% for field in form.visible_fields %}{{ field }}{% endfor %}
+                </form>
+
+                <a id="payNow" role="button" class="btn btn-size-default btn-primary" href="#"><i class="fa fa-credit-card"></i> {% trans "Credit Card" %}</a>
+                <p>&nbsp;</p>
+                <p>{% blocktrans %}You can also make a payment with PayPal using the following link.{% endblocktrans %}</p>
+                <a role="button" class="btn btn-size-default btn-primary" href="https://www.paypal.me/ikcam/{{ object.total|floatformat:2 }}">
+                    <i class="fa fa-paypal"></i>
+                    PayPal
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="https://checkout.culqi.com/v2"></script>
+    <!-- Configurando el checkout-->
+    <script>
+        Culqi.publicKey = '{% culqi_public_key %}';
+        Culqi.init();
+        Culqi.settings({
+            title: '{% site_name %}',
+            currency: 'USD',
+            description: '{{ object.description }}',
+            amount: {{ object.culqi_amount }}
+        });
+
+        $('#payNow').on('click', function(e) {
+            Culqi.open();
+            e.preventDefault();
+        });
+
+        function culqi() {
+            if(Culqi.token.id) {
+                var token = Culqi.token.id;
+                var email = Culqi.token.email;
+                $('input#id_token').val(token);
+                $('input#id_email').val(email);
+                $('form#culqi-form').submit();
+            } else {
+                console.log(Culqi.error);
+                alert(Culqi.error.mensaje);
+            }
+        };
+    </script>
+{% endblock %}

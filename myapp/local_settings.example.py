@@ -66,6 +66,8 @@ SITE_URL = 'http://localhost:8000'
 
 SITE_NAME = 'My App (Local)'
 
+SITE_SHORT_NAME = 'MA+'
+
 
 CULQI_PUBLIC_KEY = None
 

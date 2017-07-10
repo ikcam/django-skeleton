@@ -29,10 +29,22 @@ from . import forms, tasks
 class Index(TemplateView):
     template_name = 'core/index.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.profile.company:
+            return redirect(reverse_lazy('core:dashboard'))
 
-class Dashboard(CompanyRequiredMixin, TemplateView):
+        return super().get(request, *args, **kwargs)
+
+
+class Dashboard(LoginRequiredMixin, TemplateView):
     raise_exception = False
     template_name = 'core/dashboard.html'
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.profile.company:
+            return redirect(reverse_lazy('core:company_add'))
+
+        return super().get(request, *args, **kwargs)
 
 
 class CompanyActivate(
@@ -89,6 +101,7 @@ class CompanyDetail(
     CompanyRequiredMixin, DetailView
 ):
     model = Company
+    permissions_required = 'core:view_company'
 
     def get_object(self):
         if (
@@ -103,8 +116,9 @@ class CompanyDetail(
 class CompanyCreate(
     LoginRequiredMixin, UserCreateMixin, CreateMessageMixin, CreateView
 ):
-    form_class = forms.CompanyForm
+    form_class = forms.CompanyCreateForm
     model = Company
+    template_name = 'core/company_create.html'
 
 
 class CompanyUpdate(
@@ -112,6 +126,7 @@ class CompanyUpdate(
 ):
     form_class = forms.CompanyForm
     model = Company
+    permissions_required = 'core:change_company'
 
     def get_object(self):
         qs = self.get_queryset()
@@ -134,7 +149,7 @@ class CompanyChoose(
 
 
 class CompanySwitch(
-    CompanyRequiredMixin, DetailView
+    LoginRequiredMixin, DetailView
 ):
     model = Company
     success_url = reverse_lazy('core:index')
@@ -152,6 +167,49 @@ class CompanySwitch(
         next_ = self.request.GET.get('next', None)
 
         return next_ or self.success_url
+
+
+class InvoiceList(
+    CompanyQuerySetMixin, ListView
+):
+    model = Invoice
+    paginate_by = 30
+    permissions_required = 'core:view_invoice'
+
+
+class InvoiceDetail(
+    CompanyQuerySetMixin, FormView
+):
+    form_class = forms.CulqiTokenForm
+    model = Invoice
+    success_url = reverse_lazy('core:invoice_list')
+    template_name = 'core/invoice_detail.html'
+    permissions_required = 'core:view_invoice'
+
+    def get_object(self):
+        try:
+            obj = self.model.objects.get(
+                company=self.company,
+                pk=self.kwargs['pk']
+            )
+        except Exception:
+            raise Http404
+
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = self.get_object()
+        return context
+
+    def form_valid(self, form):
+        obj = self.get_object()
+
+        obj.create_payment_from_culqi(
+            **form.cleaned_data
+        )
+
+        return super().form_valid(form)
 
 
 class InviteList(
@@ -194,7 +252,7 @@ class InviteSend(
 ):
     model_action = 'send'
     model = Invite
-    permissions_required = 'core:change_invite'
+    permissions_required = 'core:add_invite'
     task_module = tasks
     success_url = reverse_lazy('core:invite_list')
 
@@ -232,7 +290,7 @@ class UserCreate(
 
         self.object.profile.company = self.company
         self.object.profile.save()
-        self.object.profile.companies.add(self.company)
+        self.object.profile.colaborator_set.create(company=self.company)
 
         return response
 

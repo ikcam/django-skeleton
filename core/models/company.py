@@ -71,13 +71,8 @@ class Company(AuditableMixin, models.Model):
 def post_save_company(sender, instance, created, **kwargs):
     if created:
         instance.user.profile.company = instance
-        instance.user.profile.companies.add(instance)
+        instance.user.profile.colaborator_set.create(company=instance)
         instance.user.profile.save()
 
 
-def pre_delete_company(sender, instance, **kwargs):
-    instance.twilio_delete()
-
-
 signals.post_save.connect(post_save_company, sender=Company)
-signals.pre_delete.connect(pre_delete_company, sender=Company)

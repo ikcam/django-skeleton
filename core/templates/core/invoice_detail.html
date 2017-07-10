@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% load boilerplate core_tags i18n staticfiles %}
+
+{% block title %}{% trans "Invoice" %} {{ object }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
+        <li><a href="{% url 'core:invoice_list' %}">{{ object|model_name_plural }}</a></li>
+        <li class="active"><strong>{{ object }}</strong></li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+    <h2>{% trans "Invoice" %} {{ object }}</h2>
+{% endblock %}
+
+{% block page_actions %}
+    {% if not object.is_payed %}
+        <a id="payNow" role="button" class="btn btn-size-default btn-primary" href="#"><i class="fa fa-credit-card"></i> {% trans "Credit Card" %}</a>
+        <a role="button" class="btn btn-size-default btn-success" href="https://www.paypal.me/ikcam/{{ object.total|floatformat:2 }}"><i class="fa fa-paypal"></i> {% trans "PayPal" %}</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>{% trans "Details" %}</h5>
+            {% include "common/ibox/tools.html" %}
+        </div>
+        <div class="ibox-content table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Company" %}</th>
+                        <td>{{ object.company }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Creation date" %}</th>
+                        <td>{{ object.date_creation }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Expiration date" %}</th>
+                        <td>{{ object.date_expiration }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Description" %}</th>
+                        <td>{{ object.description|linebreaksbr }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Payed" %}</th>
+                        <td><span class="glyphicon glyphicon-{{ object.is_payed|yesno:'ok,remove' }} text-{{ object.is_payed|yesno:'success,danger' }}"></span></td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Aditional fee" %}</th>
+                        <td>{{ object.aditional_fees|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Subtotal" %}</th>
+                        <td>{{ object.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="text-right col-md-3">{% trans "Total" %}</th>
+                        <td>{{ object.total|floatformat:2 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if not object.is_payed %}
+        <form id="culqi-form" action="" method="post">
+            {% csrf_token %}
+            {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+            {% for field in form.visible_fields %}{{ field }}{% endfor %}
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if not object.is_payed %}
+        <script src="https://checkout.culqi.com/v2"></script>
+        <!-- Configurando el checkout-->
+        <script>
+            Culqi.publicKey = '{% culqi_public_key %}';
+            Culqi.init();
+            Culqi.settings({
+                title: '{% site_name %}',
+                currency: 'USD',
+                description: '{{ object.description }}',
+                amount: {{ object.culqi_amount }}
+            });
+
+            $('#payNow').on('click', function(e) {
+                Culqi.open();
+                e.preventDefault();
+            });
+
+            function culqi() {
+                if(Culqi.token.id) {
+                    var token = Culqi.token.id;
+                    var email = Culqi.token.email;
+                    $('input#id_token').val(token);
+                    $('input#id_email').val(email);
+                    $('form#culqi-form').submit();
+                } else {
+                    console.log(Culqi.error);
+                    alert(Culqi.error.mensaje);
+                }
+            };
+        </script>
+    {% endif %}
+{% endblock %}

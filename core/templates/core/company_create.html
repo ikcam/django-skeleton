@@ -1,0 +1,56 @@
+{% extends "layout-blank.html" %}
+
+{% load boilerplate core_tags i18n %}
+
+{% block title %}
+    {% if form and object %}
+        {% trans "Change" %} {{ object }}
+    {% elif form %}
+        {% trans "Add" %} {{ form|form_model_name }}
+    {% else %}
+        {% trans "Delete" %} {{ object }}
+    {% endif %}
+{% endblock title %}
+
+{% block page_header %}
+    <h2>
+        {% if form and object %}
+            {% trans "Change" %} {{ object }}
+        {% elif form %}
+            {% trans "Add" %} {{ form|form_model_name }}
+        {% else %}
+            {% trans "Delete" %} {{ object }}
+        {% endif %}
+    </h2>
+{% endblock page_header %}
+
+{% block content %}
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <h1 class="logo-name">{% site_short_name %}</h1>
+        </div>
+        <div>
+            <h3>{% trans "Add" %} {{ form|form_model_name }}</h3>
+            <form class="m-t" method="post" role="form" action="">
+                {% trans "Add" as submit_text %}
+                {% include "common/form-simple.html" %}
+                <a class="btn btn-sm btn-white btn-block" href="{% url 'core:company_choose' %}">
+                    <i class="fa fa-angle-left"></i>
+                    {% trans "Back to companies" %}
+                </a>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts_footer %}
+    {{ form.media }}
+
+    {% for extra_form in extra_form_list %}
+        {{ extra_form.media }}
+    {% endfor %}
+
+    {% for formset in formset_list %}
+        {{ formset.media }}
+    {% endfor %}
+{% endblock %}

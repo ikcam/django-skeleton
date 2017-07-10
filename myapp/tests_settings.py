@@ -2,10 +2,10 @@ DEBUG = False
 
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': ':memory:',
-  }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
 }
 
 
@@ -19,6 +19,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 SITE_URL = 'http://tests.myapp.com'
 
 SITE_NAME = 'My App (Tests)'
+
+SITE_SHORT_NAME = 'MA+'
 
 
 CULQI_PUBLIC_KEY = None

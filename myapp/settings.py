@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django_countries',
     'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
     # Apps
     'core',
     'account',
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -137,9 +138,9 @@ LANGUAGES = [
 
 LOGIN_URL = reverse_lazy('account:login')
 
-LOGIN_REDIRECT_URL = reverse_lazy('core:index')
+LOGIN_REDIRECT_URL = reverse_lazy('core:dashboard')
 
-LOGOUT_REDIRECT_URL = reverse_lazy('account:login')
+LOGOUT_REDIRECT_URL = reverse_lazy('core:index')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

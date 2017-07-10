@@ -11,6 +11,11 @@ def site_name():
 
 
 @register.simple_tag()
+def site_short_name():
+    return settings.SITE_SHORT_NAME
+
+
+@register.simple_tag()
 def site_url():
     return settings.SITE_URL
 

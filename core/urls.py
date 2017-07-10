@@ -17,11 +17,6 @@ urlpatterns = [
     ),
     # Company
     url(
-        _(r'^company/activate/$'),
-        views.CompanyActivate.as_view(),
-        name='company_activate'
-    ),
-    url(
         _(r'^company/$'),
         views.CompanyDetail.as_view(),
         name='company_list'
@@ -30,6 +25,11 @@ urlpatterns = [
         _(r'^company/$'),
         views.CompanyDetail.as_view(),
         name='company_detail'
+    ),
+    url(
+        _(r'^company/activate/$'),
+        views.CompanyActivate.as_view(),
+        name='company_activate'
     ),
     url(
         _(r'^company/add/$'),
@@ -50,6 +50,17 @@ urlpatterns = [
         _(r'^company/switch/(?P<pk>[0-9]+)/$'),
         views.CompanySwitch.as_view(),
         name='company_switch'
+    ),
+    # Invoice - invoices - invoice
+    url(
+        _(r'^company/invoices/$'),
+        views.InvoiceList.as_view(),
+        name='invoice_list'
+    ),
+    url(
+        _(r'^company/invoices/(?P<pk>[0-9]+)/$'),
+        views.InvoiceDetail.as_view(),
+        name='invoice_detail'
     ),
     # Invite - invites - invite
     url(

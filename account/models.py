@@ -60,7 +60,10 @@ class Profile(models.Model):
     @property
     def companies_available(self):
         if self.user.is_staff:
-            return Company.objects.all().exclude(pk=self.company.pk)
+            if self.company:
+                return Company.objects.all().exclude(pk=self.company.pk)
+            else:
+                return Company.objects.all()
 
         return self.companies.all().exclude(pk=self.company.pk)
 
@@ -91,7 +94,9 @@ class Profile(models.Model):
 
         if (
             not self.user.is_staff and
-            company not in self.companies.all()
+            not self.colaborator_set.filter(
+                company=company, is_active=True
+            ).exists()
         ):
             raise Exception(_("Invalid company."))
 
@@ -216,7 +221,7 @@ class Colaborator(models.Model):
 def has_company_perm(self, perm, obj=None):
     if self.is_superuser:
         return True
-    elif self == self.profile.company:
+    elif self == self.profile.company.user:
         return True
     elif self.is_staff:
         return self.has_perm(perm, obj)
@@ -227,7 +232,7 @@ def has_company_perm(self, perm, obj=None):
 def has_company_perms(self, perm_list, obj=None):
     if self.is_superuser:
         return True
-    elif self == self.profile.company:
+    elif self == self.profile.company.user:
         return True
     elif self.is_staff:
         return self.has_pemrs(perm_list, obj)

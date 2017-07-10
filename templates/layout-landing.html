@@ -1,4 +1,4 @@
-{% load core_tags crm_tags bootstrap3 i18n staticfiles %}
+{% load core_tags bootstrap3 i18n staticfiles %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 
@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         {% block meta_header %}{% endblock meta_header %}
 
-        <title>{% block title %}{% endblock title %} | {% site_name %}</title>
+        <title>{% block title %}{% endblock title %}</title>
 
         <!-- Bootstrap CSS -->
         {% bootstrap_css %}
@@ -32,6 +32,8 @@
         {% bootstrap_messages %}
 
         {% block content %}{% endblock %}
+
+        {% block css_footer %}{% endblock css_footer %}
 
         {% bootstrap_javascript jquery=1 %}
         {% block scripts_footer %}{% endblock %}
