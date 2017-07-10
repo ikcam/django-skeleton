@@ -29,5 +29,48 @@
 {% endblock %}
 
 {% block content %}
-
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>{% trans "Information" %}</h5>
+            {% include "common/ibox/tools.html" %}
+        </div>
+        <div class="ibox-content table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Username" %}</th>
+                        <td>{{ object.username }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "First name" %}</th>
+                        <td>{{ object.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Last name" %}</th>
+                        <td>{{ object.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Email" %}</th>
+                        <td>{{ object.email }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Timezone" %}</th>
+                        <td>{{ object.profile.timezone }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Company" %}</th>
+                        <td>{{ object.profile.company }}</td>
+                    </tr>
+                    <tr>
+                        <th class="col-md-3 text-right">{% trans "Companies" %}</th>
+                        <td>
+                            {% for company in object.profile.colaborator_set.all %}
+                                <a href="{% url 'core:company_switch' company.company.pk %}">{{ company.company }}</a>{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock content %}

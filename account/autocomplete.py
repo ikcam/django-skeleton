@@ -25,12 +25,18 @@ class PermissionAutocomplete(autocomplete.Select2QuerySetView):
         ):
             return Permission.objects.none()
 
-        qs = Permission.objects.exclude(
+        qs = Permission.objects.all().exclude(
             content_type__app_label__in=(
-                'admin',
-            ),
+                'admin', 'authtoken', 'contenttypes', 'sessions',
+            )
+        ).exclude(
             content_type__model__in=(
-                'group', 'permission',
+                'colaborator', 'group', 'logentry', 'payment', 'permission',
+                'profile',
+            )
+        ).exclude(
+            codename__in=(
+                'add_invoice', 'change_invoice', 'delete_invoice',
             )
         )
 

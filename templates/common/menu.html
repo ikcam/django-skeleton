@@ -24,6 +24,7 @@
                                 {% endif %}
                             {% endfor %}
                             <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+                            <li class="divider"></li>
                             <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
                         </ul>
                     </div>

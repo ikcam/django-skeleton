@@ -221,6 +221,7 @@ class InviteList(
     model = Invite
     paginate_by = 30
     permissions_required = 'core:view_invite'
+    related_properties = ('user', )
 
 
 class InviteCreate(
@@ -266,7 +267,9 @@ class UserList(
     permissions_required = 'auth:view_user'
 
     def get_queryset(self):
-        return self.company.users_all.all()
+        return self.company.users_all.all().select_related(
+            'profile', 'profile__user'
+        )
 
 
 class UserCreate(
