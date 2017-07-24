@@ -37,6 +37,7 @@ class PermissionAutocomplete(autocomplete.Select2QuerySetView):
         ).exclude(
             codename__in=(
                 'add_invoice', 'change_invoice', 'delete_invoice',
+                'add_company', 'delete_company'
             )
         )
 
