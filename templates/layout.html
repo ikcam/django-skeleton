@@ -32,7 +32,7 @@
         <div id="wrapper">
             {% include "common/menu.html" %}
 
-            <div id="page-wrapper" class="gray-bg">
+            <div {% if not view.is_popup %}id="page-wrapper"{% endif %} class="gray-bg">
                 {% include "common/top-navigation.html" %}
 
                 <div class="row wrapper border-bottom white-bg page-heading">
