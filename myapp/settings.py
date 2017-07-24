@@ -156,6 +156,27 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads/')
 
 
+# Django REST Framework
+# http://www.django-rest-framework.org/api-guide/permissions/
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.LimitOffsetPagination'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'PAGE_SIZE': 10,
+}
+
+
 APP_ENV = os.getenv('APP_ENV')
 
 if APP_ENV == 'production':

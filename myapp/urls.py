@@ -21,4 +21,6 @@ urlpatterns += i18n_patterns(
     url(_(r'^'), include('core.urls', namespace='core')),
     url(_(r'^admin/'), admin.site.urls),
     url(_(r'^account/'), include('account.urls', namespace='account')),
+    # API at the end
+    url(_(r'^api/'), include('api.urls', namespace='api')),
 )
