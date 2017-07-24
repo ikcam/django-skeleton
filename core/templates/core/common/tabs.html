@@ -17,6 +17,11 @@
             {% trans "Invoices" %}
         </a>
     </li>
+    <li {% if 'role' in request.resolver_match.url_name %}class="active"{% endif %}>
+        <a id="role" href="{% url 'core:role_list' %}">
+            {% trans "Roles" %}
+        </a>
+    </li>
     <li {% if 'user' in request.resolver_match.url_name %}class="active"{% endif %}>
         <a id="user" href="{% url 'core:user_list' %}">
             {% trans "Users" %}

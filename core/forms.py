@@ -1,19 +1,27 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
+from django_addanother.widgets import AddAnotherWidgetWrapper
 
 from account.models import Colaborator
-from .models import Company, Invite
+from .models import Company, Invite, Role
 
 
 class ColaboratorForm(forms.ModelForm):
     class Meta:
-        fields = ('is_active', 'permissions')
+        fields = ('is_active', 'roles', 'permissions')
         model = Colaborator
         widgets = {
+            'roles': AddAnotherWidgetWrapper(
+                autocomplete.ModelSelect2Multiple(
+                    url='core:role_autocomplete',
+                ),
+                reverse_lazy('core:role_add')
+            ),
             'permissions': autocomplete.ModelSelect2Multiple(
                 url='account:permission_autocomplete'
             ),
@@ -47,6 +55,17 @@ class InviteForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
         model = Invite
+
+
+class RoleForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = Role
+        widgets = {
+            'permissions': autocomplete.ModelSelect2Multiple(
+                url='account:permission_autocomplete',
+            )
+        }
 
 
 class UserChangeForm(UserChangeForm):

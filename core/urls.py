@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
-from . import views
+from . import autocomplete, views
 
 
 urlpatterns = [
@@ -82,6 +82,32 @@ urlpatterns = [
         _(r'^company/invites/(?P<pk>[0-9]+)/send/$'),
         views.InviteSend.as_view(),
         name='invite_send'
+    ),
+    # Role - roles - role
+    url(
+        _(r'^company/roles/autocomplete/$'),
+        autocomplete.RoleAutocomplete.as_view(),
+        name='role_autocomplete'
+    ),
+    url(
+        _(r'^company/roles/$'),
+        views.RoleList.as_view(),
+        name='role_list'
+    ),
+    url(
+        _(r'^company/roles/add/$'),
+        views.RoleCreate.as_view(),
+        name='role_add'
+    ),
+    url(
+        _(r'^company/roles/(?P<pk>[0-9]+)/change/$'),
+        views.RoleUpdate.as_view(),
+        name='role_change'
+    ),
+    url(
+        _(r'^company/roles/(?P<pk>[0-9]+)/delete/$'),
+        views.RoleDelete.as_view(),
+        name='role_delete'
     ),
     # User - users - user
     url(

@@ -16,13 +16,14 @@ from boilerplate.mixins import (
     ActionListMixin, CreateMessageMixin, DeleteMessageMixin,
     ExtraFormsAndFormsetsMixin, UpdateMessageMixin, UserCreateMixin
 )
+from django_addanother.views import CreatePopupMixin
 
 from account.forms import UserCreateForm, UserProfileForm
 from account.models import Colaborator
 from .mixins import (
     CompanyCreateMixin, CompanyQuerySetMixin, CompanyRequiredMixin
 )
-from .models import Company, Invite, Invoice
+from .models import Company, Invite, Invoice, Role
 from . import forms, tasks
 
 
@@ -129,13 +130,7 @@ class CompanyUpdate(
     permissions_required = 'core:change_company'
 
     def get_object(self):
-        qs = self.get_queryset()
-        obj = qs.get(pk=self.request.user.profile.company.pk)
-
-        if obj.user == self.request.user:
-            return obj
-
-        raise PermissionDenied
+        return self.request.user.profile.company
 
 
 class CompanyChoose(
@@ -241,12 +236,6 @@ class InviteDelete(
     template_name_suffix = '_form'
     permissions_required = 'core:delete_invite'
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(
-            company__user=self.request.user
-        )
-
 
 class InviteSend(
     CompanyQuerySetMixin, DetailView
@@ -256,6 +245,45 @@ class InviteSend(
     permissions_required = 'core:add_invite'
     task_module = tasks
     success_url = reverse_lazy('core:invite_list')
+
+
+class RoleList(
+    ActionListMixin, CompanyQuerySetMixin, ListView
+):
+    action_list = (
+        (_("Add"), 'add', 'primary', 'plus'),
+    )
+    model = Role
+    paginate_by = 30
+    permissions_required = 'core:view_role'
+
+
+class RoleCreate(
+    CreatePopupMixin, CompanyCreateMixin, CreateMessageMixin, CreateView
+):
+    form_class = forms.RoleForm
+    model = Role
+    permissions_required = 'core:view_role'
+    success_url = reverse_lazy('core:role_list')
+
+
+class RoleUpdate(
+    CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
+):
+    form_class = forms.RoleForm
+    model = Role
+    permissions_required = 'core:change_role'
+    success_url = reverse_lazy('core:role_list')
+    template_name_suffix = '_form'
+
+
+class RoleDelete(
+    CompanyQuerySetMixin, DeleteMessageMixin, DeleteView
+):
+    model = Role
+    permissions_required = 'core:delete_role'
+    success_url = reverse_lazy('core:role_list')
+    template_name_suffix = '_form'
 
 
 class UserList(

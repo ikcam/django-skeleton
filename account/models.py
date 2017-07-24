@@ -16,7 +16,7 @@ from boilerplate.signals import add_view_permissions
 from rest_framework.authtoken.models import Token
 
 from . import tasks
-from core.models import Company
+from core.models import Company, Role
 
 
 ACCOUNT_ACTIVATION_HOURS = 48
@@ -168,21 +168,41 @@ class Profile(models.Model):
             not self.company or
             not self.company.is_active
         ):
-            return False
+            return []
 
         try:
-            perms = self.colaborator_set \
+            role_perms = self.colaborator_set \
+                .get(company=self.company, is_active=True) \
+                .roles.all() \
+                .select_related('permissions__content_type') \
+                .values(
+                    'permissions__content_type__app_label',
+                    'permissions__codename'
+                )
+
+            user_perms = self.colaborator_set \
                 .get(company=self.company, is_active=True) \
                 .permissions.all() \
                 .select_related('content_type') \
                 .values('content_type__app_label', 'codename')
 
-            return [
+            role_data = [
+                '{}:{}'.format(
+                    c['permissions__content_type__app_label'],
+                    c['permissions__codename']
+                ) for c in role_perms
+            ]
+
+            user_data = [
                 '{}:{}'.format(
                     c['content_type__app_label'], c['codename']
-                ) for c in perms
+                ) for c in user_perms
             ]
+
+            return role_data + list(set(user_data) - set(role_data))
         except Exception:
+            if settings.DEBUG:
+                raise
             return []
 
 
@@ -199,6 +219,9 @@ class Colaborator(models.Model):
     )
     is_active = models.BooleanField(
         default=True, verbose_name=_("Active")
+    )
+    roles = models.ManyToManyField(
+        Role, blank=True, verbose_name=("Roles")
     )
     permissions = models.ManyToManyField(
         Permission, blank=True, verbose_name=_("Permissions")
@@ -235,7 +258,7 @@ def has_company_perms(self, perm_list, obj=None):
     elif self == self.profile.company.user:
         return True
     elif self.is_staff:
-        return self.has_pemrs(perm_list, obj)
+        return self.has_perms(perm_list, obj)
 
     return all(self.has_company_perm(perm, obj) for perm in perm_list)
 

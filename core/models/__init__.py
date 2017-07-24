@@ -19,3 +19,4 @@ from .company import Company  # NOQA
 from .invite import Invite  # NOQA
 from .invoice import Invoice  # NOQA
 from .payment import Payment  # NOQA
+from .role import Role  # NOQA
