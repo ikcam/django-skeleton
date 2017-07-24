@@ -7,7 +7,11 @@
         <div class="ibox float-e-margins">
             {% if extra_form_list or formset_list %}
                 <div class="ibox-title">
-                    <h5>{{ form|form_model_name }}</h5>
+                    {% if form_title %}
+                        <h5>{{ form_title }}</h5>
+                    {% else %}
+                        <h5>{{ form|form_model_name }}</h5>
+                    {% endif %}
                 </div>
             {% endif %}
             <div class="ibox-content">

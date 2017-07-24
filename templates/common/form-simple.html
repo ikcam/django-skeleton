@@ -4,8 +4,8 @@
 
 {% bootstrap_form form %}
 
-{% if submit_text %}
-    <button type="submit" class="btn btn-primary block full-width m-b">{{ submit_text }}</button>
+{% if form_submit %}
+    <button type="submit" class="btn btn-primary block full-width m-b">{{ form_submit }}</button>
 {% else %}
     <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Send' %}</button>
 {% endif %}

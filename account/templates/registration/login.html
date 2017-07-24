@@ -20,7 +20,7 @@
             <p>{% blocktrans %}Login in. To see it in action.{% endblocktrans %}</p>
 
             <form class="m-t" method="post" role="form" action="">
-                {% trans "Log in" as submit_text %}
+                {% trans "Log in" as form_submit %}
                 {% include "common/form-simple.html" %}
 
                 <a href="{% url 'account:password_reset' %}"><small>{% trans "Forgot password?" %}</small></a>
@@ -32,7 +32,7 @@
                     {% trans "Code + Design + Hosting with" %}
                     <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
                     {% trans "by" %}
-                    <a href="http://cubo.pe">Cubo</a>
+                    <a target="_blank" href="//cubo.pe">Cubo</a>
                 </small>
             </p>
         </div>
