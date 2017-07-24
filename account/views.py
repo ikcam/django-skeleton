@@ -133,7 +133,9 @@ class SignUpInvite(
             request.user.email == invite.email
         ):
             request.user.profile.company = company
-            request.user.profile.companies.add(company)
+            request.user.profile.colaborator_set.create(
+                company=company
+            )
             request.user.profile.save()
 
             invite.is_active = False
@@ -181,7 +183,9 @@ class SignUpInvite(
         response = super().form_valid(form)
 
         self.object.profile.company = self.get_company()
-        self.object.profile.companies.add(self.get_company())
+        self.object.profile.colaborator_set.create(
+            company=self.get_company()
+        )
         self.object.profile.save()
 
         invite.is_active = False
