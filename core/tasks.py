@@ -8,11 +8,15 @@ logger = get_task_logger(__name__)
 
 
 @app.task(name='company_task')
-def company_task(pk, task, data=None):
+def company_task(task, pk=None, data=None):
     from core.models import Company
 
-    obj = Company.objects.get(pk=pk)
-    task_func = getattr(obj, task)
+    if pk:
+        obj = Company.objects.get(pk=pk)
+        task_func = getattr(obj, task)
+    else:
+        obj = '%s' % Company.__name__
+        task_func = getattr(Company, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))
@@ -24,11 +28,15 @@ def company_task(pk, task, data=None):
 
 
 @app.task(name='invite_task')
-def invite_task(pk, task, data=None):
+def invite_task(task, pk=None, data=None):
     from core.models import Invite
 
-    obj = Invite.objects.get(pk=pk)
-    task_func = getattr(obj, task)
+    if pk:
+        obj = Invite.objects.get(pk=pk)
+        task_func = getattr(obj, task)
+    else:
+        obj = '%s' % Invite.__name__
+        task_func = getattr(Invite, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))

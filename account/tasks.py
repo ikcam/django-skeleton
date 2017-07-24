@@ -7,11 +7,15 @@ logger = get_task_logger(__name__)
 
 
 @app.task(name='profile_task')
-def profile_task(pk, task, data=None):
+def profile_task(task, pk=None, data=None):
     from account.models import Profile
 
-    obj = Profile.objects.get(pk=pk)
-    task_func = getattr(obj, task)
+    if pk:
+        obj = Profile.objects.get(pk=pk)
+        task_func = getattr(obj, task)
+    else:
+        obj = '%s' % Profile.__name__
+        task_func = getattr(Profile, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))

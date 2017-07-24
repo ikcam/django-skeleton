@@ -18,7 +18,7 @@ class ColaboratorForm(forms.ModelForm):
         widgets = {
             'roles': AddAnotherWidgetWrapper(
                 autocomplete.ModelSelect2Multiple(
-                    url='core:role_autocomplete',
+                    url='core:role_autocomplete'
                 ),
                 reverse_lazy('core:role_add')
             ),

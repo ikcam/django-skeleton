@@ -144,7 +144,7 @@ class Profile(models.Model):
         if settings.DEBUG:
             self.key_send()
         else:
-            tasks.profile_tasks.delay(self.pk, 'key_send')
+            tasks.profile_task.delay('key_send', self.pk)
 
         return True
 

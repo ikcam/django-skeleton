@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView
+from django.views.generic import DetailView, RedirectView
 from django.views.generic.edit import CreateView, UpdateView
 
 from boilerplate.mixins import (
@@ -67,7 +67,7 @@ class Activate(NoLoginRequiredMixin, DetailView):
                     _("An error has ocurred.")
                 )
 
-        return redirect(reverse_lazy('account:login'))
+        return redirect('account:login')
 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
@@ -76,6 +76,11 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         return self.request.user
+
+
+class ProfilePassword(LoginRequiredMixin, RedirectView):
+    permanent = False
+    pattern_name = 'account:password_change'
 
 
 class ProfileUpdate(

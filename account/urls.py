@@ -29,6 +29,10 @@ urlpatterns = [
         name='profile_detail'
     ),
     url(
+        _(r'^password/$'),
+        views.ProfilePassword.as_view(),
+    ),
+    url(
         _(r'^change/$'),
         views.ProfileUpdate.as_view(),
         name='profile_update'

@@ -99,7 +99,7 @@ def post_save_invite(sender, instance, created, **kwargs):
         if settings.DEBUG:
             instance.send()
         else:
-            tasks.invite_task.delay(instance.pk, 'send')
+            tasks.invite_task.delay('send', instance.pk)
 
 
 signals.post_save.connect(post_save_invite, sender=Invite)

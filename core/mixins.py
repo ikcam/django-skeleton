@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -60,7 +60,7 @@ class CompanyRequiredMixin:
         self.company = self.request.user.profile.company
 
         if not self.company.is_active:
-            return HttpResponseRedirect(reverse_lazy('core:company_activate'))
+            return redirect('core:company_activate')
 
         if (
             self.company.last_invoice and
@@ -241,6 +241,7 @@ class ModelActionMixin(CompanyQuerySetMixin):
         return self.task_module
 
     def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         response = self.run_action()
 
         return HttpResponseRedirect(self.get_success_url(response))
@@ -262,15 +263,20 @@ class ModelActionMixin(CompanyQuerySetMixin):
                 action=model_action
             )
 
-        task_module = self.get_task_module()
         kwargs = self.get_action_kwargs()
-
+        task_module = self.get_task_module()
         if settings.DEBUG or not task_module:
-            return action(**kwargs)
+            if kwargs:
+                return action(**kwargs)
+            else:
+                return action()
         else:
             task_name = '{}_task'.format(self.model.__name__.lower())
             task = getattr(task_module, task_name)
-            return task.delay(self.object.pk, model_action, kwargs)
+            if kwargs:
+                return task.delay(self.object.pk, model_action, kwargs)
+            else:
+                return task.delay(self.object.pk, model_action)
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):
