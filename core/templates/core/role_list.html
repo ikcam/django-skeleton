@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% load boilerplate core_tags i18n %}
+
+{% block title %}{{ object_list|queryset_model_name_plural }}{% endblock title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
+        <li class="active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+    <h2>{{ object_list|queryset_model_name_plural }}</h2>
+{% endblock page_header %}
+
+{% block page_actions %}
+    {% include "common/options-buttons.html" with size="size-default" %}
+{% endblock %}
+
+{% block content %}
+    <div class="tabs-container">
+        {% include "core/common/tabs.html" %}
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+              <div class="panel-body table-responsive">
+                  <table class="table table-striped table-hover">
+                      <thead>
+                          <tr>
+                              <th>{% trans "Name" %}</th>
+                              <th>{% trans "Creation date" %}</th>
+                              <th class="text-right">{% trans "Options" %}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for object in object_list %}
+                              <tr>
+                                  <td>{{ object.name }}</td>
+                                  <td>{{ object.date_creation }}</td>
+                                  <td class="text-right">
+                                      {% include "common/options-buttons.html" with action_list=None %}
+                                  </td>
+                              </tr>
+                          {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-muted text-center">
+                                        {% trans "No information." %}
+                                    </td>
+                                </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+              {% include "common/pagination.html" %}
+          </div>
+        </div>
+    </div>
+{% endblock content %}
