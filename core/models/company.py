@@ -18,6 +18,9 @@ class Company(AuditableMixin, models.Model):
     user = models.ForeignKey(
         User, related_name='companies', verbose_name=_("User")
     )
+    custom_domain = models.URLField(
+        blank=True, null=True, verbose_name=_("Custom domain")
+    )
 
     class Meta:
         ordering = ['name', ]

@@ -30,7 +30,7 @@ class ColaboratorForm(forms.ModelForm):
 
 class CompanyCreateForm(forms.ModelForm):
     class Meta:
-        exclude = ('user', )
+        exclude = ('user', 'custom_domain', )
         model = Company
 
 
@@ -47,7 +47,7 @@ class CulqiTokenForm(forms.Form):
 
 class CompanyForm(forms.ModelForm):
     class Meta:
-        fields = '__all__'
+        exclude = ('custom_domain', )
         model = Company
 
 

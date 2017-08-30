@@ -48,9 +48,19 @@ class MeViewSet(viewsets.ViewSet):
         serializer = serializers.MeSerializer(request.user)
         return Response(serializer.data)
 
-    @list_route(methods=['get', 'post'])
+    @list_route(methods=['get', 'post', 'patch'])
     def profile(self, request):
-        serializer = serializers.ProfileSerializer(request.user.profile)
+        if request.method in ['PATCH', 'POST']:
+            serializer = serializers.ProfileSerializer(
+                request.user.profile, data=request.data, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        else:
+            serializer = serializers.ProfileSerializer(
+                request.user.profile
+            )
+
         return Response(serializer.data)
 
     @list_route(methods=['post'])

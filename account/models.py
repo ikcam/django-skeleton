@@ -48,6 +48,9 @@ class Profile(models.Model):
         max_length=100, default=settings.TIME_ZONE,
         choices=TIMEZONES, verbose_name=_("Timezone")
     )
+    nav_expanded = models.BooleanField(
+        default=True, verbose_name=_("Nav expanded")
+    )
 
     class Meta:
         ordering = ['user', ]

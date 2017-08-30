@@ -2,8 +2,6 @@ import os
 from .settings import BASE_DIR, INSTALLED_APPS
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
 ]
 
 
@@ -29,12 +27,12 @@ INSTALLED_APPS += [
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv("APP_DB_TYPE"),
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv("APP_DB_NAME"),
         'USER': os.getenv("APP_DB_USER"),
         'PASSWORD': os.getenv("APP_DB_PASS"),
-        'HOST': os.getenv("APP_DB_HOST"),
-        'PORT': os.getenv("APP_DB_PORT"),
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 

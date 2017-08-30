@@ -25,3 +25,9 @@ class Role(AuditableMixin, models.Model):
 
     def __str__(self):
         return "%s" % self.name
+
+    def actions(self):
+        return (
+            (_("Change"), 'change', 'success', 'pencil'),
+            (_("Delete"), 'delete', 'danger', 'trash'),
+        )
