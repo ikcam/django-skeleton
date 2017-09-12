@@ -186,4 +186,5 @@ elif APP_ENV == 'staging':
 elif APP_ENV == 'tests':
     from .tests_settings import *  # NOQA
 else:
+    from .development_settings import *  # NOQA
     from .local_settings import *  # NOQA
