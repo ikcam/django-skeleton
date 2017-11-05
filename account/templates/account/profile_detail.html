@@ -54,6 +54,10 @@
                         <td>{{ object.email }}</td>
                     </tr>
                     <tr>
+                        <th class="col-md-3 text-right">{% trans "Language" %}</th>
+                        <td>{{ object.profile.get_language_display }}</td>
+                    </tr>
+                    <tr>
                         <th class="col-md-3 text-right">{% trans "Timezone" %}</th>
                         <td>{{ object.profile.timezone }}</td>
                     </tr>

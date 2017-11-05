@@ -20,3 +20,16 @@
     {% trans "Change your profile" as form_title %}
     {% include "common/form.html" %}
 {% endblock content %}
+
+
+{% block scripts_footer %}
+    {{ form.media }}
+
+    {% for extra_form in extra_form_list %}
+        {{ extra_form.media }}
+    {% endfor %}
+
+    {% for formset in formset_list %}
+        {{ formset.media }}
+    {% endfor %}
+{% endblock %}

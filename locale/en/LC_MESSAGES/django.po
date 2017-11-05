@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-24 00:04-0500\n"
+"POT-Creation-Date: 2017-11-04 22:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: account/forms.py:38 account/forms.py:77
+#: account/forms.py:48 account/forms.py:87
 msgid "A user with that email already exists."
 msgstr ""
 
@@ -31,8 +31,8 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: account/models.py:34 account/models.py:215
-#: account/templates/account/profile_detail.html:61 core/models/company.py:24
+#: account/models.py:34 account/models.py:229
+#: account/templates/account/profile_detail.html:61 core/models/company.py:27
 #: core/models/invite.py:21 core/models/invoice.py:19 core/models/role.py:12
 #: core/templates/core/common/tabs.html:7
 #: core/templates/core/invoice_detail.html:37 templates/common/menu.html:46
@@ -40,7 +40,7 @@ msgid "Company"
 msgstr ""
 
 #: account/models.py:37 account/templates/account/profile_detail.html:65
-#: core/models/company.py:25
+#: core/models/company.py:28
 msgid "Companies"
 msgstr ""
 
@@ -52,11 +52,19 @@ msgstr ""
 msgid "Date key expiration"
 msgstr ""
 
-#: account/models.py:49 account/templates/account/profile_detail.html:57
+#: account/models.py:49
+msgid "Language"
+msgstr ""
+
+#: account/models.py:53 account/templates/account/profile_detail.html:57
 msgid "Timezone"
 msgstr ""
 
-#: account/models.py:54 account/models.py:211
+#: account/models.py:56
+msgid "Nav expanded"
+msgstr ""
+
+#: account/models.py:61 account/models.py:225
 #: account/templates/account/profile_detail.html:6
 #: account/templates/account/profile_detail.html:12
 #: account/templates/account/profile_detail.html:17
@@ -70,42 +78,42 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-#: account/models.py:55
+#: account/models.py:62
 msgid "Profiles"
 msgstr ""
 
-#: account/models.py:72 account/models.py:93
+#: account/models.py:86 account/models.py:107
 msgid "company must be a Company instance."
 msgstr ""
 
-#: account/models.py:101
+#: account/models.py:115
 msgid "Invalid company."
 msgstr ""
 
-#: account/models.py:155
+#: account/models.py:169
 msgid "Activate your account"
 msgstr ""
 
-#: account/models.py:218
+#: account/models.py:232
 msgid "Join date"
 msgstr ""
 
-#: account/models.py:221 core/mixins.py:18
+#: account/models.py:235 core/mixins.py:19
 #: core/templates/core/invite_list.html:38
 #: core/templates/core/user_list.html:43
 msgid "Active"
 msgstr ""
 
-#: account/models.py:227 core/models/role.py:18
+#: account/models.py:241 core/models/role.py:18
 #: core/templates/core/user_list.html:59
 msgid "Permissions"
 msgstr ""
 
-#: account/models.py:233
+#: account/models.py:247
 msgid "Colaborator"
 msgstr ""
 
-#: account/models.py:234
+#: account/models.py:248
 msgid "Colaborators"
 msgstr ""
 
@@ -130,7 +138,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: account/templates/account/profile_detail.html:23
+#: account/templates/account/profile_detail.html:23 core/models/role.py:31
 #: core/templates/core/company_create.html:7
 #: core/templates/core/company_create.html:18
 #: core/templates/core/company_detail.html:21
@@ -464,22 +472,22 @@ msgstr ""
 msgid "Token ID"
 msgstr ""
 
-#: core/mixins.py:12 core/templates/core/company_detail.html:43
+#: core/mixins.py:13 core/templates/core/company_detail.html:43
 #: core/templates/core/invite_list.html:35
 #: core/templates/core/invoice_detail.html:41
 #: core/templates/core/role_list.html:34
 msgid "Creation date"
 msgstr ""
 
-#: core/mixins.py:15
+#: core/mixins.py:16
 msgid "Modification date"
 msgstr ""
 
-#: core/mixins.py:26
+#: core/mixins.py:27
 msgid "Instance is active."
 msgstr ""
 
-#: core/mixins.py:33
+#: core/mixins.py:34
 msgid "Instance is inactive."
 msgstr ""
 
@@ -493,11 +501,11 @@ msgstr ""
 msgid "Company must be set."
 msgstr ""
 
-#: core/mixins.py:185
+#: core/mixins.py:186
 msgid "An error has ocurred, try again later."
 msgstr ""
 
-#: core/mixins.py:187
+#: core/mixins.py:188
 msgid "Action was performed successfully."
 msgstr ""
 
@@ -507,6 +515,10 @@ msgstr ""
 #: core/templates/core/invoice_list.html:33
 #: core/templates/core/role_list.html:33
 msgid "Name"
+msgstr ""
+
+#: core/models/company.py:22
+msgid "Custom domain"
 msgstr ""
 
 #: core/models/invite.py:30
@@ -525,7 +537,8 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: core/models/invite.py:61 core/templates/core/company_create.html:11
+#: core/models/invite.py:61 core/models/role.py:32
+#: core/templates/core/company_create.html:11
 #: core/templates/core/company_create.html:22
 #: core/templates/core/company_form.html:11
 #: core/templates/core/company_form.html:33
@@ -664,7 +677,7 @@ msgstr ""
 #: core/templates/core/invite_form.html:29 core/templates/core/role_form.html:9
 #: core/templates/core/role_form.html:29 core/templates/core/user_form.html:9
 #: core/templates/core/user_form.html:28 core/templates/core/user_list.html:25
-#: core/views.py:214 core/views.py:254
+#: core/views.py:208 core/views.py:248
 #: templates/common/breadcrumbs/form.html:30
 msgid "Add"
 msgstr ""
@@ -751,133 +764,145 @@ msgstr ""
 msgid "^dashboard/$"
 msgstr ""
 
-#: core/urls.py:20 core/urls.py:25
+#: core/urls.py:20
+msgid "^countries/autocomplete/$"
+msgstr ""
+
+#: core/urls.py:26
+msgid "^languages/autocomplete/$"
+msgstr ""
+
+#: core/urls.py:32
+msgid "^timezones/autocomplete/$"
+msgstr ""
+
+#: core/urls.py:38 core/urls.py:43
 msgid "^company/$"
 msgstr ""
 
-#: core/urls.py:30
+#: core/urls.py:48
 msgid "^company/activate/$"
 msgstr ""
 
-#: core/urls.py:35
+#: core/urls.py:53
 msgid "^company/add/$"
 msgstr ""
 
-#: core/urls.py:40
+#: core/urls.py:58
 msgid "^company/change/$"
 msgstr ""
 
-#: core/urls.py:45
+#: core/urls.py:63
 msgid "^company/choose/$"
 msgstr ""
 
-#: core/urls.py:50
+#: core/urls.py:68
 msgid "^company/switch/(?P<pk>[0-9]+)/$"
 msgstr ""
 
-#: core/urls.py:56
+#: core/urls.py:74
 msgid "^company/invoices/$"
 msgstr ""
 
-#: core/urls.py:61
+#: core/urls.py:79
 msgid "^company/invoices/(?P<pk>[0-9]+)/$"
 msgstr ""
 
-#: core/urls.py:67
+#: core/urls.py:85
 msgid "^company/invites/$"
 msgstr ""
 
-#: core/urls.py:72
+#: core/urls.py:90
 msgid "^company/invites/add/$"
 msgstr ""
 
-#: core/urls.py:77
+#: core/urls.py:95
 msgid "^company/invites/(?P<pk>[0-9]+)/delete/$"
 msgstr ""
 
-#: core/urls.py:82
+#: core/urls.py:100
 msgid "^company/invites/(?P<pk>[0-9]+)/send/$"
 msgstr ""
 
-#: core/urls.py:88
+#: core/urls.py:106
 msgid "^company/roles/autocomplete/$"
 msgstr ""
 
-#: core/urls.py:93
+#: core/urls.py:111
 msgid "^company/roles/$"
 msgstr ""
 
-#: core/urls.py:98
+#: core/urls.py:116
 msgid "^company/roles/add/$"
 msgstr ""
 
-#: core/urls.py:103
+#: core/urls.py:121
 msgid "^company/roles/(?P<pk>[0-9]+)/change/$"
 msgstr ""
 
-#: core/urls.py:108
+#: core/urls.py:126
 msgid "^company/roles/(?P<pk>[0-9]+)/delete/$"
 msgstr ""
 
-#: core/urls.py:114
+#: core/urls.py:132
 msgid "^company/users/$"
 msgstr ""
 
-#: core/urls.py:119
+#: core/urls.py:137
 msgid "^company/users/add/$"
 msgstr ""
 
-#: core/urls.py:124
+#: core/urls.py:142
 msgid "^company/users/(?P<pk>[0-9]+)/change/$"
 msgstr ""
 
-#: core/urls.py:129
+#: core/urls.py:147
 msgid "^company/users/(?P<pk>[0-9]+)/password/$"
 msgstr ""
 
-#: core/urls.py:134
+#: core/urls.py:152
 msgid "^company/users/(?P<pk>[0-9]+)/permissions/$"
 msgstr ""
 
-#: core/urls.py:139
+#: core/urls.py:157
 msgid "^company/users/(?P<pk>[0-9]+)/remove/$"
 msgstr ""
 
-#: core/views.py:157
+#: core/views.py:151
 #, python-format
 msgid "You have saccessfully switched to: %s"
 msgstr ""
 
-#: core/views.py:390
+#: core/views.py:384
 #, python-format
 msgid "%(object)s has been removed from your company %(company)s."
 msgstr ""
 
-#: myapp/settings.py:131
+#: myapp/settings.py:132
 msgid "English"
 msgstr ""
 
-#: myapp/settings.py:132
+#: myapp/settings.py:133
 msgid "Spanish"
 msgstr ""
 
-#: myapp/settings.py:133
+#: myapp/settings.py:134
 msgid "French"
 msgstr ""
 
-#: myapp/urls.py:21
+#: myapp/urls.py:24
 msgid "^"
 msgstr ""
 
-#: myapp/urls.py:22
+#: myapp/urls.py:25
 msgid "^admin/"
 msgstr ""
 
-#: myapp/urls.py:23
+#: myapp/urls.py:26
 msgid "^account/"
 msgstr ""
 
-#: myapp/urls.py:25
+#: myapp/urls.py:28
 msgid "^api/"
 msgstr ""
 
@@ -995,19 +1020,15 @@ msgstr ""
 msgid "Toggle Dropdown"
 msgstr ""
 
-#: templates/common/pagination.html:6 templates/common/pagination.html:8
+#: templates/common/pagination.html:4
+msgid "Page navigation"
+msgstr ""
+
+#: templates/common/pagination.html:13 templates/common/pagination.html:15
 msgid "Prev"
 msgstr ""
 
-#: templates/common/pagination.html:11
-msgid "Page"
-msgstr ""
-
-#: templates/common/pagination.html:11
-msgid "of"
-msgstr ""
-
-#: templates/common/pagination.html:14 templates/common/pagination.html:16
+#: templates/common/pagination.html:37 templates/common/pagination.html:39
 msgid "Next"
 msgstr ""
 

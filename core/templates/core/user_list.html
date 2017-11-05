@@ -53,11 +53,11 @@
                                     <td>{{ item.user.email }}</td>
                                     <td class="text-center"><span class="glyphicon glyphicon-{{ item.is_active|yesno:'ok,remove' }} text-{{ item.is_active|yesno:'success,remove' }}"></span></td>
                                     <td class="text-right">
+                                        <a role="button" class="btn btn-xs btn-info" href="{% url 'core:user_permissions' item.pk %}">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                            {% trans "Permissions" %}
+                                        </a>
                                         {% if item.user != request.user %}
-                                            <a role="button" class="btn btn-xs btn-info" href="{% url 'core:user_permissions' item.pk %}">
-                                                <span class="glyphicon glyphicon-pencil"></span>
-                                                {% trans "Permissions" %}
-                                            </a>
                                             <a role="button" class="btn btn-xs btn-success" href="{% url 'core:user_change' item.user.pk %}">
                                                 <span class="glyphicon glyphicon-pencil"></span>
                                                 {% trans "Change" %}
