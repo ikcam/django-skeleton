@@ -67,7 +67,9 @@ class MeSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = '__all__'
+        exclude = (
+            'user', 'company', 'companies'
+        )
         model = Profile
 
 
@@ -80,17 +82,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField()
+    password_confirm = serializers.CharField()
 
     class Meta:
         fields = (
-            'username', 'first_name', 'last_name', 'password1',
-            'password2', 'email'
+            'username', 'first_name', 'last_name', 'password',
+            'password_confirm', 'email'
         )
         model = User
 
     def validate(self, data):
-        if data['password1'] != data['password2']:
+        if data['password'] != data['password_confirm']:
             raise serializers.ValidationError("Passwords don't match.")
         return data
 
