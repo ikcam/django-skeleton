@@ -5,17 +5,11 @@
 *.pyc
 local_settings.py
 media/*
+static/*
 *.sqlite3
 *.pid
 celerybeat-schedule
 *.db
-static/admin
-static/autocomplete_light
-static/ckeditor
-static/debug_toolbar
-static/django_addanother
-static/flags
-static/rest_framework
 .DS_Store
 dump.rdb
 

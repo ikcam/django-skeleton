@@ -14,11 +14,11 @@
         <!-- Bootstrap CSS -->
         {% bootstrap_css %}
         <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.css" %}" >
+        <link rel="stylesheet" href="{% static "css/plugins/datetimepicker/bootstrap-datetimepicker.min.css" %}">
         <link rel="stylesheet" href="{% static "css/animate.css" %}" >
         <link rel="stylesheet" href="{% static "css/style.css" %}" >
-        <link rel="stylesheet" href="{% static "css/custom.css" %}">
-
         {% block css_header %}{% endblock css_header %}
+        <link rel="stylesheet" href="{% static "css/custom.css" %}">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,12 +28,14 @@
         <![endif]-->
         {% block scripts_header %}{% endblock scripts_header %}
     </head>
-    <body>
+    <body {% if not request.user.profile.nav_expanded %}class="mini-navbar"{% endif %}>
         <div id="wrapper">
             {% include "common/menu.html" %}
 
             <div {% if not view.is_popup %}id="page-wrapper"{% endif %} class="gray-bg">
-                {% include "common/top-navigation.html" %}
+                {% if not view.is_popup %}
+                    {% include "common/top-navigation.html" %}
+                {% endif %}
 
                 <div class="row wrapper border-bottom white-bg page-heading">
                     <div class="col-sm-8">
@@ -61,11 +63,19 @@
 
         {% block css_footer %}{% endblock css_footer %}
 
+        <script src="{% url 'javascript-catalog' %}"></script>
         {% bootstrap_javascript jquery=1 %}
         <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
         <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
-        <script src="{% static 'js/inspinia.js' %}"></script>
         <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+        <script src="{% static 'js/plugins/fullcalendar/moment.min.js' %}"></script>
+        <script src="{% static 'js/plugins/clipboard/clipboard.min.js' %}"></script>
+        <script src="{% static 'js/plugins/datetimepicker/bootstrap-datetimepicker.js' %}"></script>
+        <script src="{% static 'js/vendor/angular/angular.min.js' %}"></script>
+        <script src="{% static 'js/inspinia.js' %}"></script>
+        <script type="text/javascript">
+            var api_url_profile = '{% url "api:user-profile" %}';
+        </script>
         <script src="{% static 'js/main.js' %}"></script>
 
         {% block scripts_footer %}{% endblock scripts_footer %}

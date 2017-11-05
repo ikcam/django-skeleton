@@ -15,11 +15,12 @@ jQuery(document).ready(function($){
         return cookieValue;
     }
 
-    function changeNavExpanded(value){
+    function changeProfileField(field, value){
         if(value === undefined) return;
 
-        var endpoint = '/es/api/account/me/profile/';
-        var data = {'nav_expanded': value}
+        var endpoint = api_url_profile;
+        var data = {};
+        data[field] = value;
 
         $.ajax({
             type: 'PATCH',
@@ -36,6 +37,6 @@ jQuery(document).ready(function($){
     }
 
     $('.navbar-minimalize').on('click', function(event){
-        changeNavExpanded(!$('body').hasClass('mini-navbar'));
+        changeProfileField('nav_expanded', !$('body').hasClass('mini-navbar'));
     });
 });

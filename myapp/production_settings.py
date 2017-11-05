@@ -1,5 +1,5 @@
 import os
-from .settings import BASE_DIR, INSTALLED_APPS
+from .settings import BASE_DIR, INSTALLED_APPS, TIME_ZONE
 
 ALLOWED_HOSTS = [
 ]
@@ -96,14 +96,6 @@ LOGGING = {
 }
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
-STATIC_URL = '/static/'
-
-MEDIA_URL = '/media/'
-
-
 # Cache
 
 CACHES = {
@@ -117,17 +109,11 @@ CACHES = {
 # Celery
 # http://docs.celeryproject.org/en/latest/django/index.html
 
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
-
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/myapp'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 
-CELERY_TASK_SERIALIZER = 'json'
-
-CELERY_RESULT_SERIALIZER = 'json'
-
-CELERY_TIMEZONE = 'America/Los_Angeles'
+CELERY_TIMEZONE = TIME_ZONE
 
 
 # Site info
@@ -137,6 +123,17 @@ SITE_URL = 'http://myapp.com'
 SITE_NAME = 'My App'
 
 SITE_SHORT_NAME = 'MA+'
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATICFILES_STORAGE = (
+    'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+)
+
+STATIC_URL = '{}/static/'.format(SITE_URL)
+
+MEDIA_URL = '{}/media/'.format(SITE_URL)
 
 
 CULQI_PUBLIC_KEY = None

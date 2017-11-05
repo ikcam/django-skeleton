@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from dal import autocomplete
+
 from .models import Profile
 
 
@@ -10,6 +12,14 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         exclude = ('nav_expanded', )
         model = Profile
+        widgets = {
+            'language': autocomplete.ListSelect2(
+                url='core:language_autocomplete',
+            ),
+            'timezone': autocomplete.ListSelect2(
+                url='core:timezone_autocomplete',
+            ),
+        }
 
 
 class SignUpForm(UserCreationForm):
@@ -88,5 +98,13 @@ class UserUpdateForm(UserChangeForm):
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        fields = ('timezone', )
+        fields = ('language', 'timezone', )
         model = Profile
+        widgets = {
+            'language': autocomplete.ListSelect2(
+                url='core:language_autocomplete',
+            ),
+            'timezone': autocomplete.ListSelect2(
+                url='core:timezone_autocomplete',
+            ),
+        }

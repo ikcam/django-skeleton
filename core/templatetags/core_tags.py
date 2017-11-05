@@ -6,22 +6,34 @@ register = template.Library()
 
 
 @register.simple_tag()
-def site_name():
-    return settings.SITE_NAME
-
-
-@register.simple_tag()
 def site_short_name():
     return settings.SITE_SHORT_NAME
 
 
 @register.simple_tag(takes_context=True)
+def site_name(context):
+    try:
+        company = context['company']
+        return company.name or settings.SITE_NAME
+    except Exception:
+        try:
+            company = context['object'].company
+            return company.name or settings.SITE_NAME
+        except Exception:
+            return settings.SITE_NAME
+
+
+@register.simple_tag(takes_context=True)
 def site_url(context):
     try:
-        url = context['object'].company.custom_domain
-        return url if url else settings.SITE_URL
+        company = context['company']
+        return company.custom_domain or settings.SITE_URL
     except Exception:
-        return settings.SITE_URL
+        try:
+            company = context['object'].company
+            return company.custom_domain or settings.SITE_URL
+        except Exception:
+            return settings.SITE_URL
 
 
 @register.simple_tag()

@@ -15,6 +15,24 @@ urlpatterns = [
         views.Dashboard.as_view(),
         name='dashboard'
     ),
+    # Country
+    url(
+        _(r'^countries/autocomplete/$'),
+        autocomplete.CountryAutocomplete.as_view(),
+        name='country_autocomplete'
+    ),
+    # Language
+    url(
+        _(r'^languages/autocomplete/$'),
+        autocomplete.LanguageAutocomplete.as_view(),
+        name='language_autocomplete'
+    ),
+    # Timezone
+    url(
+        _(r'^timezones/autocomplete/$'),
+        autocomplete.TimezoneAutocomplete.as_view(),
+        name='timezone_autocomplete'
+    ),
     # Company
     url(
         _(r'^company/$'),

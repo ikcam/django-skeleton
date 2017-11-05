@@ -37,15 +37,9 @@ class Index(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class Dashboard(LoginRequiredMixin, TemplateView):
+class Dashboard(CompanyRequiredMixin, TemplateView):
     raise_exception = False
     template_name = 'core/dashboard.html'
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.profile.company:
-            return redirect(reverse_lazy('core:company_add'))
-
-        return super().get(request, *args, **kwargs)
 
 
 class CompanyActivate(

@@ -50,16 +50,6 @@ STATIC_URL = 'http://localhost/myappdir/static/'
 MEDIA_URL = 'http://localhost/myappdir/media/'
 
 
-# Django Debug Toolbar
-# Fix: Conflict between django-countries and django-debug-toolbar
-DEBUG_TOOLBAR_CONFIG = {
-    # Add in this line to disable the panel
-    'DISABLE_PANELS': {
-        'debug_toolbar.panels.templates.TemplatesPanel',
-        'debug_toolbar.panels.redirects.RedirectsPanel',
-    },
-}
-
 # Site info
 
 SITE_URL = 'http://localhost:8000'

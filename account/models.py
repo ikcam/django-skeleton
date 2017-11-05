@@ -44,6 +44,10 @@ class Profile(models.Model):
         blank=True, null=True, editable=False,
         verbose_name=_("Date key expiration")
     )
+    language = models.SlugField(
+        default=settings.LANGUAGE_CODE, choices=settings.LANGUAGES,
+        verbose_name=_("Language")
+    )
     timezone = models.CharField(
         max_length=100, default=settings.TIME_ZONE,
         choices=TIMEZONES, verbose_name=_("Timezone")
@@ -69,6 +73,13 @@ class Profile(models.Model):
                 return Company.objects.all()
 
         return self.companies.all().exclude(pk=self.company.pk)
+
+    @property
+    def company_profile(self):
+        obj, created = self.colaborator_set.get_or_create(
+            company=self.company
+        )
+        return obj
 
     def company_remove(self, company, user):
         if not isinstance(company, Company):

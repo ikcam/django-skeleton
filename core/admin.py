@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    Company, Invite, Invoice, Payment
+    Company, Invite, Invoice, Payment, Role
 )
 
 
@@ -34,3 +34,12 @@ class InviteAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Invite, InviteAdmin)
+
+
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'company')
+    list_filter = ('company', )
+    search_fields = ('name', )
+
+
+admin.site.register(Role, RoleAdmin)

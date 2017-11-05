@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic.edit import FormMixin
 
 
 class AuditableMixin(models.Model):
@@ -37,7 +38,6 @@ class AuditableMixin(models.Model):
 
 
 class CompanyRequiredMixin:
-    allow_staff = True
     company = None
     company_field = 'company'
     permissions_required = None
@@ -180,7 +180,8 @@ class FilterMixin(CompanyQuerySetMixin):
         return context
 
 
-class ModelActionMixin(CompanyQuerySetMixin):
+class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
+    form_class = None
     model_action = None
     failure_message = _("An error has ocurred, try again later.")
     require_confirmation = False
@@ -192,15 +193,29 @@ class ModelActionMixin(CompanyQuerySetMixin):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if self.get_require_confirmation():
+        if self.get_form_class() or self.get_require_confirmation():
             return super().get(request, *args, **kwargs)
 
         response = self.run_action()
 
         return HttpResponseRedirect(self.get_success_url(response))
 
-    def get_action_kwargs(self):
+    def get_action_kwargs(self, form=None):
+        if form:
+            return form.cleaned_data
         return None
+
+    def get_failure_message(self):
+        return self.failure_message % dict(
+            object=self.object,
+        )
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+
+        if form_class:
+            return form_class(**self.get_form_kwargs())
 
     def get_model_action(self):
         if not self.model_action:
@@ -209,11 +224,6 @@ class ModelActionMixin(CompanyQuerySetMixin):
 
     def get_require_confirmation(self):
         return self.require_confirmation
-
-    def get_failure_message(self):
-        return self.failure_message % dict(
-            object=self.object,
-        )
 
     def get_success_message(self):
         return self.success_message % dict(
@@ -242,11 +252,16 @@ class ModelActionMixin(CompanyQuerySetMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        response = self.run_action()
+        form = self.get_form()
+
+        if form and not form.is_valid():
+            return self.form_invalid(form)
+
+        response = self.run_action(form=form)
 
         return HttpResponseRedirect(self.get_success_url(response))
 
-    def run_action(self):
+    def run_action(self, form=None):
         model_action = self.get_model_action()
 
         if not hasattr(self.object, model_action):
@@ -263,20 +278,25 @@ class ModelActionMixin(CompanyQuerySetMixin):
                 action=model_action
             )
 
-        kwargs = self.get_action_kwargs()
         task_module = self.get_task_module()
+        kwargs = self.get_action_kwargs(form=form)
+
         if settings.DEBUG or not task_module:
-            if kwargs:
-                return action(**kwargs)
-            else:
-                return action()
+            return action(**kwargs) if kwargs else action()
         else:
             task_name = '{}_task'.format(self.model.__name__.lower())
             task = getattr(task_module, task_name)
             if kwargs:
-                return task.delay(self.object.pk, model_action, kwargs)
+                return task.delay(
+                    task=model_action,
+                    pk=self.object.pk,
+                    data=kwargs
+                )
             else:
-                return task.delay(self.object.pk, model_action)
+                return task.delay(
+                    task=model_action,
+                    pk=self.object.pk,
+                )
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):

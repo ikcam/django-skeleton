@@ -9,7 +9,7 @@ logger = get_task_logger(__name__)
 
 @app.task(name='company_task')
 def company_task(task, pk=None, data=None):
-    from core.models import Company
+    from core.models.company import Company
 
     if pk:
         obj = Company.objects.get(pk=pk)
@@ -29,7 +29,7 @@ def company_task(task, pk=None, data=None):
 
 @app.task(name='invite_task')
 def invite_task(task, pk=None, data=None):
-    from core.models import Invite
+    from core.models.invite import Invite
 
     if pk:
         obj = Invite.objects.get(pk=pk)
@@ -49,7 +49,7 @@ def invite_task(task, pk=None, data=None):
 
 @app.task(name='companies_check')
 def companies_check():
-    from core.models import Company
+    from core.models.company import Company
     Company.check_all()
 
 

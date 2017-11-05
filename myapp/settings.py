@@ -53,7 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.TimezoneMiddleware'
+    'core.middleware.TimezoneMiddleware',
+    'core.middleware.SiteURLMiddleware',
 ]
 
 ROOT_URLCONF = 'myapp.urls'
@@ -145,9 +146,16 @@ LOGOUT_REDIRECT_URL = reverse_lazy('core:index')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'assets/'),
+]
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+
+SESSION_COOKIE_NAME = 'myappsessionid'
 
 
 # CKEditor
@@ -165,7 +173,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.DjangoFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': (
         'rest_framework.pagination.LimitOffsetPagination'
@@ -187,4 +195,7 @@ elif APP_ENV == 'tests':
     from .tests_settings import *  # NOQA
 else:
     from .development_settings import *  # NOQA
-    from .local_settings import *  # NOQA
+    try:
+        from .local_settings import *  # NOQA
+    except ImportError:
+        pass
