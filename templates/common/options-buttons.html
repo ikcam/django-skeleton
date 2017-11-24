@@ -1,7 +1,7 @@
 {% load boilerplate i18n %}
 
 {% if object.actions %}
-	{% if not actions_grouped %}
+	{% if actions_grouped %}
 		{% for t,a,c,i in object.actions %}
 			{% if parent_object %}
 			<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_child_action object parent_object a %}">

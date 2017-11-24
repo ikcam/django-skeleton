@@ -49,7 +49,7 @@ class CompanyRequiredMixin:
         elif not self.request.user.profile.company:
             return self.handle_no_permission()
 
-        if not self.request.profile.company_profile.is_active:
+        if not self.request.user.profile.company_profile.is_active:
             self.request.user.profile.company = None
             self.request.user.profile.save()
             return redirect('core:company_choose')

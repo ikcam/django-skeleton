@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -73,16 +73,52 @@ class InviteForm(forms.ModelForm):
         fields = '__all__'
         model = Invite
 
+    def valid_for_company(self, company):
+        email = self.cleaned_data.get('email')
 
-class RoleForm(forms.ModelForm):
-    class Meta:
-        fields = '__all__'
-        model = Role
-        widgets = {
-            'permissions': autocomplete.ModelSelect2Multiple(
-                url='account:permission_autocomplete',
+        if company.users_all.filter(profile__user__email=email).exists():
+            self.add_error(
+                'email', _("A user with that email already exists.")
             )
-        }
+
+        return not bool(self.errors)
+
+
+def get_role_form(company):
+    permissions_queryset = Permission.objects.all().exclude(
+        content_type__app_label__in=(
+            'admin', 'authtoken', 'contenttypes', 'sessions'
+        )
+    ).exclude(
+        content_type__app_label='auth', codename='view_user'
+    ).exclude(
+        content_type__app_label='core', content_type__model='payment'
+    ).exclude(
+        content_type__app_label='account', content_type__model__in=(
+            'colaborator', 'profile'
+        )
+    ).exclude(
+        content_type__app_label='auth', content_type__model__in=(
+            'group', 'permission', 'colaborator'
+        )
+    ).exclude(
+        content_type__app_label='core', codename__in=(
+            'add_company', 'delete_company', 'add_invoice', 'change_invoice',
+            'delete_invoice',
+        )
+    )
+
+    class RoleForm(forms.ModelForm):
+        permissions = forms.ModelMultipleChoiceField(
+            label=_("Permissions"), queryset=permissions_queryset,
+            required=False, widget=forms.CheckboxSelectMultiple
+        )
+
+        class Meta:
+            fields = '__all__'
+            model = Role
+
+    return RoleForm
 
 
 class UserChangeForm(UserChangeForm):

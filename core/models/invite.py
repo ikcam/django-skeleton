@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -52,6 +53,9 @@ class Invite(AuditableMixin, models.Model):
 
         if not self.pk:
             self.key_generate()
+
+    def get_absolute_url(self):
+        return reverse_lazy('core:invite_list')
 
     @property
     def actions(self):

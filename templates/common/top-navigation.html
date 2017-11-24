@@ -5,27 +5,27 @@
         <nav class="navbar navbar-static-to" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
-                <!--
-                <form role="search" class="navbar-form-custom" method="post" action="#">
-                    <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                    </div>
-                </form>
-                -->
             </div>
             <ul class="nav navbar-top-links navbar-right">
-                {% if request.user.is_authenticated %}
-                    <li>
-                        <a href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="{% url 'account:login' %}"><i class="fa fa-sign-in"></i> {% trans "Log in" %}</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'account:signup' %}"><i class="fa fa-sign-up"></i> {% trans "Sign up" %}</a>
-                    </li>
-                {% endif %}
+                <li class="visible-xs-inline-block">
+                    <a class="dropdown-toggle" href="{% url 'account:profile_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                    <ul class="dropdown-menu">
+                        {% if request.user.is_staff %}
+                        <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+                        <li class="divider"></li>
+                        {% endif %}
+                        {% for company in request.user.profile.companies_available %}
+                            <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
+                            {% if forloop.last %}
+                                <li class="divider"></li>
+                            {% endif %}
+                        {% endfor %}
+                        <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
+                </li>
             </ul>
         </nav>
     </div>

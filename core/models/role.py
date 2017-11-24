@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Permission
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from core.mixins import AuditableMixin
@@ -25,6 +26,9 @@ class Role(AuditableMixin, models.Model):
 
     def __str__(self):
         return "%s" % self.name
+
+    def get_absolute_url(self):
+        return reverse_lazy('core:role_list')
 
     def actions(self):
         return (

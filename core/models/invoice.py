@@ -77,7 +77,7 @@ class Invoice(AuditableMixin, models.Model):
         return timezone.now() > self.date_expiration
 
     @cached_property
-    def is_payed(self):
+    def is_paid(self):
         return self.total_pending == 0
 
     @property

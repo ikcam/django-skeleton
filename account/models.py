@@ -66,12 +66,6 @@ class Profile(models.Model):
 
     @property
     def companies_available(self):
-        if self.user.is_staff:
-            if self.company:
-                return Company.objects.all().exclude(pk=self.company.pk)
-            else:
-                return Company.objects.all()
-
         return self.companies.all().exclude(pk=self.company.pk)
 
     @property

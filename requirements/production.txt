@@ -1,8 +1,8 @@
 -r common.txt
-gunicorn
-psycopg2
 django-ses
-mysqlclient
-redis
 flower
+gunicorn
+mysqlclient
+psycopg2
 python-memcached
+redis

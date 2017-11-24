@@ -69,7 +69,7 @@
                         <th class="col-md-3 text-right">{% trans "Companies" %}</th>
                         <td>
                             {% for company in object.profile.colaborator_set.all %}
-                                <a href="{% url 'core:company_switch' company.company.pk %}">{{ company.company }}</a>{% if not forloop.last %},{% endif %}
+                                <a class="label label-default" href="{% url 'core:company_switch' company.company.pk %}">{{ company.company }}</a>{% if not forloop.last %},{% endif %}
                             {% endfor %}
                         </td>
                     </tr>

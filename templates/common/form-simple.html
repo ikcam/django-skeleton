@@ -5,7 +5,7 @@
 {% bootstrap_form form %}
 
 {% if form_submit %}
-    <button type="submit" class="btn btn-primary block full-width m-b">{{ form_submit }}</button>
+    <button type="submit" class="btn btn-primary block full-width m-b" name="_save" value="{{ form_submit }}">{{ form_submit }}</button>
 {% else %}
-    <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Send' %}</button>
+    <button type="submit" class="btn btn-primary block full-width m-b" name="_save" value="{% trans 'Save' %}">{% trans 'Save' %}</button>
 {% endif %}

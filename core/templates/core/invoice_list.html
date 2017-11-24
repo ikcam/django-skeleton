@@ -32,7 +32,7 @@
                           <tr>
                               <th>{% trans "Name" %}</th>
                               <th>{% trans "Description" %}</th>
-                              <th class="text-center">{% trans "Payed" %}</th>
+                              <th class="text-center">{% trans "Paid" %}</th>
                               <th class="text-right">{% trans "Total" %}</th>
                               <th class="text-right">{% trans "Options" %}</th>
                           </tr>
@@ -42,7 +42,7 @@
                               <tr>
                                   <td><a href="{{ object.get_absolute_url }}">{{ object }}</a></td>
                                   <td>{{ object.description }}</td>
-                                  <td class="text-center"><span class="glyphicon glyphicon-{{ object.is_payed|yesno:'ok,remove' }} text-{{ object.is_payed|yesno:'success,danger' }}"></span></td>
+                                  <td class="text-center"><span class="glyphicon glyphicon-{{ object.is_paid|yesno:'ok,remove' }} text-{{ object.is_paid|yesno:'success,danger' }}"></span></td>
                                   <td class="text-right">{{ object.total|floatformat:2|intcomma }}</td>
                                   <td class="text-right">
                                       {% include "common/options-buttons.html" %}

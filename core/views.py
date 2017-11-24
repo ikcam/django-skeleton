@@ -21,7 +21,8 @@ from django_addanother.views import CreatePopupMixin
 from account.forms import UserCreateForm, UserProfileForm
 from account.models import Colaborator
 from .mixins import (
-    CompanyCreateMixin, CompanyQuerySetMixin, CompanyRequiredMixin
+    CompanyCreateMixin, CompanyQuerySetMixin, CompanyRequiredMixin,
+    ModelActionMixin
 )
 from .models import Company, Invite, Invoice, Role
 from . import forms, tasks
@@ -42,8 +43,11 @@ class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'core/dashboard.html'
 
     def get(self, request, *args, **kwargs):
-        if not request.user.profile.company:
-            return redirect(reverse_lazy('core:company_add'))
+        if (
+            not request.user.profile.company or
+            not request.user.profile.company_profile.is_active
+        ):
+            return redirect(reverse_lazy('core:company_choose'))
 
         return super().get(request, *args, **kwargs)
 
@@ -152,7 +156,7 @@ class CompanySwitch(
     LoginRequiredMixin, DetailView
 ):
     model = Company
-    success_url = reverse_lazy('core:index')
+    success_url = reverse_lazy('core:dashboard')
 
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -182,7 +186,6 @@ class InvoiceDetail(
 ):
     form_class = forms.CulqiTokenForm
     model = Invoice
-    success_url = reverse_lazy('core:invoice_list')
     template_name = 'core/invoice_detail.html'
     permissions_required = 'core:view_invoice'
 
@@ -230,26 +233,51 @@ class InviteCreate(
     form_class = forms.InviteForm
     model = Invite
     permissions_required = 'core:add_invite'
-    success_url = reverse_lazy('core:invite_list')
+
+
+class InviteUpdate(
+    CompanyCreateMixin, UpdateMessageMixin, UpdateView
+):
+    form_class = forms.InviteForm
+    model = Invite
+    permissions_required = 'core:change_invite'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            date_send__isnull=True
+        )
 
 
 class InviteDelete(
     CompanyQuerySetMixin, DeleteMessageMixin, DeleteView
 ):
     model = Invite
-    success_url = reverse_lazy('core:company_detail')
+    success_url = reverse_lazy('core:invite_list')
     template_name_suffix = '_form'
     permissions_required = 'core:delete_invite'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            date_send__isnull=True
+        )
+
 
 class InviteSend(
-    CompanyQuerySetMixin, DetailView
+    ModelActionMixin, DetailView
 ):
     model_action = 'send'
     model = Invite
-    permissions_required = 'core:add_invite'
+    permissions_required = 'core:send_invite'
     task_module = tasks
     success_url = reverse_lazy('core:invite_list')
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            date_send__isnull=True
+        )
 
 
 class RoleList(
@@ -266,20 +294,22 @@ class RoleList(
 class RoleCreate(
     CreatePopupMixin, CompanyCreateMixin, CreateMessageMixin, CreateView
 ):
-    form_class = forms.RoleForm
     model = Role
     permissions_required = 'core:view_role'
-    success_url = reverse_lazy('core:role_list')
+
+    def get_form_class(self):
+        return forms.get_role_form(self.company)
 
 
 class RoleUpdate(
     CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
 ):
-    form_class = forms.RoleForm
     model = Role
     permissions_required = 'core:change_role'
-    success_url = reverse_lazy('core:role_list')
     template_name_suffix = '_form'
+
+    def get_form_class(self):
+        return forms.get_role_form(self.company)
 
 
 class RoleDelete(
