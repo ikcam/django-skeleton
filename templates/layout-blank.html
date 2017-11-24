@@ -12,7 +12,7 @@
         <title>{% block title %}{% endblock title %} | {% site_name %}</title>
 
         <!-- Bootstrap CSS -->
-        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
         <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.css" %}" >
         <link rel="stylesheet" href="{% static "css/animate.css" %}" >
         <link rel="stylesheet" href="{% static "css/style.css" %}" >
@@ -29,13 +29,12 @@
         {% block scripts_header %}{% endblock scripts_header %}
     </head>
     <body class="gray-bg">
-        {% bootstrap_messages %}
-
         {% block content %}{% endblock %}
 
         {% block css_footer %}{% endblock css_footer %}
 
-        {% bootstrap_javascript jquery=1 %}
+        <script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
         {% block scripts_footer %}{% endblock %}
     </body>
 </html>

@@ -32,12 +32,16 @@
                     <table class="table table-striped">
                         <tbody>
                             <tr>
-                                <th class="col-md-3 text-right">{% trans "Name" %}</th>
-                                <td>{{ object.name }}</td>
-                            </tr>
-                            <tr>
                                 <th class="col-md-3 text-right">{% trans "User" %}</th>
                                 <td>{{ object.user }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-3 text-right">{% trans "Name" %}</th>
+                                <td>{{ object }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-3 text-right">{% trans "Email" %}</th>
+                                <td>{{ object.email }}</td>
                             </tr>
                             <tr>
                                 <th class="col-md-3 text-right">{% trans "Creation date" %}</th>
@@ -46,6 +50,10 @@
                             <tr>
                                 <th class="col-md-3 text-right">{% trans "Next invoice date" %}</th>
                                 <td>{{ object.date_next_invoice|date:'DATE_FORMAT' }}</td>
+                            </tr>
+                            <tr>
+                                <th class="col-md-3 text-right">{% trans "Language" %}</th>
+                                <td>{{ object.get_language_display }}</td>
                             </tr>
                         </tbody>
                     </table>

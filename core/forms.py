@@ -11,27 +11,39 @@ from account.models import Colaborator
 from .models import Company, Invite, Role
 
 
-class ColaboratorForm(forms.ModelForm):
-    class Meta:
-        fields = ('is_active', 'roles', 'permissions')
-        model = Colaborator
-        widgets = {
-            'roles': AddAnotherWidgetWrapper(
-                autocomplete.ModelSelect2Multiple(
+def get_colaborator_form(company):
+    class ColaboratorForm(forms.ModelForm):
+        roles = forms.ModelMultipleChoiceField(
+            label=_("Roles"), queryset=Role.objects.filter(company=company),
+            required=False, widget=AddAnotherWidgetWrapper(
+                autocomplete.ModelSelect2(
                     url='core:role_autocomplete'
                 ),
                 reverse_lazy('core:role_add')
-            ),
-            'permissions': autocomplete.ModelSelect2Multiple(
-                url='account:permission_autocomplete'
-            ),
-        }
+            )
+        )
+
+        class Meta:
+            fields = ('is_active', 'roles', 'permissions')
+            model = Colaborator
+            widgets = {
+                'permissions': autocomplete.ModelSelect2Multiple(
+                    url='account:permission_autocomplete'
+                ),
+            }
+
+    return ColaboratorForm
 
 
 class CompanyCreateForm(forms.ModelForm):
     class Meta:
-        exclude = ('user', 'custom_domain', )
+        exclude = ('user', 'date_next_invoice', 'custom_domain', )
         model = Company
+        widgets = {
+            'language': autocomplete.ListSelect2(
+                url='core:language_autocomplete'
+            ),
+        }
 
 
 class CulqiTokenForm(forms.Form):
@@ -47,8 +59,13 @@ class CulqiTokenForm(forms.Form):
 
 class CompanyForm(forms.ModelForm):
     class Meta:
-        exclude = ('custom_domain', )
+        exclude = ('user', 'date_next_invoice', 'custom_domain', )
         model = Company
+        widgets = {
+            'language': autocomplete.ListSelect2(
+                url='core:language_autocomplete'
+            ),
+        }
 
 
 class InviteForm(forms.ModelForm):

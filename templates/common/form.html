@@ -1,6 +1,6 @@
 {% load boilerplate bootstrap3 i18n %}
 
-<form {% if form_id %}id="{{ form_id }}"{% endif %} class="form-horizontal" method="POST" action="{{ form_action }}" enctype="multipart/form-data" role="form">
+<form {% if form_id %}id="{{ form_id }}"{% endif %} class="form-horizontal" method="POST" action="{{ form_action }}" enctype="multipart/form-data" role="form" novalidate>
     {% csrf_token %}
 
     {% if form %}

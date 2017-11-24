@@ -2,6 +2,8 @@ import os
 from .settings import BASE_DIR, INSTALLED_APPS, TIME_ZONE
 
 ALLOWED_HOSTS = [
+    'myapp.com',
+    'www.myapp.com',
 ]
 
 
@@ -49,6 +51,8 @@ AWS_SES_REGION_NAME = os.getenv('APP_AWS_REGION')
 AWS_SES_REGION_ENDPOINT = 'email.{}.amazonaws.com'.format(
     AWS_SES_REGION_NAME
 )
+
+AWS_SES_CONFIGURATION_SET = 'myapp-set'
 
 SERVER_EMAIL = os.getenv('APP_SEVER_EMAIL')
 
@@ -118,7 +122,7 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # Site info
 
-SITE_URL = 'http://myapp.com'
+SITE_URL = 'https://{}'.format(ALLOWED_HOSTS[0])
 
 SITE_NAME = 'My App'
 
@@ -130,10 +134,6 @@ SITE_SHORT_NAME = 'MA+'
 STATICFILES_STORAGE = (
     'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 )
-
-STATIC_URL = '{}/static/'.format(SITE_URL)
-
-MEDIA_URL = '{}/media/'.format(SITE_URL)
 
 
 CULQI_PUBLIC_KEY = None

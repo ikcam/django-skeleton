@@ -38,12 +38,6 @@ DATABASES = {
 }
 
 
-STATIC_URL = '/static/'
-
-
-MEDIA_URL = '/media/'
-
-
 # Django Debug Toolbar
 # Fix: Conflict between django-countries and django-debug-toolbar
 DEBUG_TOOLBAR_CONFIG = {

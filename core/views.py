@@ -365,11 +365,13 @@ class UserPassword(
 class UserPermissions(
     CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
 ):
-    form_class = forms.ColaboratorForm
     model = Colaborator
     permissions_required = 'auth:change_user'
     success_url = reverse_lazy('core:user_list')
     template_name = 'core/user_form.html'
+
+    def get_form_class(self):
+        return forms.get_colaborator_form(self.company)
 
 
 class UserRemove(

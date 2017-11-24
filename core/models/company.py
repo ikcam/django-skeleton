@@ -1,14 +1,15 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import activate, ugettext_lazy as _
 
 from dateutil.relativedelta import relativedelta
 
+from core.constants import RECURRING_CICLE, RECURRING_FEE
 from core.mixins import AuditableMixin
-from . import MONTHLY_FEE
 
 
 class Company(AuditableMixin, models.Model):
@@ -17,6 +18,16 @@ class Company(AuditableMixin, models.Model):
     )
     user = models.ForeignKey(
         User, related_name='companies', verbose_name=_("User")
+    )
+    date_next_invoice = models.DateTimeField(
+        blank=True, null=True, verbose_name=_("Next invoice date")
+    )
+    email = models.EmailField(
+        verbose_name=_("Email")
+    )
+    language = models.CharField(
+        max_length=10, choices=settings.LANGUAGES,
+        default=settings.LANGUAGE_CODE, verbose_name=_("Language")
     )
     custom_domain = models.URLField(
         blank=True, null=True, verbose_name=_("Custom domain")
@@ -33,6 +44,10 @@ class Company(AuditableMixin, models.Model):
     def get_absolute_url(self):
         return reverse_lazy('core:company_detail')
 
+    @property
+    def domain(self):
+        return self.custom_domain or settings.SITE_URL
+
     @classmethod
     def check_all(cls):
         for company in cls.objects.filter(is_active=True):
@@ -47,28 +62,27 @@ class Company(AuditableMixin, models.Model):
             ):
                 company.deactivate()
 
-    @property
-    def date_next_invoice(self):
-        last_invoice = self.invoices.all().first()
-        if last_invoice:
-            next_ = last_invoice.date_creation + relativedelta(months=1)
-        else:
-            next_ = timezone.now()
-        return next_.replace(hour=0, minute=0, second=0, microsecond=0)
-
     def generate_next_invoice(self):
         today = timezone.now() \
             .replace(hour=0, minute=0, second=0, microsecond=0)
 
-        if today >= self.date_next_invoice:
-            self.invoices.create(
-                description="Monthly fee for %s." % self.name,
-                subtotal=MONTHLY_FEE
-            )
+        activate(self.language)
 
-    @property
-    def last_invoice(self):
-        return self.invoices.all().first()
+        if not self.date_next_invoice or today >= self.date_next_invoice:
+            self.invoices.create(
+                description=_("%(cicle)sy fee for %(company)s.") % dict(
+                    cicle=RECURRING_CICLE.title(),
+                    company=self.name,
+                ),
+                subtotal=RECURRING_FEE
+            )
+            next_args = {'{}s'.format(RECURRING_CICLE): 1}
+            if self.date_next_invoice:
+                next_ = self.date_next_invoice + relativedelta(**next_args)
+            else:
+                next_ = timezone.now() + relativedelta(**next_args)
+            self.date_next_invoice = next_
+            self.save()
 
 
 def post_save_company(sender, instance, created, **kwargs):
@@ -76,6 +90,7 @@ def post_save_company(sender, instance, created, **kwargs):
         instance.user.profile.company = instance
         instance.user.profile.colaborator_set.create(company=instance)
         instance.user.profile.save()
+        instance.generate_next_invoice()
 
 
 signals.post_save.connect(post_save_company, sender=Company)

@@ -10,4 +10,7 @@ urlpatterns = [
     url(r'^auth/', views.obtain_auth_token),
     url(r'^account/password_reset/$', account_views.password_reset),
     url(r'^account/signup/$', account_views.signup),
-] + router.urls + nested_routers
+] + router.urls
+
+if nested_routers:
+    urlpatterns += nested_routers

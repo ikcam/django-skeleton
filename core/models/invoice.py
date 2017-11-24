@@ -7,9 +7,10 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
+from core.constants import GRACE_DAYS
 from core.mixins import AuditableMixin
 from .company import Company
-from . import culqipy, GRACE_DAYS
+from . import culqipy
 
 
 class Invoice(AuditableMixin, models.Model):

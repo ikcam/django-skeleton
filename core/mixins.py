@@ -43,36 +43,21 @@ class CompanyRequiredMixin:
     permissions_required = None
     raise_exception = True
 
-    def handle_no_permission(self, msg=None):
-        if self.raise_exception:
-            raise PermissionDenied(msg)
-
-        redirect_url = settings.LOGIN_URL + '?next=' + self.request.path
-
-        return HttpResponseRedirect(redirect_url)
-
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         elif not self.request.user.profile.company:
             return self.handle_no_permission()
 
+        if not self.request.profile.company_profile.is_active:
+            self.request.user.profile.company = None
+            self.request.user.profile.save()
+            return redirect('core:company_choose')
+
         self.company = self.request.user.profile.company
 
         if not self.company.is_active:
             return redirect('core:company_activate')
-
-        if (
-            self.company.last_invoice and
-            not self.company.last_invoice.is_payed
-        ):
-            messages.warning(
-                request,
-                _(
-                    'You have a pending invoice, please go to '
-                    '"Company" > "Invoices" and pay your last invoice.'
-                )
-            )
 
         permissions_required = self.get_permissions_required()
 
@@ -96,6 +81,14 @@ class CompanyRequiredMixin:
 
     def get_permissions_required(self):
         return self.permissions_required
+
+    def handle_no_permission(self, msg=None):
+        if self.raise_exception:
+            raise PermissionDenied(msg)
+
+        redirect_url = settings.LOGIN_URL + '?next=' + self.request.path
+
+        return HttpResponseRedirect(redirect_url)
 
 
 class CompanyQuerySetMixin(CompanyRequiredMixin):
@@ -138,6 +131,12 @@ class CompanyCreateMixin(CompanyRequiredMixin):
         if not self.company:
             raise Exception(_("Company must be set."))
 
+        if (
+            hasattr(form, 'valid_for_company') and
+            not form.valid_for_company(self.company)
+        ):
+            return self.form_invalid(form)
+
         setattr(form.instance, 'company', self.company)
         return super().form_valid(form)
 
@@ -174,10 +173,9 @@ class FilterMixin(CompanyQuerySetMixin):
         return super().get_queryset()
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.get_filter().form
-
-        return context
+        if 'form' not in kwargs:
+            kwargs['form'] = self.get_filter().form
+        return super().get_context_data(**kwargs)
 
 
 class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
@@ -191,7 +189,10 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
     template_name_suffix = '_action'
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        try:
+            self.object = self.get_object()
+        except AttributeError:
+            self.object = None
 
         if self.get_form_class() or self.get_require_confirmation():
             return super().get(request, *args, **kwargs)
@@ -200,10 +201,11 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
 
         return HttpResponseRedirect(self.get_success_url(response))
 
-    def get_action_kwargs(self, form=None):
-        if form:
-            return form.cleaned_data
-        return None
+    def get_action_kwargs(self, **kwargs):
+        data = {}
+        if 'form' in kwargs and hasattr(kwargs['form'], 'cleaned_data'):
+            data.update(kwargs['form'].cleaned_data)
+        return data
 
     def get_failure_message(self):
         return self.failure_message % dict(
@@ -231,16 +233,12 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         )
 
     def get_success_url(self, response=None):
-        if response is False:
-            messages.error(
-                self.request,
-                self.get_failure_message()
-            )
-        else:
-            messages.success(
-                self.request,
-                self.get_success_message()
-            )
+        try:
+            level, content = response
+            getattr(messages, level)(self.request, content)
+        except Exception:
+            if settings.DEBUG:
+                raise
 
         if self.success_url:
             return self.success_url
@@ -251,7 +249,11 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         return self.task_module
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        try:
+            self.object = self.get_object()
+        except AttributeError:
+            self.object = None
+
         form = self.get_form()
 
         if form and not form.is_valid():
@@ -264,14 +266,25 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
     def run_action(self, form=None):
         model_action = self.get_model_action()
 
-        if not hasattr(self.object, model_action):
-            raise ImproperlyConfigured(
-                "Instance has no action %(action)s." % dict(
-                    action=model_action,
+        if self.object:
+            if not hasattr(self.object, model_action):
+                raise ImproperlyConfigured(
+                    "Instance has no action %(action)s." % dict(
+                        action=model_action,
+                    )
                 )
-            )
+        else:
+            if not hasattr(self.model, model_action):
+                raise ImproperlyConfigured(
+                    "Model has no action %(action)s." % dict(
+                        action=model_action,
+                    )
+                )
 
-        action = getattr(self.object, model_action)
+        if self.object:
+            action = getattr(self.object, model_action)
+        else:
+            action = getattr(self.model, model_action)
 
         if not callable(action):
             raise ImproperlyConfigured("Is %(action)s callable?") % dict(
@@ -282,21 +295,35 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         kwargs = self.get_action_kwargs(form=form)
 
         if settings.DEBUG or not task_module:
-            return action(**kwargs) if kwargs else action()
+            if kwargs:
+                return action(**kwargs)
+            else:
+                return action()
         else:
             task_name = '{}_task'.format(self.model.__name__.lower())
             task = getattr(task_module, task_name)
-            if kwargs:
-                return task.delay(
-                    task=model_action,
-                    pk=self.object.pk,
-                    data=kwargs
-                )
+            if self.object:
+                if kwargs:
+                    return task.delay(
+                        pk=self.object.pk,
+                        task=model_action,
+                        data=kwargs
+                    )
+                else:
+                    return task.delay(
+                        pk=self.object.pk,
+                        task=model_action
+                    )
             else:
-                return task.delay(
-                    task=model_action,
-                    pk=self.object.pk,
-                )
+                if kwargs:
+                    return task.delay(
+                        task=model_action,
+                        data=kwargs
+                    )
+                else:
+                    return task.delay(
+                        task=model_action
+                    )
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):

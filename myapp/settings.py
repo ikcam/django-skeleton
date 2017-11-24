@@ -156,6 +156,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+MEDIA_URL = '/media/'
+
+STATIC_URL = '/static/'
+
 
 SESSION_COOKIE_NAME = 'myappsessionid'
 

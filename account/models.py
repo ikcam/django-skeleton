@@ -258,10 +258,10 @@ class Colaborator(models.Model):
 def has_company_perm(self, perm, obj=None):
     if self.is_superuser:
         return True
-    elif self == self.profile.company.user:
-        return True
     elif self.is_staff:
         return self.has_perm(perm, obj)
+    elif self == self.profile.company.user:
+        return True
 
     return perm in self.profile.perms
 
@@ -269,10 +269,10 @@ def has_company_perm(self, perm, obj=None):
 def has_company_perms(self, perm_list, obj=None):
     if self.is_superuser:
         return True
-    elif self == self.profile.company.user:
-        return True
     elif self.is_staff:
         return self.has_perms(perm_list, obj)
+    elif self == self.profile.company.user:
+        return True
 
     return all(self.has_company_perm(perm, obj) for perm in perm_list)
 

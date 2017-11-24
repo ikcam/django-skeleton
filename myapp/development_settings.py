@@ -44,12 +44,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 
-STATIC_URL = 'http://localhost/myappdir/static/'
-
-
-MEDIA_URL = 'http://localhost/myappdir/media/'
-
-
 # Site info
 
 SITE_URL = 'http://localhost:8000'

@@ -10,8 +10,13 @@ from rest_framework.response import Response
 class CompanyRequiredMixin:
     company = None
     company_field = 'company'
-    import_form = None
     permissions_required = None
+
+    def get_company_field(self):
+        return self.company_field
+
+    def get_permissions_required(self):
+        return self.permissions_required
 
     def handle_no_permission(self, msg=None):
         raise PermissionDenied(msg)
@@ -31,24 +36,6 @@ class CompanyRequiredMixin:
         elif permissions_required:
             if not request.user.has_company_perm(permissions_required):
                 return self.handle_no_permission()
-
-    def get_company_field(self):
-        return self.company_field
-
-    def get_permissions_required(self):
-        return self.permissions_required
-
-    def get_serializer_class(self):
-        serializer_suffix = self.request.resolver_match.url_name.split('-')[-1]
-        serializer_name = '{0}{1}Serializer'.format(
-            self.model.__name__,
-            serializer_suffix.title(),
-        )
-
-        try:
-            return getattr(self.import_form, serializer_name)
-        except AttributeError:
-            return self.serializer_class
 
 
 class CompanyQuerySetMixin(CompanyRequiredMixin):
@@ -86,7 +73,7 @@ class NestedReadOnlyViewset(CompanyRequiredMixin):
         try:
             return queryset.get(pk=parent_pk)
         except ObjectDoesNotExist:
-            raise
+            return self.handle_no_permission()
 
     def get_parent_kwargs(self):
         kwargs = {

@@ -1,6 +1,6 @@
 {% extends "layout-blank.html" %}
 
-{% load core_tags i18n %}
+{% load bootstrap3 core_tags i18n %}
 
 {% block title %}{% trans "Log in" %}{% endblock title %}
 
@@ -19,7 +19,9 @@
             </p>
             <p>{% blocktrans %}Login in. To see it in action.{% endblocktrans %}</p>
 
-            <form class="m-t" method="post" role="form" action="">
+            {% bootstrap_messages %}
+
+            <form class="m-t" method="post" role="form" action="" novalidate>
                 {% trans "Log in" as form_submit %}
                 {% include "common/form-simple.html" %}
 
