@@ -32,6 +32,6 @@ class Role(AuditableMixin, models.Model):
 
     def actions(self):
         return (
-            (_("Change"), 'change', 'success', 'pencil'),
-            (_("Delete"), 'delete', 'danger', 'trash'),
+            (_("Change"), 'change', 'success', 'pencil', 'core:change_role'),
+            (_("Delete"), 'delete', 'danger', 'trash', 'core:delete_role'),
         )

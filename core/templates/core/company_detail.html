@@ -1,64 +1,36 @@
-{% extends "layout.html" %}
+{% extends "core/common/detail.html" %}
 
-{% load boilerplate core_tags i18n %}
+{% load i18n %}
 
-{% block title %}{{ object }}{% endblock title %}
-
-{% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
-        <li class="active"><strong>{{ object }}</strong></li>
-    </ol>
-{% endblock breadcrumb %}
-
-{% block page_header %}
-    <h2>{{ object }}</h2>
-{% endblock %}
-
-{% block page_actions %}
-    <a role="button" class="btn btn-success" href="{% url 'core:company_change' %}">
-        <span class="glyphicon glyphicon-pencil"></span>
-        {% trans "Change" %}
-    </a>
-{% endblock %}
-
-{% block content %}
-    <div class="tabs-container">
-        {% include "core/common/tabs.html" %}
-
-        <div class="tab-content">
-            <div id="company" class="tab-pane active">
-                <div class="panel-body table-responsive">
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "User" %}</th>
-                                <td>{{ object.user }}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "Name" %}</th>
-                                <td>{{ object }}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "Email" %}</th>
-                                <td>{{ object.email }}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "Creation date" %}</th>
-                                <td>{{ object.date_creation }}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "Next invoice date" %}</th>
-                                <td>{{ object.date_next_invoice|date:'DATE_FORMAT' }}</td>
-                            </tr>
-                            <tr>
-                                <th class="col-md-3 text-right">{% trans "Language" %}</th>
-                                <td>{{ object.get_language_display }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+{% block content_inner %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "User" %}</th>
+                    <td>{{ object.user }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "Name" %}</th>
+                    <td>{{ object }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "Email" %}</th>
+                    <td>{{ object.email }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "Creation date" %}</th>
+                    <td>{{ object.date_creation }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "Next invoice date" %}</th>
+                    <td>{{ object.date_next_invoice|date:'DATE_FORMAT' }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-3 text-right">{% trans "Language" %}</th>
+                    <td>{{ object.get_language_display }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-{% endblock content %}
+{% endblock %}

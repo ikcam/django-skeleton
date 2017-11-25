@@ -219,7 +219,7 @@ class InviteList(
     ActionListMixin, CompanyQuerySetMixin, ListView
 ):
     action_list = (
-        (_("Add"), 'add', 'primary', 'plus'),
+        (_("Add"), 'add', 'primary', 'plus', 'core:add_invite'),
     )
     model = Invite
     paginate_by = 30
@@ -278,7 +278,7 @@ class RoleList(
     ActionListMixin, CompanyQuerySetMixin, ListView
 ):
     action_list = (
-        (_("Add"), 'add', 'primary', 'plus'),
+        (_("Add"), 'add', 'primary', 'plus', 'core:add_role'),
     )
     model = Role
     paginate_by = 30
@@ -349,6 +349,7 @@ class UserCreate(
             raise Exception("An error has ocurred.")
 
         self.object.profile.company = self.company
+        self.object.profile.language = self.company.language
         self.object.profile.save()
         self.object.profile.colaborator_set.create(company=self.company)
 

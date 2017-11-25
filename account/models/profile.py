@@ -1,25 +1,28 @@
 from datetime import timedelta
 import hashlib
-import random
+from io import BytesIO
 import pytz
+import random
 
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
-from django.contrib.auth.models import Permission, User
+from django.core.files.storage import default_storage as storage
 from django.db import models
 from django.db.models import signals
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 from boilerplate.mail import SendEmail
 from boilerplate.signals import add_view_permissions
-from rest_framework.authtoken.models import Token
+from PIL import Image
 
-from . import tasks
-from core.models import Company, Role
-
-
-ACCOUNT_ACTIVATION_HOURS = 48
+from core.constants import ACCOUNT_ACTIVATION_HOURS
+from core.models import Company
+from account import tasks
 
 
 class Profile(models.Model):
@@ -29,16 +32,16 @@ class Profile(models.Model):
         User, primary_key=True, editable=False, related_name='profile',
         verbose_name=_('User')
     )
+    activation_key = models.CharField(
+        blank=True, null=True, max_length=255,
+        editable=False, verbose_name=_("Activation key")
+    )
     company = models.ForeignKey(
         Company, blank=True, null=True, related_name='users_active',
         on_delete=models.SET_NULL, verbose_name=_("Company")
     )
     companies = models.ManyToManyField(
         Company, blank=True, through='Colaborator', verbose_name=_("Companies")
-    )
-    activation_key = models.CharField(
-        blank=True, null=True, max_length=255,
-        editable=False, verbose_name=_("Activation key")
     )
     date_key_expiration = models.DateTimeField(
         blank=True, null=True, editable=False,
@@ -56,12 +59,20 @@ class Profile(models.Model):
         default=settings.LANGUAGE_CODE, choices=settings.LANGUAGES,
         verbose_name=_("Language")
     )
+    nav_expanded = models.BooleanField(
+        default=True, verbose_name=_("Nav expanded")
+    )
+    photo = models.ImageField(
+        upload_to='account/profiles/', blank=True, null=True,
+        verbose_name=_("Photo")
+    )
+    photo_thumb = models.ImageField(
+        upload_to='account/profiles/thumb/', blank=True, null=True,
+        editable=False, verbose_name=_("Photo thumb")
+    )
     timezone = models.CharField(
         max_length=100, default=settings.TIME_ZONE,
         choices=TIMEZONES, verbose_name=_("Timezone")
-    )
-    nav_expanded = models.BooleanField(
-        default=True, verbose_name=_("Nav expanded")
     )
 
     class Meta:
@@ -71,6 +82,11 @@ class Profile(models.Model):
 
     def __str__(self):
         return '%s' % self.user
+
+    def save(self, *args, **kwargs):
+        response = super().save(*args, **kwargs)
+        self.set_photo_thumb()
+        return response
 
     @property
     def companies_available(self):
@@ -221,40 +237,70 @@ class Profile(models.Model):
                 raise
             return []
 
+    def set_photo_thumb(self):
+        if self.photo:
+            if not self.photo_thumb:
+                image = Image.open(storage.open(self.photo.name))
+                working = image.copy()
 
-class Colaborator(models.Model):
-    profile = models.ForeignKey(
-        Profile, editable=False, verbose_name=_("Profile")
-    )
-    company = models.ForeignKey(
-        Company, editable=False, related_name='users_all',
-        verbose_name=_("Company")
-    )
-    date_joined = models.DateTimeField(
-        auto_now=True, verbose_name=_("Join date")
-    )
-    is_active = models.BooleanField(
-        default=True, verbose_name=_("Active")
-    )
-    roles = models.ManyToManyField(
-        Role, blank=True, verbose_name=("Roles")
-    )
-    permissions = models.ManyToManyField(
-        Permission, blank=True, verbose_name=_("Permissions")
-    )
+                if working.width > working.height:
+                    size = int((working.width - working.height) / 2)
+                    working = working.crop(
+                        (size, 0, working.width - size, working.height)
+                    )
+                elif working.height > working.width:
+                    size = int((working.height - working.width) / 2)
+                    working = working.crop(
+                        (0, size, working.width, working.height - size)
+                    )
 
-    class Meta:
-        ordering = ['profile', ]
-        unique_together = ('profile', 'company')
-        verbose_name = _("Colaborator")
-        verbose_name_plural = _("Colaborators")
+                working = working.resize((96, 96), Image.ANTIALIAS)
+                fp = BytesIO()
+                working.save(fp, 'PNG', quality=100)
 
-    def __str__(self):
-        return "%s" % self.profile
+                self.photo_thumb.save(
+                    name=self.photo.name.split('/')[-1],
+                    content=fp,
+                    save=True
+                )
+        else:
+            self.photo_thumb.delete(save=True)
 
-    @property
-    def user(self):
-        return self.profile.user
+
+def add_notification(self, model, obj, response):
+    level, content = response
+
+    if hasattr(obj, 'pk'):
+        self.notifications.create(
+            company=self.profile.company,
+            model=obj,
+            level=level,
+            content=content,
+            destination=obj.get_absolute_url(),
+        )
+    else:
+        company = self.profile.company
+        ct = ContentType.objects.get(
+            app_label=model._meta.app_label,
+            model=model._meta.model_name
+        )
+        destination = reverse_lazy('{}:{}_list'.format(
+            model._meta.app_label, model._meta.model_name
+        ))
+        self.notifications.create(
+            company=company,
+            contenttype=ct,
+            level=level,
+            content=content,
+            destination=destination,
+        )
+
+
+def notifications_unread(self):
+    return self.notifications.filter(
+        company=self.profile.company,
+        date_read__isnull=True
+    )
 
 
 def has_company_perm(self, perm, obj=None):
@@ -287,6 +333,8 @@ def user_str(self):
 
 
 User.add_to_class('__str__', user_str)
+User.add_to_class('add_notification', add_notification)
+User.add_to_class('notifications_unread', notifications_unread)
 User.add_to_class('has_company_perm', has_company_perm)
 User.add_to_class('has_company_perms', has_company_perms)
 

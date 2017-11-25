@@ -13,11 +13,17 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    from django.conf.urls.static import static
+
     import debug_toolbar
 
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+    urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]
+    )
 
 urlpatterns += i18n_patterns(
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),

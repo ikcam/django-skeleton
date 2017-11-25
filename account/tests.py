@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.test import override_settings, RequestFactory, TestCase
 from django.utils import timezone
 
-from .models import ACCOUNT_ACTIVATION_HOURS
+from core.constants import ACCOUNT_ACTIVATION_HOURS
 from . import views
 
 

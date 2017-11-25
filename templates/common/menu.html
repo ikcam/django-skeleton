@@ -6,6 +6,11 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
+                        {% if request.user.profile.photo_thumb %}
+                            <span>
+                                <img src="{{ request.user.profile.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px">
+                            </span>
+                        {% endif %}
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear">
                                 <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
@@ -44,6 +49,12 @@
                         <a href="{% url 'common:event_list' %}">
                             <i class="fa fa-calendar"></i>
                             <span class="nav-label">{% trans "Events" %}</span>
+                        </a>
+                    </li>
+                    <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+                        <a href="{% url 'common:link_list' %}">
+                            <i class="fa fa-link"></i>
+                            <span class="nav-label">{% trans "Links" %}</span>
                         </a>
                     </li>
                     <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>

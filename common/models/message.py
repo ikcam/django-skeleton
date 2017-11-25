@@ -199,7 +199,7 @@ class Message(AuditableMixin):
 
     def _send_email(self):
         if self.date_send:
-            return ('error', _("Message was sent already."))
+            return ('error', _("Email was sent already."))
 
         activate(self.company.language)
         content_raw, content_html = self.set_links()
@@ -229,7 +229,7 @@ class Message(AuditableMixin):
         if email.send() > 0:
             self.date_send = timezone.now()
             self.save()
-            return ('success', _("Message sent successfully."))
+            return ('success', _("Email sent successfully."))
         else:
             return ('error', _("An error has ocurred."))
 

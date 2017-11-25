@@ -39,6 +39,31 @@ urlpatterns = [
     ),
     # Link - links - link
     url(
+        _(r'^links/$'),
+        views.LinkList.as_view(),
+        name='link_list'
+    ),
+    url(
+        _(r'^links/add/$'),
+        views.LinkCreate.as_view(),
+        name='link_add'
+    ),
+    url(
+        _(r'^links/(?P<pk>[0-9]+)/$'),
+        views.LinkDetail.as_view(),
+        name='link_detail'
+    ),
+    url(
+        _(r'^links/(?P<pk>[0-9]+)/change/$'),
+        views.LinkUpdate.as_view(),
+        name='link_change'
+    ),
+    url(
+        _(r'^links/(?P<pk>[0-9]+)/delete/$'),
+        views.LinkDelete.as_view(),
+        name='link_delete'
+    ),
+    url(
         _(r'^ld/(?P<pk>[0-9]+)/$'),
         views.LinkPublicDirect.as_view(),
         name='link_public_direct'

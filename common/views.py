@@ -56,6 +56,41 @@ class EventDelete(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     template_name_suffix = '_form'
 
 
+class LinkList(CompanyQuerySetMixin, ActionListMixin, ListView):
+    action_list = (
+        (_("Add"), 'add', 'primary', 'plus', 'common:add_link'),
+    )
+    model = Link
+    paginate_by = 30
+    permissions_required = 'common:view_link'
+
+
+class LinkDetail(CompanyQuerySetMixin, DetailView):
+    model = Link
+    permissions_required = 'common:view_link'
+
+
+class LinkCreate(
+    UserCreateMixin, CompanyCreateMixin, CreateMessageMixin, CreateView
+):
+    form_class = forms.LinkForm
+    model = Link
+    permissions_required = 'common:add_link'
+
+
+class LinkUpdate(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
+    form_class = forms.LinkForm
+    model = Link
+    permissions_required = 'common:change_link'
+
+
+class LinkDelete(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
+    model = Link
+    permissions_required = 'common:delete_link'
+    success_url = reverse_lazy('common:link_list')
+    template_name_suffix = '_form'
+
+
 class LinkPublicDirect(DetailView):
     model = Link
 

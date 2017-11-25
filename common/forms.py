@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
-from .models import Event, Message
+from .models import Event, Link, Message
 
 """ Custom field """
 
@@ -54,3 +54,9 @@ def get_event_form(company):
                 ),
             }
     return EventForm
+
+
+class LinkForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = Link

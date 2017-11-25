@@ -44,7 +44,7 @@ class Invoice(AuditableMixin, models.Model):
 
     def actions(self):
         return (
-            (_("View"), 'detail', 'primary', 'eye-open'),
+            (_("View"), 'detail', 'primary', 'eye-open', 'core:view_invoice'),
         )
 
     def create_payment_from_culqi(self, token, email):

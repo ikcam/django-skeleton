@@ -98,7 +98,7 @@ class UserUpdateForm(UserChangeForm):
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
-        fields = ('language', 'timezone', )
+        fields = ('language', 'timezone', 'photo')
         model = Profile
         widgets = {
             'language': autocomplete.ListSelect2(

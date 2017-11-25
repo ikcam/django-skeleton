@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% load boilerplate core_tags i18n %}
+
+{% block title %}{{ object_list|queryset_model_name_plural }}{% endblock title %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
+        <li class="active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
+    </ol>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+    <h2>{{ object_list|queryset_model_name_plural }}</h2>
+{% endblock %}
+
+{% block page_actions %}
+    {% include "common/options-buttons.html" with size='size-default' %}
+{% endblock %}
+
+{% block content %}
+    <div class="tabs-container">
+        <div class="tabs-left">
+            {% include "core/common/tabs.html" %}
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            {% block content_inner %}{% endblock %}
+                        </div>
+                    </div>
+                    {% include "common/pagination.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

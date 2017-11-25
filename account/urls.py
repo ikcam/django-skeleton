@@ -65,6 +65,21 @@ urlpatterns = [
         name='logout'
     ),
     url(
+        _(r"^logout/facebook/$"),
+        views.LogoutFacebookView.as_view(),
+        name="logout_facebook"
+    ),
+    url(
+        _(r'^notifications/read/all/$'),
+        views.NotificationReadAll.as_view(),
+        name='notification_read_all'
+    ),
+    url(
+        _(r'^notifications/(?P<pk>[0-9]+)/$'),
+        views.NotificationDetail.as_view(),
+        name='notification_detail'
+    ),
+    url(
         _(r'^password-change/$'),
         auth_views.PasswordChangeView.as_view(
             template_name='registration/password_change.html',

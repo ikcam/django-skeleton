@@ -60,8 +60,13 @@ class Invite(AuditableMixin, models.Model):
     def actions(self):
         if not self.user:
             return (
-                (_('Send'), 'send', 'info', 'envelope'),
-                (_('Delete'), 'delete', 'danger', 'trash'),
+                (
+                    _('Send'), 'send', 'info', 'envelope', 'core:send_invite'
+                ),
+                (
+                    _('Delete'), 'delete', 'danger', 'trash',
+                    'core:delete_invite'
+                ),
             )
 
     @property
@@ -104,4 +109,4 @@ class Invite(AuditableMixin, models.Model):
             subject=subject,
             content=content,
         )
-        return message.send()
+        return message._send()

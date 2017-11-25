@@ -8,41 +8,59 @@ logger = get_task_logger(__name__)
 
 
 @app.task(name='company_task')
-def company_task(task, pk=None, data=None):
-    from core.models.company import Company
+def company_task(task, pk=None, data=None, user_id=None):
+    from django.contrib.auth.models import User
+    from core.models.company import Company as Model
 
     if pk:
-        obj = Company.objects.get(pk=pk)
+        obj = Model.objects.get(pk=pk)
         task_func = getattr(obj, task)
     else:
-        obj = '%s' % Company.__name__
-        task_func = getattr(Company, task)
+        obj = '%s' % Model.__name__
+        task_func = getattr(Model, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))
         response = task_func(**data) if data else task_func()
     else:
         raise Exception("{}: task not callable.".format(task))
+
+    if user_id:
+        user = User.objects.get(id=user_id)
+        user.add_notification(
+            model=Model,
+            obj=obj,
+            response=response,
+        )
 
     return response
 
 
 @app.task(name='invite_task')
-def invite_task(task, pk=None, data=None):
-    from core.models.invite import Invite
+def invite_task(task, pk=None, data=None, user_id=None):
+    from django.contrib.auth.models import User
+    from core.models.invite import Invite as Model
 
     if pk:
-        obj = Invite.objects.get(pk=pk)
+        obj = Model.objects.get(pk=pk)
         task_func = getattr(obj, task)
     else:
-        obj = '%s' % Invite.__name__
-        task_func = getattr(Invite, task)
+        obj = '%s' % Model.__name__
+        task_func = getattr(Model, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))
         response = task_func(**data) if data else task_func()
     else:
         raise Exception("{}: task not callable.".format(task))
+
+    if user_id:
+        user = User.objects.get(id=user_id)
+        user.add_notification(
+            model=Model,
+            obj=obj,
+            response=response,
+        )
 
     return response
 

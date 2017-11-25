@@ -6,12 +6,14 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, RedirectView, View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView, ListView, RedirectView, View
 from django.views.generic.edit import CreateView, UpdateView
 
 from boilerplate.mixins import (
@@ -20,9 +22,10 @@ from boilerplate.mixins import (
 )
 from facebook import auth_url, GraphAPI, parse_signed_request
 
+from core.mixins import CompanyQuerySetMixin
 from core.models import Invite
 from . import forms
-from .models import Profile
+from .models import Notification, Profile
 
 
 class Activate(NoLoginRequiredMixin, DetailView):
@@ -157,6 +160,51 @@ class LoginFacebookView(View):
 
             login(request, user)
         return redirect(self.success_url)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LogoutFacebookView(View):
+    def dispatch(self, request, *args, **kwargs):
+        signed_request = request.POST.get('signed_request')
+
+        data = parse_signed_request(
+            signed_request, settings.FB_APP_SECRET
+        )
+
+        try:
+            user = User.objects.get(profile__facebook_id=data['user_id'])
+        except User.ObjectDoesNotExist:
+            raise PermissionDenied
+
+        user.profile.facebook_id = None
+        user.profile.facebook_access_token = None
+        user.profile.save()
+
+        return HttpResponse('', content_type='text/plain')
+
+
+class NotificationDetail(CompanyQuerySetMixin, DetailView):
+    model = Notification
+
+    def get(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.set_read()
+        return redirect(obj.destination)
+
+
+class NotificationReadAll(CompanyQuerySetMixin, ListView):
+    model = Notification
+    success_url = reverse_lazy('account:profile_detail')
+
+    def get(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        qs.filter(date_read__isnull=True).update(date_read=timezone.now())
+
+        next_ = request.GET.get('next')
+        if next_:
+            return redirect(next_)
+        else:
+            return redirect(self.success_url)
 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):

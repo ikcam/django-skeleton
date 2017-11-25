@@ -39,7 +39,9 @@ class Link(AuditableMixin):
         verbose_name_plural = _("Links")
 
     def __str__(self):
-        return "%s" % self.destination
+        if len(self.destination) > 30:
+            return "%s..." % self.destination[:30]
+        return self.destination
 
     def get_absolute_url(self):
         return reverse_lazy('common:link_detail', args=[self.pk, ])
@@ -62,17 +64,13 @@ class Link(AuditableMixin):
             return
 
         return [
-            (_("Change"), 'change', 'success', 'pencil'),
-            (_("Delete"), 'delete', 'danger', 'trash'),
+            (_("Change"), 'change', 'success', 'pencil', 'common"change_link'),
+            (_("Delete"), 'delete', 'danger', 'trash', 'common"delete_link'),
         ]
 
     @cached_property
     def is_open(self):
         return self.total_visits > 0
-
-    @property
-    def parent(self):
-        return self.message
 
     def token_generate(self):
         if self.token:

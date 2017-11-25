@@ -1,3 +1,5 @@
+ACCOUNT_ACTIVATION_HOURS = 48
+
 CICLE_DAY = 'day'
 CICLE_WEEK = 'week'
 CICLE_MONTH = 'month'

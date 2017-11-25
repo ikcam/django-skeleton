@@ -281,49 +281,40 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
                     )
                 )
 
-        if self.object:
-            action = getattr(self.object, model_action)
-        else:
-            action = getattr(self.model, model_action)
-
-        if not callable(action):
-            raise ImproperlyConfigured("Is %(action)s callable?") % dict(
-                action=model_action
-            )
-
-        task_module = self.get_task_module()
         kwargs = self.get_action_kwargs(form=form)
+        task_module = self.get_task_module()
+        task_name = '{}_task'.format(self.model.__name__.lower())
+        task = getattr(task_module, task_name)
 
-        if settings.DEBUG or not task_module:
+        if not settings.DEBUG:
+            task = getattr(task, 'delay')
+
+        if self.object:
             if kwargs:
-                return action(**kwargs)
+                return task(
+                    task=model_action,
+                    pk=self.object.pk,
+                    data=kwargs,
+                    user_id=self.request.user.id,
+                )
             else:
-                return action()
+                return task(
+                    task=model_action,
+                    pk=self.object.pk,
+                    user_id=self.request.user.id,
+                )
         else:
-            task_name = '{}_task'.format(self.model.__name__.lower())
-            task = getattr(task_module, task_name)
-            if self.object:
-                if kwargs:
-                    return task.delay(
-                        pk=self.object.pk,
-                        task=model_action,
-                        data=kwargs
-                    )
-                else:
-                    return task.delay(
-                        pk=self.object.pk,
-                        task=model_action
-                    )
+            if kwargs:
+                return task(
+                    task=model_action,
+                    data=kwargs,
+                    user_id=self.request.user.id,
+                )
             else:
-                if kwargs:
-                    return task.delay(
-                        task=model_action,
-                        data=kwargs
-                    )
-                else:
-                    return task.delay(
-                        task=model_action
-                    )
+                return task(
+                    task=model_action,
+                    user_id=self.request.user.id,
+                )
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):
