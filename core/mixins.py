@@ -44,37 +44,46 @@ class CompanyRequiredMixin:
     raise_exception = True
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
+        user = request.user
+
+        if not user.is_authenticated:
             return self.handle_no_permission()
-        elif not self.request.user.profile.company:
+        elif not user.profile.company:
             return self.handle_no_permission()
 
-        if not self.request.user.profile.company_profile.is_active:
-            self.request.user.profile.company = None
-            self.request.user.profile.save()
+        if not user.profile.company_profile.is_active:
+            user.profile.company = None
+            user.profile.save()
             return redirect('core:company_choose')
 
-        self.company = self.request.user.profile.company
+        self.company = user.profile.company
 
-        if not self.company.is_active:
+        if not self.company:
+            return redirect('core:company_choose')
+        elif not self.company.is_active:
             return redirect('core:company_activate')
 
         permissions_required = self.get_permissions_required()
 
         if permissions_required and isinstance(permissions_required, tuple):
-            if not request.user.has_company_perms(permissions_required):
+            if not user.has_company_perms(permissions_required):
                 return self.handle_no_permission()
         elif permissions_required:
-            if not request.user.has_company_perm(permissions_required):
+            if not user.has_company_perm(permissions_required):
                 return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['company'] = self.company
+        kwargs['company'] = self.company
+        kwargs['companies_available'] = (
+            self.request.user.companies_available()
+        )
+        kwargs['notifications_unread'] = (
+            self.request.user.notifications_unread()
+        )
 
-        return context
+        return super().get_context_data(**kwargs)
 
     def get_company_field(self):
         return self.company_field

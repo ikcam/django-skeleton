@@ -22,7 +22,7 @@
                             <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
                             <li class="divider"></li>
                             {% endif %}
-                            {% for company in request.user.profile.companies_available %}
+                            {% for company in companies_available %}
                                 <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
                                 {% if forloop.last %}
                                     <li class="divider"></li>

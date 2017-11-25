@@ -36,6 +36,8 @@ jQuery(document).ready(function($){
         });
     }
 
+    moment.locale(site_language);
+
     $('[data-toggle="tooltip"]').tooltip();
 
     var pythonToJsFormats = Object.freeze({

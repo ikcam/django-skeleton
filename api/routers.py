@@ -10,6 +10,7 @@ router.register(r'account/me', account_views.MeViewSet)
 router.register(r'account/users', account_views.UserViewSet)
 
 """ Common """
+router.register(r'common/events', common_views.EventViewSet)
 router.register(r'common/links', common_views.LinkViewSet)
 link_router = routers.NestedSimpleRouter(
     router, r'common/links', lookup='parent'

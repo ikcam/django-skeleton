@@ -1,1 +1,47 @@
 {% extends "common/template_list.html" %}
+
+{% load staticfiles i18n tz %}
+
+{% block css_header %}
+    <link href="{% static 'css/plugins/fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div id="calendar"></div>
+
+    <div class="modal inmodal" id="event-detail" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">{% trans "Close" %}</span></button>
+                    <i class="fa fa-clock-o modal-icon"></i>
+                    <h4 class="modal-title"></h4>
+                    <small class="event-user"></small>
+                </div>
+                <div class="modal-body">
+                    <dl class="dl-horizontal">
+                        <dt>{% trans "Date" %}</dt>
+                        <dd class="event-date"></dd>
+                        <dt>{% trans "End" %}</dt>
+                        <dd class="event-end"></dd>
+                        <dt>{% trans "Content" %}</dt>
+                        <dd class="event-content"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                    <a class="btn btn-primary event-url" href="">{% trans "View" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts_footer %}
+    <script>
+        var eventSource = '{% url "api:event-list" %}';
+    </script>
+    <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+    <script src="{% static 'js/plugins/fullcalendar/locale-all.js' %}"></script>
+    <script src="{% static 'js/common/event_list.js' %}"></script>
+{% endblock %}

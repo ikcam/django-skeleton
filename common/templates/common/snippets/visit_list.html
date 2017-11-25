@@ -19,7 +19,7 @@
             <tbody>
                 {% verbatim %}
                     <tr ng-repeat="visit in data.results">
-                        <td>{{ visit.date_creation|date:'full' }}</td>
+                        <td>{{ visit.date_creation | amTimeAgo }}</td>
                         <td>{{ visit.ip_address }}</td>
                     </tr>
                 {% endverbatim %}

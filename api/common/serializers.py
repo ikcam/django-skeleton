@@ -1,12 +1,26 @@
+from rest_framework import serializers
+
 from api.serializers import ActionSerializer
-from common.models import Link, Message, Visit
+from common.models import Event, Link, Message, Visit
+
+
+class EventModelSerializer(ActionSerializer):
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        fields = (
+            'id', 'user', 'share_with', 'date', 'date_creation',
+            'date_start', 'date_finish', 'subject', 'content', 'type',
+            'actions'
+        )
+        model = Event
 
 
 class LinkModelSerializer(ActionSerializer):
     class Meta:
         fields = (
-            'id', 'message', 'user', 'token', 'destination', 'is_open',
-            'total_visits', 'actions'
+            'id', 'date_creation', 'message', 'user', 'token', 'destination',
+            'is_open', 'total_visits', 'actions'
         )
         model = Link
 
@@ -25,6 +39,6 @@ class MessageModelSerializer(ActionSerializer):
 class VisitModelSerializer(ActionSerializer):
     class Meta:
         fields = (
-            'id', 'link', 'ip_address', 'actions'
+            'id', 'date_creation', 'link', 'ip_address', 'actions'
         )
         model = Visit

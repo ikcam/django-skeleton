@@ -21,7 +21,7 @@ class TimezoneMiddleware(MiddlewareMixin):
 
             if (
                 translation.get_language() != language and
-                language in settings.LANGUAGES
+                language in [k for k, v in settings.LANGUAGES]
             ):
                 url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
                 url = translate_url(url, language)

@@ -1,5 +1,6 @@
-{% load core_tags bootstrap3 i18n staticfiles %}
+{% load core_tags bootstrap3 i18n staticfiles tz %}
 {% get_current_language as LANGUAGE_CODE %}
+{% get_current_timezone as TIME_ZONE %}
 <!DOCTYPE html>
 
 <html lang="{{ LANGUAGE_CODE }}">
@@ -90,6 +91,8 @@
 
         <script>
             var api_url_profile = '{% url "api:user-profile" %}';
+            var site_language = '{{ LANGUAGE_CODE }}';
+            var site_timezone = '{{ TIME_ZONE }}';
         </script>
         <script src="{% url 'javascript-catalog' %}"></script>
         <script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>

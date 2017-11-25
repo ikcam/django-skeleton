@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
 from django.template.loader import get_template
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import activate, ugettext_lazy as _
 
@@ -89,7 +90,9 @@ class Event(AuditableMixin):
         return "%s" % self.subject
 
     def get_absolute_url(self):
-        return self.model.get_absolute_url()
+        if self.model:
+            return self.model.get_absolute_url()
+        return reverse_lazy('common:event_change', args=[self.pk])
 
     def can_send(self, turn):
         if self.notification_sended(turn):
@@ -188,10 +191,15 @@ class Event(AuditableMixin):
 
     @property
     def subject(self):
-        return "%(type)s - %(contenttype)s %(model)s" % dict(
-            type=self.get_type_display(),
-            contenttype=self.contenttype,
-            model=self.model,
+        if self.model:
+            return "%(type)s - %(contenttype)s %(model)s" % dict(
+                type=self.get_type_display(),
+                contenttype=self.contenttype,
+                model=self.model,
+            )
+
+        return "%(type)s" % dict(
+            type=self.get_type_display()
         )
 
     @property

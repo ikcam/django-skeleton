@@ -38,23 +38,12 @@ class Index(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class Dashboard(LoginRequiredMixin, TemplateView):
+class Dashboard(CompanyRequiredMixin, TemplateView):
     raise_exception = False
     template_name = 'core/dashboard.html'
 
-    def get(self, request, *args, **kwargs):
-        if (
-            not request.user.profile.company or
-            not request.user.profile.company_profile.is_active
-        ):
-            return redirect(reverse_lazy('core:company_choose'))
-
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        if 'company' not in kwargs:
-            kwargs['company'] = self.request.user.profile.company
-        return super().get_context_data(**kwargs)
+    def handle_no_permission(self, msg=None):
+        return redirect('core:company_choose')
 
 
 class CompanyActivate(

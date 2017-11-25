@@ -24,6 +24,10 @@
                         {% include "common/options-buttons.html" with action_list=None %}
                     </td>
                 </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-muted text-center">{% trans "No information." %}</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

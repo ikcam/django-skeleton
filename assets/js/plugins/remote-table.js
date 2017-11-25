@@ -1,4 +1,8 @@
-angular.module('app', [])
+angular.module('app', ['angularMoment'])
+
+.run(function(amMoment) {
+	amMoment.changeLocale(site_language);
+})
 
 .controller('TableController', function($scope, $http){
     $scope.data = null;

@@ -89,10 +89,6 @@ class Profile(models.Model):
         return response
 
     @property
-    def companies_available(self):
-        return self.companies.all().exclude(pk=self.company.pk)
-
-    @property
     def company_profile(self):
         obj, created = self.colaborator_set.get_or_create(
             company=self.company
@@ -296,6 +292,12 @@ def add_notification(self, model, obj, response):
         )
 
 
+def companies_available(self):
+    return self.profile.colaborator_set.filter(
+        is_active=True
+    ).exclude(company_id=self.profile.company.pk)
+
+
 def notifications_unread(self):
     return self.notifications.filter(
         company=self.profile.company,
@@ -334,6 +336,7 @@ def user_str(self):
 
 User.add_to_class('__str__', user_str)
 User.add_to_class('add_notification', add_notification)
+User.add_to_class('companies_available', companies_available)
 User.add_to_class('notifications_unread', notifications_unread)
 User.add_to_class('has_company_perm', has_company_perm)
 User.add_to_class('has_company_perms', has_company_perms)

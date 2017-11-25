@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Destination" %}</th>
+                    <th>{% trans "Creation date" %}</th>
                     <th class="text-center">{% trans "Open" %}</th>
                     <th class="text-right">{% trans "Total visits" %}</th>
                 </tr>
@@ -21,12 +22,12 @@
                 {% verbatim %}
                     <tr ng-repeat="link in data.results">
                         <td><a href="{{ link.actions.view.url }}">{{ link.destination }}</a></td>
+                        <td>{{ link.date_creation | amTimeAgo }}</td>
                         <td class="text-center">
                             <span ng-if="!link.is_open" class="glyphicon glyphicon-remove text-danger"></span>
                             <span ng-if="link.is_open" class="glyphicon glyphicon-ok text-success"></span>
                         </td>
                         <td class="text-right">{{ link.total_visits }}</td>
-                        <td>{{ link.date_creation|date:'short' }}</td>
                     </tr>
                 {% endverbatim %}
                 <tr ng-if="data.results.length < 1">

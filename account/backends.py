@@ -8,6 +8,7 @@ class AuthenticationBackend(ModelBackend):
             # This is where the magic happens
             return User.objects.select_related(
                 'profile',
+                'profile__company',
             ).get(
                 pk=user_id
             )

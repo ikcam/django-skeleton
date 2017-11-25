@@ -1,8 +1,16 @@
 from rest_framework import viewsets
 
 from api.mixins import CompanyQuerySetMixin, NestedReadOnlyViewset
-from common.models import Link, Message, Visit
-from . import serializers
+from common.models import Event, Link, Message, Visit
+from . import filters, serializers
+
+
+class EventViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+    filter_class = filters.EventFilterSet
+    model = Event
+    permissions_required = 'common:view_event'
+    queryset = Event.objects.all()
+    serializer_class = serializers.EventModelSerializer
 
 
 class MessageViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):

@@ -25,6 +25,9 @@ class EventList(ActionListMixin, CompanyQuerySetMixin, ListView):
     paginate_by = 30
     permissions_required = 'common:view_event'
 
+    def get_queryset(self):
+        return self.model.objects.none()
+
 
 class EventDetail(CompanyQuerySetMixin, DetailView):
     model = Event
