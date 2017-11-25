@@ -113,7 +113,7 @@ CACHES = {
 # Celery
 # http://docs.celeryproject.org/en/latest/django/index.html
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/myapp'
+CELERY_BROKER_URL = 'amqp://myapp:guest@localhost:5672/myapp'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 

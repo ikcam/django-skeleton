@@ -76,6 +76,16 @@ class InviteForm(forms.ModelForm):
     def valid_for_company(self, company):
         email = self.cleaned_data.get('email')
 
+        qs = company.invites.all()
+
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+
+        if qs.filter(email=email).exists():
+            self.add_error(
+                'email', _("An invite with that email already exists.")
+            )
+
         if company.users_all.filter(profile__user__email=email).exists():
             self.add_error(
                 'email', _("A user with that email already exists.")
@@ -105,6 +115,11 @@ def get_role_form(company):
         content_type__app_label='core', codename__in=(
             'add_company', 'delete_company', 'add_invoice', 'change_invoice',
             'delete_invoice',
+        )
+    ).exclude(
+        content_type__app_label='common', codename__in=(
+            'add_message', 'change_message', 'delete_message', 'add_visit',
+            'change_visit', 'delete_visit',
         )
     )
 

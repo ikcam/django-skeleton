@@ -1,7 +1,8 @@
 import logging
 
+from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -10,13 +11,14 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import DetailView, RedirectView
+from django.views.generic import DetailView, RedirectView, View
 from django.views.generic.edit import CreateView, UpdateView
 
 from boilerplate.mixins import (
     CreateMessageMixin, ExtraFormsAndFormsetsMixin, NoLoginRequiredMixin,
     UpdateMessageMixin
 )
+from facebook import auth_url, GraphAPI, parse_signed_request
 
 from core.models import Invite
 from . import forms
@@ -68,6 +70,93 @@ class Activate(NoLoginRequiredMixin, DetailView):
                 )
 
         return redirect('account:login')
+
+
+class LoginFacebookView(View):
+    success_url = reverse_lazy('core:dashboard')
+
+    def get(self, request, *args, **kwargs):
+        code = request.GET.get('code', None)
+
+        if not code:
+            url = auth_url(
+                app_id=settings.FB_APP_ID,
+                canvas_url='{}{}'.format(
+                    settings.SITE_URL,
+                    reverse_lazy('account:login_facebook'),
+                ),
+                perms=[
+                    'public_profile',
+                    'email',
+                ]
+            )
+            return redirect(url)
+
+        graph = GraphAPI()
+        result = graph.get_access_token_from_code(
+            code=code,
+            redirect_uri='{}{}'.format(
+                settings.SITE_URL,
+                reverse_lazy('account:login_facebook'),
+            ),
+            app_id=settings.FB_APP_ID,
+            app_secret=settings.FB_APP_SECRET
+        )
+        access_token = result['access_token']
+        graph = GraphAPI(access_token)
+        fb_user = graph.get_object(
+            'me', fields='id, email, first_name, last_name'
+        )
+
+        if request.user.is_authenticated:
+            user = request.user
+
+            # Check if another user with that ID exists
+            if (
+                User.objects
+                    .exclude(pk=user.pk)
+                    .filter(facebook_id=fb_user.get('id'))
+                    .exists()
+            ):
+                messages.error(
+                    request,
+                    _(
+                        "Another user is registered with that "
+                        "Facebook account already."
+                    )
+                )
+                return redirect('profile:detail')
+            elif (
+                user.profile.facebook_id and
+                user.profile.facebook_id == fb_user.get('id')
+            ):
+                login(request, user)
+                return redirect(self.success_url)
+            else:
+                user.profile.facebook_id = fb_user.get('id')
+                user.profile.access_token = access_token
+                user.profile.save()
+        else:
+            # Get or create the user
+            try:
+                user = User.objects.get(profile__facebook_id=fb_user.get('id'))
+            except ObjectDoesNotExist:
+                user = User.objects.create(
+                    first_name=fb_user.get('first_name'),
+                    last_name=fb_user.get('last_name'),
+                    email=fb_user.get('email'),
+                    password='temp',
+                    username=fb_user.get('id'),
+                )
+                password = User.objects.make_random_password()
+                user.set_password(password)
+                user.save()
+                user.profile.facebook_id = fb_user.get('id')
+                user.profile.access_token = access_token
+                user.profile.save()
+
+            login(request, user)
+        return redirect(self.success_url)
 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):

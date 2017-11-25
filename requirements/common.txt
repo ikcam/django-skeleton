@@ -1,3 +1,4 @@
+beautifulsoup4
 celery
 culqipy
 dateutils
@@ -9,8 +10,10 @@ django-bootstrap3
 django-ckeditor>=5.2.2 # 5.2.1 fails on Django 1.11
 django-countries
 django-filter
+django-querysetsequence
 djangorestframework
 drf-nested-routers
+facebook-sdk
 Pillow
 requests
 six

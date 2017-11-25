@@ -1,6 +1,10 @@
 {% extends "layout-blank.html" %}
 
-{% load bootstrap3 core_tags i18n %}
+{% load bootstrap3 core_tags i18n staticfiles %}
+
+{% block css_header %}
+    <link rel="stylesheet" href="{% static 'css/plugins/bootstrapSocial/bootstrap-social.css' %}">
+{% endblock css_header %}
 
 {% block title %}{% trans "Log in" %}{% endblock title %}
 
@@ -20,6 +24,11 @@
             <p>{% blocktrans %}Login in. To see it in action.{% endblocktrans %}</p>
 
             {% bootstrap_messages %}
+
+            <a class="btn btn-sm btn-block btn-social btn-facebook" href="{% url 'account:login_facebook' %}">
+                <span class="fa fa-facebook"></span>
+                {% trans "Login with Facebbok" %}
+            </a>
 
             <form class="m-t" method="post" role="form" action="" novalidate>
                 {% trans "Log in" as form_submit %}

@@ -2,7 +2,7 @@
 
 {% if object.actions %}
 	{% if actions_grouped %}
-		{% for t,a,c,i in object.actions %}
+		{% for t,a,c,i,p in object.actions %}
 			{% if parent_object %}
 			<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_child_action object parent_object a %}">
 				<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
@@ -17,7 +17,7 @@
 		{% endfor %}
 	{% else %}
 	<div class="btn-group">
-		{% for t,a,c,i in object.actions %}
+		{% for t,a,c,i,p in object.actions %}
 			{% if forloop.first %}
 				{% if parent_object %}
 					<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% model_child_action object parent_object a %}">
@@ -49,7 +49,7 @@
 	</div>
 	{% endif %}
 {% elif action_list %}
-	{% for t,a,c,i in action_list %}
+	{% for t,a,c,i,p in action_list %}
 		<a role="button" class="btn btn-{% if size %}{{ size }}{% else %}xs{% endif %} btn-{{ c }}" href="{% queryset_action object_list a %}">
 			<span class="glyphicon glyphicon-{{ i }}" aria-hidden="true"></span>
 			{{ t }}

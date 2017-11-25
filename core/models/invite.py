@@ -1,17 +1,13 @@
 import hashlib
 import random
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import signals
+from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import activate, ugettext_lazy as _
 
-from boilerplate.mail import SendEmail
-
-from core import tasks
 from core.mixins import AuditableMixin
 from .company import Company
 
@@ -27,7 +23,7 @@ class Invite(AuditableMixin, models.Model):
     email = models.EmailField(
         verbose_name=_("Email")
     )
-    date_sent = models.DateTimeField(
+    date_send = models.DateTimeField(
         blank=True, null=True, editable=False, verbose_name=_("Sent date")
     )
     activation_key = models.CharField(
@@ -41,6 +37,9 @@ class Invite(AuditableMixin, models.Model):
 
     class Meta:
         ordering = ['-date_creation']
+        permissions = (
+            ('send_invite', 'Can send invite'),
+        )
         unique_together = ("company", "email")
         verbose_name = _("Invite")
         verbose_name_plural = _("Invites")
@@ -65,45 +64,44 @@ class Invite(AuditableMixin, models.Model):
                 (_('Delete'), 'delete', 'danger', 'trash'),
             )
 
+    @property
+    def is_send(self):
+        return True if self.date_send else False
+
     def key_generate(self):
         salt = hashlib.sha1(
             str(random.random()).encode("utf-8")
         ).hexdigest()[:5]
 
         self.activation_key = hashlib.sha1(
-            salt.encode("utf-8") + self.email.encode("utf-8")
+            salt.encode("utf-8") + 'invite-{}'.format(self.pk).encode("utf-8")
         ).hexdigest()
 
     def send(self):
         if self.user:
-            raise Exception(_("Invite was used already."))
+            return ('error', _("Invite was used already."))
         elif not self.activation_key:
-            raise Exception(_("Activation key not set."))
+            return ('error', _("Activation key not set. Contact support."))
 
-        email = SendEmail(
-            to=self.email,
-            template_name_suffix='invite',
-            subject=_("You have receive an invite to join %(company)s") % dict(
-                company=self.company
-            ),
+        self.date_send = timezone.now()
+        self.save()
+
+        activate(self.company.language)
+
+        content_template = get_template('core/invite_email.html')
+        content = content_template.render({'object': self})
+        subject = _(
+            "You have receive an invitation to join %(company)s"
+        ) % dict(
+            company=self.company
         )
-        email.add_context_data('object', self)
-        response = email.send()
 
-        if response > 0:
-            self.date_sent = timezone.now()
-            self.save()
-            return True
-
-        return False
-
-
-def post_save_invite(sender, instance, created, **kwargs):
-    if created:
-        if settings.DEBUG:
-            instance.send()
-        else:
-            tasks.invite_task.delay('send', instance.pk)
-
-
-signals.post_save.connect(post_save_invite, sender=Invite)
+        message = self.company.messages.create(
+            from_name=self.company.name,
+            from_email=self.company.email,
+            model=self,
+            to_email=self.email,
+            subject=subject,
+            content=content,
+        )
+        return message.send()

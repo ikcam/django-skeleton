@@ -44,6 +44,14 @@ class Profile(models.Model):
         blank=True, null=True, editable=False,
         verbose_name=_("Date key expiration")
     )
+    facebook_id = models.CharField(
+        max_length=100, editable=False, blank=True, null=True,
+        verbose_name=_("Facebook ID")
+    )
+    facebook_access_token = models.CharField(
+        max_length=255, editable=False, blank=True, null=True,
+        verbose_name=_("Facebook access token")
+    )
     language = models.SlugField(
         default=settings.LANGUAGE_CODE, choices=settings.LANGUAGES,
         verbose_name=_("Language")

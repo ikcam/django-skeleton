@@ -32,6 +32,28 @@
         {% block scripts_header %}{% endblock scripts_header %}
     </head>
     <body {% if not request.user.profile.nav_expanded %}class="mini-navbar"{% endif %}>
+        {% if fb_app_id %}
+            <script>
+                window.fbAsyncInit = function() {
+                    FB.init({
+                      appId      : '{% fb_app_id %}',
+                      cookie     : true,
+                      xfbml      : true,
+                      version    : 'v2.11'
+                    });
+                    FB.AppEvents.logPageView();
+                };
+
+                (function(d, s, id){
+                     var js, fjs = d.getElementsByTagName(s)[0];
+                     if (d.getElementById(id)) {return;}
+                     js = d.createElement(s); js.id = id;
+                     js.src = "https://connect.facebook.net/en_US/sdk.js";
+                     fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+            </script>
+        {% endif %}
+
         <div id="wrapper">
             {% include "common/menu.html" %}
 
@@ -80,7 +102,9 @@
         <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
         <script src="{% static 'js/plugins/clipboard/clipboard.min.js' %}"></script>
         <script src="{% static 'js/plugins/datetimepicker/bootstrap-datetimepicker.js' %}"></script>
-        <script src="{% static 'js/plugins/inlines.js' %}" async></script>
+        <script src="{% static 'js/plugins/inlines.js' %}"></script>
+        <script src="{% static 'js/plugins/livelist.js' %}"></script>
+        <script src="{% static 'js/plugins/remote-table.js' %}"></script>
         <script src="{% static 'autocomplete_light/jquery.init.js' %}"></script>
         <script src="{% static 'autocomplete_light/autocomplete.init.js' %}"></script>
         <script src="{% static 'autocomplete_light/vendor/select2/dist/js/select2.full.js' %}"></script>

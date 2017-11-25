@@ -22,6 +22,11 @@ urlpatterns = [
         autocomplete.UserAutocomplete.as_view(),
         name='user_autocomplete'
     ),
+    url(
+        _(r'^users/other/autocomplete/$'),
+        autocomplete.UserOtherAutocomplete.as_view(),
+        name='user_other_autocomplete'
+    ),
     # Views
     url(
         _(r'^$'),
@@ -48,6 +53,11 @@ urlpatterns = [
             template_name='registration/login.html'
         ),
         name="login"
+    ),
+    url(
+        _(r"^login/facebook/$"),
+        views.LoginFacebookView.as_view(),
+        name="login_facebook"
     ),
     url(
         _(r'^logout/$'),

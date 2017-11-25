@@ -71,3 +71,25 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
             )
 
         return qs
+
+
+class UserOtherAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if (
+            not self.request.user.is_authenticated or
+            not self.request.user.profile.company
+        ):
+            return User.objects.none()
+
+        qs = User.objects.filter(
+            profile__companies=self.request.user.profile.company
+        ).exclude(pk=self.request.user.pk).order_by('username')
+
+        if self.q:
+            qs = qs.filter(
+                Q(username__istartswith=self.q) |
+                Q(first_name__icontains=self.q) |
+                Q(last_name__icontains=self.q)
+            )
+
+        return qs

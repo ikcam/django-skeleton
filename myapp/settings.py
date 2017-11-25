@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'dal',
     'dal_select2',
+    'dal_queryset_sequence',
     'django_addanother',
     'django_countries',
     'django_filters',
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     # Apps
     'core',
     'account',
-    # API at the end
+    # Common and API at the end
+    'common',
     'api',
 ]
 
@@ -189,6 +191,10 @@ REST_FRAMEWORK = {
     ),
     'PAGE_SIZE': 10,
 }
+
+FB_APP_ID = ''
+
+FB_APP_SECRET = ''
 
 
 APP_ENV = os.getenv('APP_ENV')

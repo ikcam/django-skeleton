@@ -273,12 +273,6 @@ class InviteSend(
     task_module = tasks
     success_url = reverse_lazy('core:invite_list')
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(
-            date_send__isnull=True
-        )
-
 
 class RoleList(
     ActionListMixin, CompanyQuerySetMixin, ListView
