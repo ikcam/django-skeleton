@@ -26,5 +26,9 @@ class Visit(AuditableMixin):
         return self.parent.get_absolute_url()
 
     @property
+    def company(self):
+        return self.parent.company
+
+    @property
     def parent(self):
         return self.link

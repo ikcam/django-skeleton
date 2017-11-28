@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -113,11 +112,15 @@ class LinkPublicDirect(DetailView):
             ip = request.META.get('REMOTE_ADDR')
 
         if settings.DEBUG:
-            obj.visit_create(
-                ip_address=ip
+            tasks.link_task(
+                company_id=obj.company.id,
+                task='visit_create',
+                pk=obj.pk,
+                data={'ip_address': ip}
             )
         else:
             tasks.link_task.delay(
+                company_id=obj.company.id,
                 task='visit_create',
                 pk=obj.pk,
                 data={'ip_address': ip}
@@ -144,11 +147,15 @@ class LinkPublicToken(DetailView):
             ip = request.META.get('REMOTE_ADDR')
 
         if settings.DEBUG:
-            obj.visit_create(
-                ip_address=ip
+            tasks.link_task(
+                company_id=obj.company.id,
+                task='visit_create',
+                pk=obj.pk,
+                data={'ip_address': ip}
             )
         else:
-            tasks.customlink_task.delay(
+            tasks.link_task.delay(
+                company_id=obj.company.id,
                 task='visit_create',
                 pk=obj.pk,
                 data={'ip_address': ip}
@@ -184,7 +191,7 @@ class MessagePixel(
         try:
             qs = self.get_queryset()
             return qs.get(token=self.kwargs['token'])
-        except ObjectDoesNotExist:
+        except Message.DoesNotExist:
             raise Http404
 
     def get(self, *args, **kwargs):

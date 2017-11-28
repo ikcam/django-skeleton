@@ -170,9 +170,17 @@ class Profile(models.Model):
         self.save()
 
         if settings.DEBUG:
-            self.key_send()
+            tasks.profile_task(
+                company_id=self.company,
+                task='key_send',
+                pk=self.pk
+            )
         else:
-            tasks.profile_task.delay('key_send', self.pk)
+            tasks.profile_task.delay(
+                company_id=self.company,
+                task='key_send',
+                pk=self.pk
+            )
 
         return True
 

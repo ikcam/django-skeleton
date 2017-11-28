@@ -11,7 +11,8 @@ def model_task(model, company_id, task, user_id=None, pk=None, data=None):
     from django.contrib.auth.models import User
     from core.models.company import Company
 
-    company = Company.objects.get(id=company_id)
+    if company_id:
+        company = Company.objects.get(id=company_id)
     data = data or {}
     user = None
 

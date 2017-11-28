@@ -42,7 +42,7 @@ class Activate(NoLoginRequiredMixin, DetailView):
                 activation_key=token,
                 user__is_active=False,
             )
-        except ObjectDoesNotExist:
+        except Profile.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
@@ -324,11 +324,14 @@ class SignUpInvite(
         setattr(form.instance, 'is_active', True)
         response = super().form_valid(form)
 
-        self.object.profile.company = self.get_company()
-        self.object.profile.colaborator_set.create(
-            company=self.get_company()
-        )
+        company = self.get_company()
+
+        self.object.profile.company = company
+        self.object.profile.language = company.language
         self.object.profile.save()
+        self.object.profile.colaborator_set.create(
+            company=company
+        )
 
         invite.is_active = False
         invite.user = self.object
