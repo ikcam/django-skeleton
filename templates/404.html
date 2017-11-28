@@ -12,7 +12,7 @@
 		<div class="error-desc">
 			<p>{% blocktrans %}We couldn't find what you are looking to. Don't worry this will be notified to our staff.{% endblocktrans %}</p>
 
-			<a role="button" class="btn btn-primary"  href="{% site_url %}">{% trans "Go home" %}</a>
+			<a role="button" class="btn btn-primary"  href="{% settings "SITE_URL" %}">{% trans "Go home" %}</a>
 		</div>
 	</div>
 {% endblock %}

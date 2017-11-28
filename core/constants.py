@@ -18,6 +18,11 @@ GRACE_DAYS = 7
 
 HREF_REGEX = r'href=(["\'])(.*?)\1'
 
+LEVEL_ERROR = 'error'
+LEVEL_INFO = 'info'
+LEVEL_SUCCESS = 'success'
+LEVEL_WARNING = 'warning'
+
 NOTIFY_0 = 0
 NOTIFY_10 = 10
 NOTIFY_30 = 30

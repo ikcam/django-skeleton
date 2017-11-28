@@ -121,8 +121,17 @@ class Message(AuditableMixin):
         body = content_html.body
 
         if body:
-            return body.get_text()
-        return content_html.get_text()
+            content_raw = body.get_text()
+        else:
+            content_raw = content_html.get_text()
+
+        lines = []
+
+        for line in content_raw.split('\n'):
+            if line.strip():
+                lines.append(line.strip())
+
+        return '\n'.join(lines)
 
     @property
     def from_(self):
@@ -182,19 +191,6 @@ class Message(AuditableMixin):
         return email.send() > 0
 
     def send(self):
-        if self.date_send:
-            return ('error', _("Message was sent already."))
-
-        if settings.DEBUG:
-            return self._send()
-        else:
-            tasks.message_task.delay(
-                pk=self.pk,
-                task='_send'
-            )
-            return ('info', _("Message sending has been scheduled."))
-
-    def _send(self):
         return self._send_email()
 
     def _send_email(self):

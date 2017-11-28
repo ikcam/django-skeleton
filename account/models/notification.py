@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from core.constants import LEVEL_INFO, LEVEL_SUCCESS
 from core.mixins import AuditableMixin
 from core.models import Company
 
@@ -47,7 +48,7 @@ class Notification(AuditableMixin):
         verbose_name_plural = _("Notifications")
 
     def __str__(self):
-        return "%s %s" % (self.model % self.content)
+        return "%s %s" % (self.model or self.contenttype, self.content)
 
     def get_absolute_url(self):
         return reverse_lazy('account:notification_detail', args=[self.pk])
@@ -59,26 +60,26 @@ class Notification(AuditableMixin):
     @property
     def parent(self):
         if self.model:
-            return "%s %s" % (self.contenttype, self.model)
-        return "%s" % self.contenttype
+            return self.model
 
     @classmethod
     def set_read_all(cls, user):
-        return user.notifications.filter(
+        user.notifications.filter(
             company=user.profile.company,
             date_read__isnull=True
         ).update(date_read=timezone.now())
+        return (LEVEL_SUCCESS, _("All notifications were mark as read."))
 
     def set_read(self):
         if self.is_read:
-            return ('info', _("Notification was read already."))
+            return (LEVEL_INFO, _("Notification was read already."))
         self.date_read = timezone.now()
         self.save()
-        return ('success', _("Notification has been marked as read."))
+        return (LEVEL_SUCCESS, _("Notification has been marked as read."))
 
     def set_unread(self):
         if not self.is_read:
-            return ('info', _("Notification is unread already."))
+            return (LEVEL_INFO, _("Notification is unread already."))
         self.date_read = None
         self.save()
-        return ('success', _("Notification has been marked as unread."))
+        return (LEVEL_SUCCESS, _("Notification has been marked as unread."))

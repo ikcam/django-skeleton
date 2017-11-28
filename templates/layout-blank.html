@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         {% block meta_header %}{% endblock meta_header %}
 
-        <title>{% block title %}{% endblock title %} | {% site_name %}</title>
+        <title>{% block title %}{% endblock title %} | {% settings "SITE_NAME" %}</title>
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
@@ -33,7 +33,7 @@
             <script>
                 window.fbAsyncInit = function() {
                     FB.init({
-                      appId      : '{% fb_app_id %}',
+                      appId      : '{% settings "FB_APP_ID" %}',
                       cookie     : true,
                       xfbml      : true,
                       version    : 'v2.11'

@@ -6,7 +6,7 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
         {% if form and not object %}
             <li><a href="{% url form|form_model_url %}">{{ form|form_model_name_plural }}</a></li>
         {% endif %}

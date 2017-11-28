@@ -263,19 +263,18 @@ class Profile(models.Model):
             self.photo_thumb.delete(save=True)
 
 
-def add_notification(self, model, obj, response):
+def add_notification(self, company, model, obj, response):
     level, content = response
 
     if hasattr(obj, 'pk'):
         self.notifications.create(
-            company=self.profile.company,
+            company=company,
             model=obj,
             level=level,
             content=content,
             destination=obj.get_absolute_url(),
         )
     else:
-        company = self.profile.company
         ct = ContentType.objects.get(
             app_label=model._meta.app_label,
             model=model._meta.model_name

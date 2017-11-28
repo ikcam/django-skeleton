@@ -47,12 +47,6 @@ class Invite(AuditableMixin, models.Model):
     def __str__(self):
         return self.email
 
-    def clean(self):
-        super().clean()
-
-        if not self.pk:
-            self.key_generate()
-
     def get_absolute_url(self):
         return reverse_lazy('core:invite_list')
 
@@ -74,6 +68,9 @@ class Invite(AuditableMixin, models.Model):
         return True if self.date_send else False
 
     def key_generate(self):
+        if self.activation_key:
+            return
+
         salt = hashlib.sha1(
             str(random.random()).encode("utf-8")
         ).hexdigest()[:5]
@@ -82,12 +79,11 @@ class Invite(AuditableMixin, models.Model):
             salt.encode("utf-8") + 'invite-{}'.format(self.pk).encode("utf-8")
         ).hexdigest()
 
-    def send(self):
+    def send(self, **kwargs):
         if self.user:
             return ('error', _("Invite was used already."))
-        elif not self.activation_key:
-            return ('error', _("Activation key not set. Contact support."))
 
+        self.key_generate()
         self.date_send = timezone.now()
         self.save()
 
@@ -108,5 +104,6 @@ class Invite(AuditableMixin, models.Model):
             to_email=self.email,
             subject=subject,
             content=content,
+            user=kwargs.get('user', None),
         )
-        return message._send()
+        return message.send()

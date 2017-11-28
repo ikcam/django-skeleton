@@ -15,7 +15,7 @@
     </tr>
     <tr>
         <td class="aligncenter">
-            <a href="{% site_url %}{% url 'account:signup_invite' object.pk object.activation_key %}" class="btn-primary">
+            <a href="{% settings "SITE_URL" %}{% url 'account:signup_invite' object.pk object.activation_key %}" class="btn-primary">
                 {% trans "Join now" %}
             </a>
         </td>
@@ -27,7 +27,7 @@
     </tr>
     <tr>
         <td class="content-block">
-            <a href="{% site_url %}{% url 'account:signup_invite' object.pk object.activation_key %}">{% site_url %}{% url 'account:signup_invite' object.pk object.activation_key %}</a>
+            <a href="{% settings "SITE_URL" %}{% url 'account:signup_invite' object.pk object.activation_key %}">{% settings "SITE_URL" %}{% url 'account:signup_invite' object.pk object.activation_key %}</a>
         </td>
     </tr>
 {% endblock content %}

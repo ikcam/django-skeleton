@@ -1,50 +1,35 @@
 from django import template
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.urls import reverse_lazy
 
 
 register = template.Library()
 
 
-@register.simple_tag()
-def fb_app_id():
-    return settings.FB_APP_ID
-
-
-@register.simple_tag()
-def site_short_name():
-    return settings.SITE_SHORT_NAME
-
-
 @register.simple_tag(takes_context=True)
-def site_name(context):
+def settings(context, name):
     try:
         company = context['company']
-        return company.name or settings.SITE_NAME
+        site_url = company.custom_domain or django_settings.SITE_URL
+        site_name = company.name
     except Exception:
         try:
             company = context['object'].company
-            return company.name or settings.SITE_NAME
+            site_url = company.custom_domain or django_settings.SITE_URL
+            site_name = company.name
         except Exception:
-            return settings.SITE_NAME
+            site_url = django_settings.SITE_URL
+            site_name = django_settings.SITE_NAME
+    site_short_name = '{}+'.format(site_name[:2])
 
-
-@register.simple_tag(takes_context=True)
-def site_url(context):
-    try:
-        company = context['company']
-        return company.custom_domain or settings.SITE_URL
-    except Exception:
-        try:
-            company = context['object'].company
-            return company.custom_domain or settings.SITE_URL
-        except Exception:
-            return settings.SITE_URL
-
-
-@register.simple_tag()
-def culqi_public_key():
-    return settings.CULQI_PUBLIC_KEY
+    secure_settings = {
+        'SITE_URL': site_url,
+        'SITE_SHORT_NAME': site_short_name.upper(),
+        'SITE_NAME': site_name,
+        'FB_APP_ID': django_settings.FB_APP_ID,
+        'CULQI_PUBLIC_KEY': django_settings.CULQI_PUBLIC_KEY,
+    }
+    return secure_settings.get(name, '')
 
 
 @register.simple_tag()

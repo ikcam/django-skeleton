@@ -292,37 +292,50 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
 
         kwargs = self.get_action_kwargs(form=form)
         task_module = self.get_task_module()
+
+        if not task_module:
+            if self.object:
+                task = getattr(self.object, model_action)
+            else:
+                task = getattr(self.model, model_action)
+            return task(**kwargs)
+
         task_name = '{}_task'.format(self.model.__name__.lower())
         task = getattr(task_module, task_name)
 
         if not settings.DEBUG:
+            print('\n\n\n\nAFJAIPOFJAOPSFJPSA')
             task = getattr(task, 'delay')
 
         if self.object:
             if kwargs:
                 return task(
+                    company_id=self.company.id,
+                    user_id=self.request.user.id,
                     task=model_action,
                     pk=self.object.pk,
                     data=kwargs,
-                    user_id=self.request.user.id,
                 )
             else:
                 return task(
+                    company_id=self.company.id,
+                    user_id=self.request.user.id,
                     task=model_action,
                     pk=self.object.pk,
-                    user_id=self.request.user.id,
                 )
         else:
             if kwargs:
                 return task(
+                    company_id=self.company.id,
+                    user_id=self.request.user.id,
                     task=model_action,
                     data=kwargs,
-                    user_id=self.request.user.id,
                 )
             else:
                 return task(
-                    task=model_action,
+                    company_id=self.company.id,
                     user_id=self.request.user.id,
+                    task=model_action,
                 )
 
 

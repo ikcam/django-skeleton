@@ -6,7 +6,7 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
         <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
         <li class="active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
     </ol>

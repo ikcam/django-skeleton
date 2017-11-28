@@ -35,7 +35,7 @@
     <tr>
         <td class="content-block">
             <p><strong>{% trans "URL" %}:</strong></p>
-            <p><a href="{% site_url %}{{ object.get_absolute_url }}">{% site_url %}{{ object.get_absolute_url }}</a></p>
+            <p><a href="{% settings "SITE_URL" %}{{ object.get_absolute_url }}">{% settings "SITE_URL" %}{{ object.get_absolute_url }}</a></p>
         </td>
     </tr>
 {% endblock %}

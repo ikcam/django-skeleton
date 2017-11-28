@@ -1,11 +1,11 @@
 {% load core_tags i18n %}
 
-{% blocktrans %}Thank you for joining{% endblocktrans %} {% site_name %}!
+{% blocktrans %}Thank you for joining{% endblocktrans %} {% settings "SITE_NAME" %}!
 
 {% blocktrans %}Click on the following link to activate your account:{% endblocktrans %}.
-{% site_url %}{% url 'account:activate' object.activation_key %}
+{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}
 
 {% blocktrans %}If clicking the URL above does not work, copy and paste the URL into a browser window.{% endblocktrans %}
 
-{% site_name %}
-{% site_url %}
+{% settings "SITE_NAME" %}
+{% settings "SITE_URL" %}

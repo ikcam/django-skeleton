@@ -1,7 +1,7 @@
 {% load boilerplate core_tags i18n %}
 
 <ol class="breadcrumb">
-    <li><a href="{% site_url %}">{% trans "Home" %}</a></li>
+    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
     {% if parent_object %}
         <li><a href="{% url parent_object|model_url %}">{{ parent_object|model_name_plural }}</a></li>
         <li><a href="{{ parent_object.get_absolute_url }}">{{ parent_object }}</a></li>

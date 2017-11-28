@@ -12,9 +12,9 @@
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
             <div>
-                <h1 class="logo-name">{% site_short_name %}</h1>
+                <h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
             </div>
-            <h3>{% trans "Welcome to" %} {% site_short_name %}</h3>
+            <h3>{% trans "Welcome to" %} {% settings "SITE_SHORT_NAME" %}</h3>
             <p>
                 {% blocktrans %}
                     This is a small but powerfull tool to send invoices and messages to

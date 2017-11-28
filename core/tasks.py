@@ -7,17 +7,24 @@ from myapp.celery import app
 logger = get_task_logger(__name__)
 
 
-@app.task(name='company_task')
-def company_task(task, pk=None, data=None, user_id=None):
+def model_task(model, company_id, task, user_id=None, pk=None, data=None):
     from django.contrib.auth.models import User
-    from core.models.company import Company as Model
+    from core.models.company import Company
+
+    company = Company.objects.get(id=company_id)
+    data = data or {}
+    user = None
+
+    if user_id:
+        user = User.objects.get(id=user_id)
+        data['user'] = user
 
     if pk:
-        obj = Model.objects.get(pk=pk)
+        obj = model.objects.get(pk=pk)
         task_func = getattr(obj, task)
     else:
-        obj = '%s' % Model.__name__
-        task_func = getattr(Model, task)
+        obj = '%s' % model.__name__
+        task_func = getattr(model, task)
 
     if callable(task_func):
         logger.info("{0}: running task {1}".format(obj, task))
@@ -25,44 +32,27 @@ def company_task(task, pk=None, data=None, user_id=None):
     else:
         raise Exception("{}: task not callable.".format(task))
 
-    if user_id:
-        user = User.objects.get(id=user_id)
+    if user:
         user.add_notification(
-            model=Model,
+            company=company,
+            model=model,
             obj=obj,
             response=response,
         )
 
     return response
+
+
+@app.task(name='company_task')
+def company_task(**kwargs):
+    from core.models import Company as Model
+    return model_task(model=Model, **kwargs)
 
 
 @app.task(name='invite_task')
-def invite_task(task, pk=None, data=None, user_id=None):
-    from django.contrib.auth.models import User
-    from core.models.invite import Invite as Model
-
-    if pk:
-        obj = Model.objects.get(pk=pk)
-        task_func = getattr(obj, task)
-    else:
-        obj = '%s' % Model.__name__
-        task_func = getattr(Model, task)
-
-    if callable(task_func):
-        logger.info("{0}: running task {1}".format(obj, task))
-        response = task_func(**data) if data else task_func()
-    else:
-        raise Exception("{}: task not callable.".format(task))
-
-    if user_id:
-        user = User.objects.get(id=user_id)
-        user.add_notification(
-            model=Model,
-            obj=obj,
-            response=response,
-        )
-
-    return response
+def invite_task(**kwargs):
+    from core.models import Invite as Model
+    return model_task(model=Model, **kwargs)
 
 
 @app.task(name='companies_check')
