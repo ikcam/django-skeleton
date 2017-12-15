@@ -36,24 +36,20 @@ class Event(AuditableMixin):
 
     company = models.ForeignKey(
         Company, editable=False, related_name='events',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     user = models.ForeignKey(
         User, blank=True, null=True, editable=False, related_name='events',
-        verbose_name=_("User")
+        on_delete=models.SET_NULL, verbose_name=_("User")
     )
     contenttype = models.ForeignKey(
         ContentType, blank=True, null=True, editable=False,
-        verbose_name=_("Content type")
+        on_delete=models.CASCADE, verbose_name=_("Content type")
     )
     object_id = models.PositiveIntegerField(
         editable=False, blank=True, null=True, verbose_name=_("Object ID")
     )
     model = GenericForeignKey('contenttype', 'object_id')
-    user = models.ForeignKey(
-        User, editable=False, related_name='events',
-        verbose_name=_("User")
-    )
     share_with = models.ManyToManyField(
         User, blank=True, related_name='shared_events',
         verbose_name=_("Share with")

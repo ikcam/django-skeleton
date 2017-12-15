@@ -1,15 +1,15 @@
 from django.conf import settings
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.i18n import JavaScriptCatalog
 
 
 urlpatterns = [
-    url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
 
 if settings.DEBUG:
@@ -17,7 +17,7 @@ if settings.DEBUG:
 
     import debug_toolbar
 
-    urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )
@@ -26,11 +26,26 @@ if settings.DEBUG:
     )
 
 urlpatterns += i18n_patterns(
-    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    url(_(r'^'), include('core.urls', namespace='core')),
-    url(_(r'^admin/'), admin.site.urls),
-    url(_(r'^account/'), include('account.urls', namespace='account')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path(
+        _('admin/'),
+        admin.site.urls
+    ),
+    path(
+        '',
+        include(('core.urls', 'core'), namespace='core')
+    ),
+    path(
+        _('account/'),
+        include(('account.urls', 'account'), namespace='account')
+    ),
     # Common and API at the end
-    url(_(r'^common/'), include('common.urls', namespace='common')),
-    url(_(r'^api/'), include('api.urls', namespace='api')),
+    path(
+        _('common/'),
+        include(('common.urls', 'common'), namespace='common')
+    ),
+    path(
+        _('api/'),
+        include(('api.urls', 'api'), namespace='api')
+    ),
 )

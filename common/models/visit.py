@@ -8,7 +8,7 @@ from .link import Link
 class Visit(AuditableMixin):
     link = models.ForeignKey(
         Link, editable=False, related_name='visits',
-        verbose_name=_("Link")
+        on_delete=models.CASCADE, verbose_name=_("Link")
     )
     ip_address = models.GenericIPAddressField(
         protocol='both', verbose_name=_("IP address")

@@ -6,8 +6,7 @@ from .common import views as common_views
 router = routers.DefaultRouter()
 
 """ Account """
-router.register(r'account/me', account_views.MeViewSet)
-router.register(r'account/users', account_views.UserViewSet)
+router.register(r'account/profile', account_views.ProfileViewSet)
 
 """ Common """
 router.register(r'common/events', common_views.EventViewSet)

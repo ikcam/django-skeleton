@@ -2,7 +2,6 @@ import hashlib
 import random
 import re
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -20,7 +19,6 @@ from core.constants import (
 )
 from core.mixins import AuditableMixin
 from core.models import Company
-from common import tasks
 
 
 class Message(AuditableMixin):
@@ -31,16 +29,16 @@ class Message(AuditableMixin):
 
     company = models.ForeignKey(
         Company, editable=False, related_name='messages',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     user = models.ForeignKey(
         User, blank=True, null=True, editable=False, related_name='messages',
-        verbose_name=_("User")
+        on_delete=models.SET_NULL, verbose_name=_("User")
     )
     # Related model
     contenttype = models.ForeignKey(
         ContentType, blank=True, null=True, editable=False,
-        verbose_name=_("Content type")
+        on_delete=models.SET_NULL, verbose_name=_("Content type")
     )
     object_id = models.PositiveIntegerField(
         blank=True, null=True, editable=False, verbose_name=_("Object ID")

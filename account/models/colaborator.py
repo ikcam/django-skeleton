@@ -8,11 +8,12 @@ from .profile import Profile
 
 class Colaborator(models.Model):
     profile = models.ForeignKey(
-        Profile, editable=False, verbose_name=_("Profile")
+        Profile, editable=False, on_delete=models.CASCADE,
+        verbose_name=_("Profile")
     )
     company = models.ForeignKey(
         Company, editable=False, related_name='users_all',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     date_joined = models.DateTimeField(
         auto_now=True, verbose_name=_("Join date")

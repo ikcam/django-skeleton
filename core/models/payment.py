@@ -9,7 +9,7 @@ from .invoice import Invoice
 class Payment(AuditableMixin, models.Model):
     invoice = models.ForeignKey(
         Invoice, editable=False, related_name='payments',
-        verbose_name=_("Invoice")
+        on_delete=models.CASCADE, verbose_name=_("Invoice")
     )
     description = models.TextField(
         blank=True, null=True, verbose_name=_("Description")

@@ -30,7 +30,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(
         User, primary_key=True, editable=False, related_name='profile',
-        verbose_name=_('User')
+        on_delete=models.CASCADE, verbose_name=_('User')
     )
     activation_key = models.CharField(
         blank=True, null=True, max_length=255,

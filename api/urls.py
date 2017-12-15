@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path
 
 from rest_framework.authtoken import views
 
@@ -7,9 +7,22 @@ from .routers import nested_routers, router
 
 
 urlpatterns = [
-    url(r'^auth/', views.obtain_auth_token),
-    url(r'^account/password_reset/$', account_views.password_reset),
-    url(r'^account/signup/$', account_views.signup),
+    path(
+        'account/login/',
+        views.obtain_auth_token
+    ),
+    path(
+        'account/signup/',
+        account_views.SignUpView.as_view()
+    ),
+    path(
+        'account/password-reset/',
+        account_views.PasswordResetView.as_view()
+    ),
+    path(
+        'account/reset/<uidb64>/<token>/',
+        account_views.PasswordResetConfirmView.as_view()
+    ),
 ] + router.urls
 
 if nested_routers:

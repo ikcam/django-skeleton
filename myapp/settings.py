@@ -1,6 +1,7 @@
 import os
+import re
 
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -9,10 +10,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'YOUSECRETKEY'
+
+
+IGNORABLE_404_URLS = [
+    re.compile(r'^/apple-touch-icon.*\.png$'),
+    re.compile(r'^/favicon\.ico$'),
+    re.compile(r'^/robots\.txt$'),
+]
 
 
 # Application definition
@@ -30,6 +38,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'ckeditor',
     'ckeditor_uploader',
+    'corsheaders',
     'dal',
     'dal_select2',
     'dal_queryset_sequence',
@@ -51,10 +60,10 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.TimezoneMiddleware',
@@ -169,7 +178,7 @@ SESSION_COOKIE_NAME = 'myappsessionid'
 # CKEditor
 # https://github.com/django-ckeditor/django-ckeditor#plugins
 
-CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads/')
+CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_URL, 'uploads/')
 
 
 # Django REST Framework
@@ -192,10 +201,19 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+# Facebook APP credentials
+
 FB_APP_ID = ''
 
 FB_APP_SECRET = ''
 
+
+# Google Analytics
+
+GA_ID = ''
+
+
+# Enviroment variables
 
 APP_ENV = os.getenv('APP_ENV')
 

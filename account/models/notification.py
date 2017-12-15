@@ -14,15 +14,16 @@ from core.models import Company
 class Notification(AuditableMixin):
     company = models.ForeignKey(
         Company, editable=False, related_name='notifications',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     user = models.ForeignKey(
         User, editable=False, related_name='notifications',
-        verbose_name=_("User")
+        on_delete=models.CASCADE, verbose_name=_("User")
     )
     # Related model
     contenttype = models.ForeignKey(
-        ContentType, editable=False, verbose_name=_("Content type")
+        ContentType, editable=False,
+        on_delete=models.CASCADE, verbose_name=_("Content type")
     )
     object_id = models.PositiveIntegerField(
         blank=True, null=True, editable=False, verbose_name=_("Object ID")

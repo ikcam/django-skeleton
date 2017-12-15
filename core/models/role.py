@@ -10,7 +10,7 @@ from .company import Company
 class Role(AuditableMixin, models.Model):
     company = models.ForeignKey(
         Company, editable=False, related_name='roles',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     name = models.CharField(
         max_length=50, verbose_name=_("Name")

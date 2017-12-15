@@ -1,6 +1,9 @@
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
+from django.utils.translation import ugettext_lazy as _
+
 
 from rest_framework import serializers
 
@@ -49,28 +52,62 @@ class PasswordResetSerializer(serializers.Serializer):
 
 class PasswordChangeSerializer(serializers.Serializer):
     password = serializers.CharField()
-    password_confirm = serializers.CharField()
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
 
     def validate(self, data):
-        if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Passwords don't match.")
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError(
+                _("The two password fields didn't match.")
+            )
         return data
 
 
-class MeSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        exclude = (
+            'user', 'companies', 'activation_key', 'date_key_expiration'
+        )
+        model = Profile
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    profile = UserProfileSerializer()
+
     class Meta:
         fields = (
-            'id', 'username', 'first_name', 'last_name', 'email',
+            'id', 'username', 'first_name', 'last_name', 'email', 'profile'
         )
         model = User
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        exclude = (
-            'user', 'company', 'companies'
-        )
-        model = Profile
+class SetPasswordSerializer(serializers.Serializer):
+    new_password1 = serializers.CharField()
+    new_password2 = serializers.CharField()
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def validate(self, data):
+        if data['new_password1'] != data['new_password2']:
+            raise serializers.ValidationError(
+                _("The two password fields didn't match.")
+            )
+        return data
+
+    def validate_password2(self, data):
+        try:
+            password_validation.validate_password(data)
+        except serializers.ValidationError as error:
+            raise serializers.ValidationError(error)
+        return data
+
+    def save(self):
+        password = self.validated_data["new_password1"]
+        self.user.set_password(password)
+        self.user.save()
+        return self.user
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -81,25 +118,42 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
 
 
-class SignupSerializer(serializers.ModelSerializer):
-    password_confirm = serializers.CharField()
+class SignUpSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
 
     class Meta:
         fields = (
-            'username', 'first_name', 'last_name', 'password',
-            'password_confirm', 'email'
+            'username', 'password1', 'password2', 'first_name', 'last_name',
+            'email'
         )
         model = User
 
     def validate(self, data):
-        if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Passwords don't match.")
+        if data['password1'] != data['password2']:
+            raise serializers.ValidationError(
+                _("The two password fields didn't match.")
+            )
+
+        return data
+
+    def validate_password2(self, data):
+        try:
+            password_validation.validate_password(data)
+        except serializers.ValidationError as error:
+            raise serializers.ValidationError(error)
         return data
 
     def validate_email(self, data):
         exists = User.objects.filter(email=data).exists()
         if exists:
             raise serializers.ValidationError(
-                "Email already in use by another user."
+                _("A user with that email already exists.")
             )
         return data
+
+    def save(self):
+        user = super().save()
+        user.set_password(self.validated_data["password1"])
+        user.save()
+        return user

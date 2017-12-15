@@ -15,15 +15,15 @@ from .message import Message
 class Link(AuditableMixin):
     company = models.ForeignKey(
         Company, editable=False, related_name='links',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     message = models.ForeignKey(
-        Message, editable=False, related_name='links',
-        blank=True, null=True, verbose_name=_("Message")
+        Message, editable=False, related_name='links', blank=True, null=True,
+        on_delete=models.SET_NULL, verbose_name=_("Message")
     )
     user = models.ForeignKey(
-        User, editable=False, related_name='links',
-        blank=True, null=True, verbose_name=_("User")
+        User, editable=False, related_name='links', blank=True, null=True,
+        on_delete=models.SET_NULL, verbose_name=_("User")
     )
     token = models.CharField(
         max_length=150, blank=True, null=True, editable=False,

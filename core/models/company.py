@@ -17,7 +17,8 @@ class Company(AuditableMixin, models.Model):
         max_length=50, unique=True, verbose_name=_("Name")
     )
     user = models.ForeignKey(
-        User, related_name='companies', verbose_name=_("User")
+        User, related_name='companies', on_delete=models.CASCADE,
+        verbose_name=_("User")
     )
     date_next_invoice = models.DateTimeField(
         blank=True, null=True, verbose_name=_("Next invoice date")

@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse_lazy
@@ -7,95 +7,95 @@ from . import autocomplete, views
 
 urlpatterns = [
     # Autocomplete
-    url(
-        _(r'^groups/autocomplete/$'),
+    path(
+        _('groups/autocomplete/'),
         autocomplete.GroupAutocomplete.as_view(),
         name='group_autocomplete'
     ),
-    url(
-        _(r'^permissions/autocomplete/$'),
+    path(
+        _('permissions/autocomplete/'),
         autocomplete.PermissionAutocomplete.as_view(),
         name='permission_autocomplete'
     ),
-    url(
-        _(r'^users/autocomplete/$'),
+    path(
+        _('users/autocomplete/'),
         autocomplete.UserAutocomplete.as_view(),
         name='user_autocomplete'
     ),
-    url(
-        _(r'^users/other/autocomplete/$'),
+    path(
+        _('users/other/autocomplete/'),
         autocomplete.UserOtherAutocomplete.as_view(),
         name='user_other_autocomplete'
     ),
     # Views
-    url(
-        _(r'^$'),
+    path(
+        '',
         views.ProfileDetail.as_view(),
         name='profile_detail'
     ),
-    url(
-        _(r'^password/$'),
+    path(
+        _('password/'),
         views.ProfilePassword.as_view(),
     ),
-    url(
-        _(r'^change/$'),
+    path(
+        _('change/'),
         views.ProfileUpdate.as_view(),
         name='profile_update'
     ),
-    url(
-        _(r'^activate/(?P<token>[0-9A-Za-z_\-]+)/$'),
+    path(
+        _('activate/<token>/'),
         views.Activate.as_view(),
         name='activate'
     ),
-    url(
-        _(r"^login/$"),
+    path(
+        _('login/'),
         auth_views.LoginView.as_view(
             template_name='registration/login.html'
         ),
-        name="login"
+        name='login'
     ),
-    url(
-        _(r"^login/facebook/$"),
+    path(
+        _('login/facebook/'),
         views.LoginFacebookView.as_view(),
-        name="login_facebook"
+        name='login_facebook'
     ),
-    url(
-        _(r'^logout/$'),
+    path(
+        _('logout/'),
         auth_views.LogoutView.as_view(),
         name='logout'
     ),
-    url(
-        _(r"^logout/facebook/$"),
+    path(
+        _('logout/facebook/'),
         views.LogoutFacebookView.as_view(),
-        name="logout_facebook"
+        name='logout_facebook'
     ),
-    url(
-        _(r'^notifications/read/all/$'),
+    path(
+        _('notifications/read/all/'),
         views.NotificationReadAll.as_view(),
         name='notification_read_all'
     ),
-    url(
-        _(r'^notifications/(?P<pk>[0-9]+)/$'),
+    path(
+        _('notifications/<int:pk>/'),
         views.NotificationDetail.as_view(),
         name='notification_detail'
     ),
-    url(
-        _(r'^password-change/$'),
+    path(
+        _('password-change/'),
         auth_views.PasswordChangeView.as_view(
             template_name='registration/password_change.html',
             success_url=reverse_lazy('account:password_change_done')
         ),
         name='password_change'
     ),
-    url(
-        _(r'^password-change/done/$'),
+    path(
+        _('password-change/done/'),
         auth_views.PasswordChangeDoneView.as_view(
             template_name='registration/password_done.html'
         ),
         name='password_change_done'
     ),
-    url(
-        _(r'^password-reset/$'),
+    path(
+        _('password-reset/'),
         auth_views.PasswordResetView.as_view(
             template_name='registration/reset_form.html',
             email_template_name='registration/password_email.html',
@@ -105,39 +105,35 @@ urlpatterns = [
         ),
         name='password_reset'
     ),
-    url(
-        _(r'^password-reset/done/$'),
+    path(
+        _('password-reset/done/'),
         auth_views.PasswordResetDoneView.as_view(
             template_name='registration/reset_done.html'
         ),
         name='password_reset_done'
     ),
-    url(
-        _(
-            r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/'
-            r'(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'
-        ),
+    path(
+        _('reset/<uidb64>/<token>/'),
         auth_views.PasswordResetConfirmView.as_view(
             template_name='registration/reset_confirm.html',
             success_url=reverse_lazy('account:password_reset_complete')
         ),
         name='password_reset_confirm'
     ),
-    url(
-        _(r'^reset/done/$'),
+    path(
+        _('reset/done/'),
         auth_views.PasswordResetCompleteView.as_view(
             template_name='registration/reset_complete.html'
         ),
         name='password_reset_complete'
     ),
-    url(
-        _(r'^signup/$'), views.SignUp.as_view(), name='signup'
+    path(
+        _('signup/'),
+        views.SignUp.as_view(),
+        name='signup'
     ),
-    url(
-        _(
-            r'^signup/invite/(?P<pk>[0-9]+)/'
-            r'(?P<token>[0-9A-Za-z_\-]+)/$'
-        ),
+    path(
+        _('signup/invite/<int:pk>/<token>/'),
         views.SignUpInvite.as_view(),
         name='signup_invite'
     ),

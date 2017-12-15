@@ -1,160 +1,160 @@
-from django.conf.urls import url
-from django.utils.translation import ugettext_lazy as _
+from django.urls import path
+from django.utils.translation import gettext_lazy as _
 
 from . import autocomplete, views
 
 
 urlpatterns = [
-    url(
-        _(r'^$'),
+    path(
+        '',
         views.Index.as_view(),
         name='index'
     ),
-    url(
-        _(r'^dashboard/$'),
+    path(
+        _('dashboard/'),
         views.Dashboard.as_view(),
         name='dashboard'
     ),
     # Country
-    url(
-        _(r'^countries/autocomplete/$'),
+    path(
+        _('countries/autocomplete/'),
         autocomplete.CountryAutocomplete.as_view(),
         name='country_autocomplete'
     ),
     # Language
-    url(
-        _(r'^languages/autocomplete/$'),
+    path(
+        _('languages/autocomplete/'),
         autocomplete.LanguageAutocomplete.as_view(),
         name='language_autocomplete'
     ),
     # Timezone
-    url(
-        _(r'^timezones/autocomplete/$'),
+    path(
+        _('timezones/autocomplete/'),
         autocomplete.TimezoneAutocomplete.as_view(),
         name='timezone_autocomplete'
     ),
     # Company
-    url(
-        _(r'^company/$'),
+    path(
+        _('company/'),
         views.CompanyDetail.as_view(),
         name='company_list'
     ),
-    url(
-        _(r'^company/$'),
+    path(
+        _('company/'),
         views.CompanyDetail.as_view(),
         name='company_detail'
     ),
-    url(
-        _(r'^company/activate/$'),
+    path(
+        _('company/activate/'),
         views.CompanyActivate.as_view(),
         name='company_activate'
     ),
-    url(
-        _(r'^company/add/$'),
+    path(
+        _('company/add/'),
         views.CompanyCreate.as_view(),
         name='company_add'
     ),
-    url(
-        _(r'^company/change/$'),
+    path(
+        _('company/change/'),
         views.CompanyUpdate.as_view(),
         name='company_change'
     ),
-    url(
-        _(r'^company/choose/$'),
+    path(
+        _('company/choose/'),
         views.CompanyChoose.as_view(),
         name='company_choose'
     ),
-    url(
-        _(r'^company/switch/(?P<pk>[0-9]+)/$'),
+    path(
+        _('company/switch/<int:pk>/'),
         views.CompanySwitch.as_view(),
         name='company_switch'
     ),
     # Invoice - invoices - invoice
-    url(
-        _(r'^company/invoices/$'),
+    path(
+        _('company/invoices/'),
         views.InvoiceList.as_view(),
         name='invoice_list'
     ),
-    url(
-        _(r'^company/invoices/(?P<pk>[0-9]+)/$'),
+    path(
+        _('company/invoices/<int:pk>/'),
         views.InvoiceDetail.as_view(),
         name='invoice_detail'
     ),
     # Invite - invites - invite
-    url(
-        _(r'^company/invites/$'),
+    path(
+        _('company/invites/'),
         views.InviteList.as_view(),
         name='invite_list'
     ),
-    url(
-        _(r'^company/invites/add/$'),
+    path(
+        _('company/invites/add/'),
         views.InviteCreate.as_view(),
         name='invite_add'
     ),
-    url(
-        _(r'^company/invites/(?P<pk>[0-9]+)/delete/$'),
+    path(
+        _('company/invites/<int:pk>/delete/'),
         views.InviteDelete.as_view(),
         name='invite_delete'
     ),
-    url(
-        _(r'^company/invites/(?P<pk>[0-9]+)/send/$'),
+    path(
+        _('company/invites/<int:pk>/send/'),
         views.InviteSend.as_view(),
         name='invite_send'
     ),
     # Role - roles - role
-    url(
-        _(r'^company/roles/autocomplete/$'),
+    path(
+        _('company/roles/autocomplete/'),
         autocomplete.RoleAutocomplete.as_view(),
         name='role_autocomplete'
     ),
-    url(
-        _(r'^company/roles/$'),
+    path(
+        _('company/roles'),
         views.RoleList.as_view(),
         name='role_list'
     ),
-    url(
-        _(r'^company/roles/add/$'),
+    path(
+        _('company/roles/add/'),
         views.RoleCreate.as_view(),
         name='role_add'
     ),
-    url(
-        _(r'^company/roles/(?P<pk>[0-9]+)/change/$'),
+    path(
+        _('company/roles/<int:pk>/change/'),
         views.RoleUpdate.as_view(),
         name='role_change'
     ),
-    url(
-        _(r'^company/roles/(?P<pk>[0-9]+)/delete/$'),
+    path(
+        _('company/roles/<int:pk>/delete/'),
         views.RoleDelete.as_view(),
         name='role_delete'
     ),
     # User - users - user
-    url(
-        _(r'^company/users/$'),
+    path(
+        _('company/users/'),
         views.UserList.as_view(),
         name='user_list'
     ),
-    url(
-        _(r'^company/users/add/$'),
+    path(
+        _('company/users/add/'),
         views.UserCreate.as_view(),
         name='user_add'
     ),
-    url(
-        _(r'^company/users/(?P<pk>[0-9]+)/change/$'),
+    path(
+        _('company/users/<int:pk>/change/'),
         views.UserUpdate.as_view(),
         name='user_change'
     ),
-    url(
-        _(r'^company/users/(?P<pk>[0-9]+)/password/$'),
+    path(
+        _('company/users/<int:pk>/password/'),
         views.UserPassword.as_view(),
         name='user_password'
     ),
-    url(
-        _(r'^company/users/(?P<pk>[0-9]+)/permissions/$'),
+    path(
+        _('company/users/<int:pk>/permissions/'),
         views.UserPermissions.as_view(),
         name='user_permissions'
     ),
-    url(
-        _(r'^company/users/(?P<pk>[0-9]+)/remove/$'),
+    path(
+        _('company/users/<int:pk>/remove/'),
         views.UserRemove.as_view(),
         name='user_remove'
     ),

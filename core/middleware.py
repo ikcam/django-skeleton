@@ -1,7 +1,7 @@
 import pytz
 
 from django.conf import settings
-from django.core.urlresolvers import resolve, translate_url
+from django.urls import resolve, translate_url
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone, translation

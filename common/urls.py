@@ -1,96 +1,96 @@
-from django.conf.urls import url
-from django.utils.translation import ugettext_lazy as _
+from django.urls import path
+from django.utils.translation import gettext_lazy as _
 
 from . import autocomplete, views
 
 
 urlpatterns = [
     # autocomplete
-    url(
-        r'^model-autocomplete/$',
+    path(
+        _('model-autocomplete/'),
         autocomplete.ModelAutocomplete.as_view(),
         name='model_autocomplete'
     ),
     # Event - events - event
-    url(
-        _(r'^events/$'),
+    path(
+        _('events/'),
         views.EventList.as_view(),
         name='event_list'
     ),
-    url(
-        _(r'^events/add/$'),
+    path(
+        _('events/add/'),
         views.EventCreate.as_view(),
         name='event_add'
     ),
-    url(
-        _(r'^events/(?P<pk>[0-9]+)/$'),
+    path(
+        _('events/<int:pk>/'),
         views.EventDetail.as_view(),
         name='event_detail'
     ),
-    url(
-        _(r'^events/(?P<pk>[0-9]+)/change/$'),
+    path(
+        _('events/<int:pk>/change/'),
         views.EventUpdate.as_view(),
         name='event_change'
     ),
-    url(
-        _(r'^events/(?P<pk>[0-9]+)/delete/$'),
+    path(
+        _('events/<int:pk>/delete/'),
         views.EventDelete.as_view(),
         name='event_delete'
     ),
     # Link - links - link
-    url(
-        _(r'^links/$'),
+    path(
+        _('links/'),
         views.LinkList.as_view(),
         name='link_list'
     ),
-    url(
-        _(r'^links/add/$'),
+    path(
+        _('links/add/'),
         views.LinkCreate.as_view(),
         name='link_add'
     ),
-    url(
-        _(r'^links/(?P<pk>[0-9]+)/$'),
+    path(
+        _('links/<int:pk>/'),
         views.LinkDetail.as_view(),
         name='link_detail'
     ),
-    url(
-        _(r'^links/(?P<pk>[0-9]+)/change/$'),
+    path(
+        _('links/<int:pk>/change/'),
         views.LinkUpdate.as_view(),
         name='link_change'
     ),
-    url(
-        _(r'^links/(?P<pk>[0-9]+)/delete/$'),
+    path(
+        _('links/<int:pk>/delete/'),
         views.LinkDelete.as_view(),
         name='link_delete'
     ),
-    url(
-        _(r'^ld/(?P<pk>[0-9]+)/$'),
+    path(
+        _('ld/<int:pk>/'),
         views.LinkPublicDirect.as_view(),
         name='link_public_direct'
     ),
-    url(
-        _(r'^lt/(?P<token>[0-9A-Za-z_\-]+)/$'),
+    path(
+        _('lt/<token>/'),
         views.LinkPublicToken.as_view(),
         name='link_public_token'
     ),
     # Message - messages - message
-    url(
-        _(r'^messages/$'),
+    path(
+        _('messages/'),
         views.MessageList.as_view(),
         name='message_list'
     ),
-    url(
-        _(r'^messages/(?P<pk>[0-9]+)/$'),
+    path(
+        _('messages/<int:pk>/'),
         views.MessageDetail.as_view(),
         name='message_detail'
     ),
-    url(
-        _(r'^messages/(?P<pk>[0-9]+)/frame/$'),
+    path(
+        _('messages/<int:pk>/frame/'),
         views.MessageFrame.as_view(),
         name='message_frame'
     ),
-    url(
-        _(r'^messages/pixel/(?P<token>[0-9A-Za-z_\-]+)/$'),
+    path(
+        _('messages/pixel/<token>/'),
         views.MessagePixel.as_view(),
         name='message_pixel'
     ),

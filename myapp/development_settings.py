@@ -44,6 +44,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
 
+CORS_ORIGIN_WHITELIST = (
+    'localhost:4200',
+)
+
 # Site info
 
 SITE_URL = 'http://localhost:8000'

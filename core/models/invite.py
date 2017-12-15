@@ -15,7 +15,7 @@ from .company import Company
 class Invite(AuditableMixin, models.Model):
     company = models.ForeignKey(
         Company, editable=False, related_name='invites',
-        verbose_name=_("Company")
+        on_delete=models.CASCADE, verbose_name=_("Company")
     )
     name = models.CharField(
         max_length=50, verbose_name=_("Name")
@@ -32,7 +32,7 @@ class Invite(AuditableMixin, models.Model):
     )
     user = models.OneToOneField(
         User, blank=True, null=True, editable=False, related_name='invite',
-        verbose_name=_("User")
+        on_delete=models.SET_NULL, verbose_name=_("User")
     )
 
     class Meta:
