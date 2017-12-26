@@ -10,7 +10,7 @@ from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import list_route
 
-from . import serializers
+from . import filters, serializers
 from api.mixins import CompanyQuerySetMixin
 from account.models import Notification
 
@@ -19,6 +19,7 @@ UserModel = get_user_model()
 
 
 class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+    filter_class = filters.NotificationFilterSet
     model = Notification
     queryset = Notification.objects.all()
     serializer_class = serializers.NotificationSerializer

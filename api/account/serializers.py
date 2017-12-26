@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import ugettext_lazy as _
 
-
 from rest_framework import serializers
 
 from account.models import Colaborator, Notification, Profile
+from api.serializers import ActionSerializer
 from core.models import Company
 
 
@@ -25,9 +25,14 @@ class ColaboratorSerializer(serializers.ModelSerializer):
         model = Colaborator
 
 
-class NotificationSerializer(serializers.ModelSerializer):
+class NotificationSerializer(ActionSerializer, serializers.ModelSerializer):
+    model = serializers.StringRelatedField()
+
     class Meta:
-        fields = '__all__'
+        exclude = (
+            'contenttype', 'company', 'destination', 'is_active', 'object_id',
+            'user'
+        )
         model = Notification
 
 

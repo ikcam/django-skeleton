@@ -2,13 +2,13 @@
 
 
 {% if not view.is_popup %}
-    <div class="footer hidden-xs small">
-        <div class="pull-right">
-            {% trans "Code + Design + Hosting with" %}
-            <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
-            {% trans "by" %}
-            <a target="_blank" href="//cubo.pe">Cubo</a>
-        </div>
-        <div>{% trans "Copyright &copy; 2017. All rights reserved for" %} {% settings "SITE_NAME" %}.</div>
+  <div class="footer hidden-xs small">
+    <div class="pull-right">
+      {% trans "Code + Design + Hosting with" %}
+      <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
+      {% trans "by" %}
+      <a target="_blank" href="//cubo.pe">Cubo</a>
     </div>
+    <div>{% trans "Copyright &copy; 2017. All rights reserved for" %} {% settings "SITE_NAME" %}.</div>
+  </div>
 {% endif %}

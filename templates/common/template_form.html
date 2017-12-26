@@ -5,29 +5,29 @@
 {% block title %}{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}{% endblock title %}
 
 {% block breadcrumb %}
-    {% include "common/breadcrumbs/form.html" %}
+  {% include "common/breadcrumbs/form.html" %}
 {% endblock breadcrumb %}
 
 {% block page_header %}
-    <h2>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}</h2>
+  <h2>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}</h2>
 {% endblock page_header %}
 
 {% block content %}
-    {% block before_form %}{% endblock %}
+  {% block before_form %}{% endblock %}
 
-    {% include "common/form.html" %}
+  {% include "common/form.html" %}
 
-    {% block after_form %}{% endblock %}
+  {% block after_form %}{% endblock %}
 {% endblock content %}
 
 {% block scripts_footer %}
-    {{ form.media }}
+  {{ form.media }}
 
-    {% for extra_form in extra_form_list %}
-        {{ extra_form.media }}
-    {% endfor %}
+  {% for extra_form in extra_form_list %}
+    {{ extra_form.media }}
+  {% endfor %}
 
-    {% for formset in formset_list %}
-        {{ formset.media }}
-    {% endfor %}
+  {% for formset in formset_list %}
+    {{ formset.media }}
+  {% endfor %}
 {% endblock %}

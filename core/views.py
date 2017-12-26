@@ -42,6 +42,10 @@ class Dashboard(CompanyRequiredMixin, TemplateView):
     raise_exception = False
     template_name = 'core/dashboard.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs['hide_page_header'] = True
+        return super().get_context_data(**kwargs)
+
     def handle_no_permission(self, msg=None):
         return redirect('core:company_choose')
 

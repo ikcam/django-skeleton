@@ -25,7 +25,7 @@
 						</li>
 					{% endif %}
 				{% else %}
-					<li  class="footable-page {% if page_obj.number == page %}active{% endif %}">
+					<li class="footable-page {% if page_obj.number == page %}active{% endif %}">
 						<a href="?{% url_replace request 'page' page %}">
 							{{ page }}
 						</a>

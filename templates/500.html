@@ -6,13 +6,13 @@
 
 {% block content %}
 	<div class="middle-box text-center animated fadeInDown">
-        <h1>500</h1>
-        <h3 class="font-bold">{% trans "Unexpected Error" %}</h3>
+    <h1>500</h1>
+    <h3 class="font-bold">{% trans "Unexpected Error" %}</h3>
 
-        <div class="error-desc">
-            <p>{% blocktrans %}We sorry, an error ocurred. But don't worry. This error will be reported to our developers so it won't happen again.{% endblocktrans %}</p>
+    <div class="error-desc">
+      <p>{% blocktrans %}We sorry, an error ocurred. But don't worry. This error will be reported to our developers so it won't happen again.{% endblocktrans %}</p>
 
-            <a role="button" class="btn btn-primary"  href="{% settings "SITE_URL" %}">{% trans "Go home" %}</a>
-        </div>
+      <a role="button" class="btn btn-primary"  href="{% settings "SITE_URL" %}">{% trans "Go home" %}</a>
     </div>
+  </div>
 {% endblock %}

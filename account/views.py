@@ -173,7 +173,7 @@ class LogoutFacebookView(View):
 
         try:
             user = User.objects.get(profile__facebook_id=data['user_id'])
-        except User.ObjectDoesNotExist:
+        except User.DoesNotExist:
             raise PermissionDenied
 
         user.profile.facebook_id = None

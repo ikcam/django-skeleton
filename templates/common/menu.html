@@ -1,74 +1,71 @@
 {% load core_tags i18n %}
 
-{% if not view.is_popup %}
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-                    <div id="profileDropdown" class="dropdown profile-element">
-                        {% if request.user.profile.photo_thumb %}
-                            <span>
-                                <img src="{{ request.user.profile.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px">
-                            </span>
-                        {% endif %}
-                        <a id="profileBtn" data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                            <span class="clear">
-                                <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
-                                <span class="text-muted text-xs block">{{ request.user.profile.company }} <b class="caret"></b></span>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu animated fadeIn m-t-xs" aria-labelledby="profileBtn">
-                            {% if request.user.is_staff %}
-                              <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
-                              <li id="companies" class="divider"></li>
-                            {% endif %}
-                            {% for company in companies_available %}
-                                <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
-                                {% if forloop.last %}
-                                    <li class="divider"></li>
-                                {% endif %}
-                            {% endfor %}
-                            <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
-                        </ul>
-                    </div>
-                    <div class="logo-element">{% settings "SITE_SHORT_NAME" %}</div>
-                </li>
 
-                {% with request.resolver_match as resolver_match %}
-                    <li {% if resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
-                        <a href="{% url 'core:dashboard' %}">
-                            <i class="fa fa-home"></i>
-                            <span class="nav-label">{% trans "Dashboard" %}</span>
-                        </a>
-                    </li>
-                    <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-                        <a href="{% url 'common:event_list' %}">
-                            <i class="fa fa-calendar"></i>
-                            <span class="nav-label">{% trans "Events" %}</span>
-                        </a>
-                    </li>
-                    <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-                        <a href="{% url 'common:link_list' %}">
-                            <i class="fa fa-link"></i>
-                            <span class="nav-label">{% trans "Links" %}</span>
-                        </a>
-                    </li>
-                    <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-                        <a href="{% url 'common:message_list' %}">
-                            <i class="fa fa-envelope"></i>
-                            <span class="nav-label">{% trans "Messages" %}</span>
-                        </a>
-                    </li>
-                    <li {% if 'core' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
-                        <a href="{% url 'core:company_detail' %}">
-                            <i class="fa fa-briefcase"></i>
-                            <span class="nav-label">{% trans "Company" %}</span>
-                        </a>
-                    </li>
-                {% endwith %}
-            </ul>
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul class="nav metismenu" id="side-menu">
+      <li class="nav-header">
+        <div id="profileDropdown" class="dropdown profile-element">
+          {% if request.user.profile.photo_thumb %}
+            <span><img src="{{ request.user.profile.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px"></span>
+          {% endif %}
+          <a id="profileBtn" data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span class="clear">
+              <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
+              <span class="text-muted text-xs block">{{ request.user.profile.company }} <b class="caret"></b></span>
+            </span>
+          </a>
+          <ul class="dropdown-menu animated fadeIn m-t-xs" aria-labelledby="profileBtn">
+            {% if request.user.is_staff %}
+              <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+              <li id="companies" class="divider"></li>
+            {% endif %}
+            {% for company in companies_available %}
+              <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
+              {% if forloop.last %}
+                <li class="divider"></li>
+              {% endif %}
+            {% endfor %}
+            <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
+          </ul>
         </div>
-    </nav>
-{% endif %}
+        <div class="logo-element">{% settings "SITE_SHORT_NAME" %}</div>
+      </li>
+
+      {% with request.resolver_match as resolver_match %}
+        <li {% if resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
+          <a href="{% url 'core:dashboard' %}">
+            <i class="fa fa-home"></i>
+            <span class="nav-label">{% trans "Dashboard" %}</span>
+          </a>
+        </li>
+        <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+          <a href="{% url 'common:event_list' %}">
+            <i class="fa fa-calendar"></i>
+            <span class="nav-label">{% trans "Events" %}</span>
+          </a>
+        </li>
+        <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+          <a href="{% url 'common:link_list' %}">
+            <i class="fa fa-link"></i>
+            <span class="nav-label">{% trans "Links" %}</span>
+          </a>
+        </li>
+        <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+          <a href="{% url 'common:message_list' %}">
+            <i class="fa fa-envelope"></i>
+            <span class="nav-label">{% trans "Messages" %}</span>
+          </a>
+        </li>
+        <li {% if 'core' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+          <a href="{% url 'core:company_detail' %}">
+            <i class="fa fa-briefcase"></i>
+            <span class="nav-label">{% trans "Company" %}</span>
+          </a>
+        </li>
+      {% endwith %}
+    </ul>
+  </div>
+</nav>

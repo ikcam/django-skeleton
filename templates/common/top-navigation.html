@@ -1,72 +1,71 @@
 {% load i18n %}
 
-{% if not view.is_popup %}
-    <div class="row border-bottom">
-        <nav class="navbar navbar-static-to" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
-            </div>
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropown">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>
-                        <span class="label label-primary">{{ notifications_unread|length }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        {% for notification in notifications_unread %}
-                            <li>
-                                <a href="{{ notification.get_absolute_url }}">
-                                    <div class="dropdown-messages-box">
-                                        <div class="media-body">
-                                            <small class="pull-right">{{ notification.date_creation|timesince }}</small>
-                                            <strong>{{ notification.parent }}</strong> {{ notification.content }}<br>
-                                            <small class="text-muted">{{ notification.date_creation|date:'DATETIME_FORMAT' }}</small>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            {% if forloop.last %}
-                                <li>
-                                    <div class="text-center link-block">
-                                        <a href="{% url 'account:notification_read_all' %}?next={{ request.path }}">
-                                            <i class="fa fa-bell"></i>
-                                            <strong>{% trans "Read all notifications" %}</strong>
-                                        </a>
-                                    </div>
-                                </li>
-                            {% endif %}
-                        {% empty %}
-                            <li>
-                                <div class="dropdown-messages-box">
-                                    <div class="media-body text-center">
-                                        <span class="text-muted">{% trans "All your notifications are read." %}</span>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                <li class="visible-xs-inline-block">
-                    <a class="dropdown-toggle" href="{% url 'account:profile_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
-                    <ul class="dropdown-menu">
-                        {% if request.user.is_staff %}
-                            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
-                            <li class="divider"></li>
-                        {% endif %}
-                        {% for company in companies_available %}
-                            <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
-                            {% if forloop.last %}
-                                <li class="divider"></li>
-                            {% endif %}
-                        {% endfor %}
-                        <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
-                </li>
-            </ul>
-        </nav>
+
+<div class="row border-bottom">
+  <nav class="navbar navbar-static-to" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
     </div>
-{% endif %}
+    <ul class="nav navbar-top-links navbar-right">
+      <li class="dropown">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+          <i class="fa fa-bell"></i>
+          <span class="label label-primary">{{ notifications_unread|length }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-messages">
+          {% for notification in notifications_unread %}
+              <li>
+                <a href="{{ notification.get_absolute_url }}">
+                  <div class="dropdown-messages-box">
+                    <div class="media-body">
+                      <small class="pull-right">{{ notification.date_creation|timesince }}</small>
+                      <strong>{{ notification.parent }}</strong> {{ notification.content }}<br>
+                      <small class="text-muted">{{ notification.date_creation|date:'DATETIME_FORMAT' }}</small>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="divider"></li>
+              {% if forloop.last %}
+                <li>
+                  <div class="text-center link-block">
+                    <a href="{% url 'account:notification_read_all' %}?next={{ request.path }}">
+                      <i class="fa fa-bell"></i>
+                      <strong>{% trans "Read all notifications" %}</strong>
+                    </a>
+                  </div>
+                </li>
+              {% endif %}
+          {% empty %}
+            <li>
+              <div class="dropdown-messages-box">
+                <div class="media-body text-center">
+                  <span class="text-muted">{% trans "All your notifications are read." %}</span>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li class="visible-xs-inline-block">
+        <a class="dropdown-toggle" href="{% url 'account:profile_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+        <ul class="dropdown-menu">
+          {% if request.user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+            <li class="divider"></li>
+          {% endif %}
+          {% for company in companies_available %}
+            <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
+            {% if forloop.last %}
+              <li class="divider"></li>
+            {% endif %}
+          {% endfor %}
+          <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
+      </li>
+    </ul>
+  </nav>
+</div>
