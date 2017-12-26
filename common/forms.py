@@ -1,8 +1,9 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
-from .models import Event, Link, Message
+from .models import Event, Link
 
 """ Custom field """
 
@@ -21,9 +22,44 @@ class CheckboxSelectMultiple(forms.CheckboxSelectMultiple):
 
 def get_event_form(company):
     class EventForm(autocomplete.FutureModelForm):
+        date_start = forms.SplitDateTimeField(
+            label=_("Start date"),
+            required=False,
+            widget=forms.SplitDateTimeWidget(
+                date_attrs={
+                    'type': 'date-local',
+                    'addon_before':
+                        '<span class="glyphicon glyphicon-calendar"></span>',
+                },
+                time_attrs={
+                    'type': 'time-local',
+                    'addon_before':
+                        '<span class="glyphicon glyphicon-time"></span>',
+                }
+            )
+        )
+        date_finish = forms.SplitDateTimeField(
+            label=_("Finish date"),
+            required=False,
+            widget=forms.SplitDateTimeWidget(
+                date_attrs={
+                    'placeholder': _("Finish date (date)"),
+                    'type': 'date-local',
+                    'addon_before':
+                        '<span class="glyphicon glyphicon-calendar"></span>',
+                },
+                time_attrs={
+                    'placeholder': _("Finish date (time)"),
+                    'type': 'time-local',
+                    'addon_before':
+                        '<span class="glyphicon glyphicon-time"></span>',
+                }
+            )
+        )
         model = autocomplete.QuerySetSequenceModelField(
+            label=_("Object"),
             queryset=autocomplete.QuerySetSequence(
-                Message.objects.filter(company=company)
+                company.messages.all(),
             ),
             required=False,
             widget=autocomplete.QuerySetSequenceSelect2(
@@ -32,7 +68,16 @@ def get_event_form(company):
         )
         notify = MultipleChoiceField(
             label=_("Notify"), choices=Event.NOTIFICATION_OPTIONS,
-            widget=CheckboxSelectMultiple,
+            required=False, widget=CheckboxSelectMultiple
+        )
+        share_with = forms.ModelMultipleChoiceField(
+            label=_("Share with"), queryset=User.objects.all(),
+            required=False, widget=autocomplete.ModelSelect2Multiple(
+                url='account:user_other_autocomplete',
+                attrs={
+                    'data-placeholder': _("Share with")
+                }
+            )
         )
 
         class Meta:
@@ -41,18 +86,7 @@ def get_event_form(company):
                 'type', 'content'
             )
             model = Event
-            widgets = {
-                'share_with': autocomplete.ModelSelect2Multiple(
-                    url='account:user_other_autocomplete',
-                    attrs={'data-placeholder': _("Share with")}
-                ),
-                'date_start': forms.DateTimeInput(
-                    attrs={'type': 'datetime'}
-                ),
-                'date_finish': forms.DateTimeInput(
-                    attrs={'type': 'datetime'}
-                ),
-            }
+
     return EventForm
 
 

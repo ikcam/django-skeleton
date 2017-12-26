@@ -6,15 +6,28 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
 
-from rest_framework import status, viewsets
-from rest_framework.decorators import list_route
-from rest_framework import generics, permissions, views
+from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import list_route
 
 from . import serializers
+from api.mixins import CompanyQuerySetMixin
+from account.models import Notification
 
 
 UserModel = get_user_model()
+
+
+class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+    model = Notification
+    queryset = Notification.objects.all()
+    serializer_class = serializers.NotificationSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            user=self.request.user
+        )
 
 
 class ProfileViewSet(viewsets.ViewSet):
@@ -54,6 +67,11 @@ class ProfileViewSet(viewsets.ViewSet):
 class PasswordResetView(views.APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.PasswordResetSerializer
+
+    def get(self, request):
+        return Response(
+            '', status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -118,6 +136,13 @@ class PasswordResetConfirmView(views.APIView):
 
 
 class SignUpView(generics.CreateAPIView):
+    model = User
     permission_classes = (permissions.AllowAny, )
     queryset = User.objects.all()
     serializer_class = serializers.SignUpSerializer
+
+    @classmethod
+    def as_view(cls, actions=None, **initkwargs):
+        initkwargs.pop('suffix')
+        initkwargs.pop('basename')
+        return super().as_view(**initkwargs)

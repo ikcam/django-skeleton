@@ -39,7 +39,7 @@
 
 {% block scripts_footer %}
     <script>
-        var eventSource = '{% url "api:event-list" %}';
+        var eventSource = '{% url "api:common:event-list" %}';
     </script>
     <script src="{% static 'js/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
     <script src="{% static 'js/plugins/fullcalendar/locale-all.js' %}"></script>

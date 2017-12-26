@@ -4,7 +4,7 @@ culqipy
 dateutils
 django>=2.0
 django-addanother
--e git+https://github.com/yourlabs/django-autocomplete-light.git#egg=django-autocomplete-light
+-e git+https://github.com/ikcam/django-autocomplete-light.git#egg=django-autocomplete-light
 django-boilerplate
 django-bootstrap3
 django-ckeditor
@@ -12,6 +12,7 @@ django-countries
 django-cors-headers
 django-filter
 django-querysetsequence
+django-redis
 djangorestframework
 drf-nested-routers
 facebook-sdk

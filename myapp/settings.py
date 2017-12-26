@@ -174,6 +174,8 @@ STATIC_URL = '/static/'
 
 SESSION_COOKIE_NAME = 'myappsessionid'
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
 
 # CKEditor
 # https://github.com/django-ckeditor/django-ckeditor#plugins

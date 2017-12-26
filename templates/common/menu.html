@@ -5,22 +5,22 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element">
+                    <div id="profileDropdown" class="dropdown profile-element">
                         {% if request.user.profile.photo_thumb %}
                             <span>
                                 <img src="{{ request.user.profile.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px">
                             </span>
                         {% endif %}
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <a id="profileBtn" data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
                             <span class="clear">
                                 <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
                                 <span class="text-muted text-xs block">{{ request.user.profile.company }} <b class="caret"></b></span>
                             </span>
                         </a>
-                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <ul class="dropdown-menu animated fadeIn m-t-xs" aria-labelledby="profileBtn">
                             {% if request.user.is_staff %}
-                            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
-                            <li class="divider"></li>
+                              <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+                              <li id="companies" class="divider"></li>
                             {% endif %}
                             {% for company in companies_available %}
                                 <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
@@ -33,9 +33,7 @@
                             <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
                         </ul>
                     </div>
-                    <div class="logo-element">
-                        {% settings "SITE_SHORT_NAME" %}
-                    </div>
+                    <div class="logo-element">{% settings "SITE_SHORT_NAME" %}</div>
                 </li>
 
                 {% with request.resolver_match as resolver_match %}
@@ -45,19 +43,19 @@
                             <span class="nav-label">{% trans "Dashboard" %}</span>
                         </a>
                     </li>
-                    <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+                    <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
                         <a href="{% url 'common:event_list' %}">
                             <i class="fa fa-calendar"></i>
                             <span class="nav-label">{% trans "Events" %}</span>
                         </a>
                     </li>
-                    <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+                    <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
                         <a href="{% url 'common:link_list' %}">
                             <i class="fa fa-link"></i>
                             <span class="nav-label">{% trans "Links" %}</span>
                         </a>
                     </li>
-                    <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+                    <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
                         <a href="{% url 'common:message_list' %}">
                             <i class="fa fa-envelope"></i>
                             <span class="nav-label">{% trans "Messages" %}</span>

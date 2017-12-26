@@ -61,7 +61,7 @@
         <script src="https://checkout.culqi.com/v2"></script>
         <!-- Configurando el checkout-->
         <script>
-            Culqi.publicKey = '{% settings.CULQI_PUBLIC_KEY %}';
+            Culqi.publicKey = '{% settings "CULQI_PUBLIC_KEY" %}';
             Culqi.init();
             Culqi.settings({
                 title: '{% settings "SITE_NAME" %}',

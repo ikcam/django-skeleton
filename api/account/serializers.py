@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
-from account.models import Profile
+from account.models import Colaborator, Notification, Profile
 from core.models import Company
 
 
@@ -15,6 +15,20 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'name')
         model = Company
+
+
+class ColaboratorSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+
+    class Meta:
+        fields = ('company', 'date_joined', 'is_active')
+        model = Colaborator
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Notification
 
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -64,19 +78,24 @@ class PasswordChangeSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+
     class Meta:
         exclude = (
-            'user', 'companies', 'activation_key', 'date_key_expiration'
+            'user', 'companies', 'activation_key', 'date_key_expiration',
+            'facebook_id', 'facebook_access_token'
         )
         model = Profile
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
+    companies_available = ColaboratorSerializer(many=True)
 
     class Meta:
         fields = (
-            'id', 'username', 'first_name', 'last_name', 'email', 'profile'
+            'id', 'username', 'first_name', 'last_name', 'email', 'profile',
+            'companies_available'
         )
         model = User
 
@@ -119,6 +138,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
     password1 = serializers.CharField()
     password2 = serializers.CharField()
 

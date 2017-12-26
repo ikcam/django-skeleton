@@ -17,11 +17,11 @@
                     </tr>
                     <tr>
                         <th class="col-md-3 text-right">{% trans "Creation date" %}</th>
-                        <td><abbr title="{{ object.date_creation|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</abbr></td>
+                        <td><span data-toggle="tooltip" title="{{ object.date_creation|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</span></td>
                     </tr>
                     <tr>
                         <th class="col-md-3 text-right">{% trans "Modification date" %}</th>
-                        <td><abbr title="{{ object.date_modification|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</abbr></td>
+                        <td><span data-toggle="tooltip" title="{{ object.date_modification|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</span></td>
                     </tr>
                     <tr>
                         <th class="col-md-3 text-right">{{ object.contenttype }}</th>

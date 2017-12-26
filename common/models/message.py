@@ -10,6 +10,7 @@ from django.db import models
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import activate, ugettext_lazy as _
 
 from bs4 import BeautifulSoup
@@ -135,19 +136,19 @@ class Message(AuditableMixin):
     def from_(self):
         return self.from_email
 
-    @property
+    @cached_property
     def is_fail(self):
         return True if self.date_fail else False
 
-    @property
+    @cached_property
     def is_html(self):
         return bool(BeautifulSoup(self.content, "html.parser").find())
 
-    @property
+    @cached_property
     def is_read(self):
         return True if self.date_read else False
 
-    @property
+    @cached_property
     def is_send(self):
         return True if self.date_send else False
 

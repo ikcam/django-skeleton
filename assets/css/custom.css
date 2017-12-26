@@ -1,4 +1,4 @@
-3/* Custom CSS */
+/* Custom CSS */
 @media print {
     a[href]:after {
         content: "";
