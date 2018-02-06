@@ -11,7 +11,7 @@ class EventModelSerializer(ActionSerializer):
         fields = (
             'id', 'user', 'share_with', 'date', 'date_creation',
             'date_start', 'date_finish', 'subject', 'content', 'type',
-            'actions'
+            'is_public', 'actions'
         )
         model = Event
 

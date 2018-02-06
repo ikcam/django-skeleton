@@ -5,72 +5,72 @@
 {% block title %}{% trans "Profile" %}{% endblock title %}
 
 {% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-        <li class="active"><strong>{% trans "Profile" %}</strong></li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
+    <li class="active"><strong>{% trans "Profile" %}</strong></li>
+  </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}<h2>{% trans "Profile" %}</h2>{% endblock %}
 
 {% block page_actions %}
-    <a class="btn btn-info" role="button" href="{% url "account:profile_update" %}">
-        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-        {% trans "Change" %}
-    </a>
-    <a class="btn btn-success" role="button" href="{% url "account:password_change" %}">
-        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-        {% trans "Password change" %}
-    </a>
+  <a class="btn btn-info" role="button" href="{% url "account:profile_update" %}">
+    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+    {% trans "Change" %}
+  </a>
+  <a class="btn btn-success" role="button" href="{% url "account:password_change" %}">
+    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+    {% trans "Password change" %}
+  </a>
 {% endblock %}
 
 {% block content %}
-    <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <h5>{% trans "Information" %}</h5>
-            {% include "common/ibox/tools.html" %}
-        </div>
-        <div class="ibox-content table-responsive">
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Username" %}</th>
-                        <td>{{ object.username }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "First name" %}</th>
-                        <td>{{ object.first_name }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Last name" %}</th>
-                        <td>{{ object.last_name }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Email" %}</th>
-                        <td>{{ object.email }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Language" %}</th>
-                        <td>{{ object.profile.get_language_display }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Timezone" %}</th>
-                        <td>{{ object.profile.timezone }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Company" %}</th>
-                        <td>{{ object.profile.company }}</td>
-                    </tr>
-                    <tr>
-                        <th class="col-md-3 text-right">{% trans "Companies" %}</th>
-                        <td>
-                            {% for company in object.profile.colaborator_set.all %}
-                                <a class="label label-default" href="{% url 'core:company_switch' company.company.pk %}">{{ company.company }}</a>{% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5>{% trans "Information" %}</h5>
+      {% include "common/ibox/tools.html" %}
     </div>
+    <div class="ibox-content table-responsive">
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Username" %}</th>
+            <td>{{ object.username }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "First name" %}</th>
+            <td>{{ object.first_name }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Last name" %}</th>
+            <td>{{ object.last_name }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Email" %}</th>
+            <td>{{ object.email }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Language" %}</th>
+            <td>{{ object.profile.get_language_display }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Timezone" %}</th>
+            <td>{{ object.profile.timezone }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Company" %}</th>
+            <td>{{ object.profile.company }}</td>
+          </tr>
+          <tr>
+            <th class="col-md-3 text-right">{% trans "Companies" %}</th>
+            <td>
+              {% for company in object.profile.colaborator_set.all %}
+                <a class="label label-default" href="{% url 'core:company_switch' company.company.pk %}">{{ company.company }}</a>{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock content %}

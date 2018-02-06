@@ -5,35 +5,35 @@
 {% block title %}{{ object }}{% endblock title %}
 
 {% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-        <li class="active"><strong>{{ object }}</strong></li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
+    <li class="active"><strong>{{ object }}</strong></li>
+  </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}
-    <h2>{{ object }}</h2>
+  <h2>{{ object }}</h2>
 {% endblock %}
 
 {% block page_actions %}
-    <a role="button" class="btn btn-success" href="{% url 'core:company_change' %}">
-        <span class="glyphicon glyphicon-pencil"></span>
-        {% trans "Change" %}
-    </a>
+  <a role="button" class="btn btn-success" href="{% url 'core:company_change' %}">
+    <span class="glyphicon glyphicon-pencil"></span>
+    {% trans "Change" %}
+  </a>
 {% endblock %}
 
 {% block content %}
-    <div class="tabs-container">
-        <div class="tabs-left">
-            {% include "core/common/tabs.html" %}
+  <div class="tabs-container">
+    <div class="tabs-left">
+      {% include "core/common/tabs.html" %}
 
-            <div class="tab-content">
-                <div class="tab-pane active">
-                    <div class="panel-body">
-                        {% block content_inner %}{% endblock %}
-                    </div>
-                </div>
-            </div>
+      <div class="tab-content">
+        <div class="tab-pane active">
+          <div class="panel-body">
+            {% block content_inner %}{% endblock %}
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock content %}

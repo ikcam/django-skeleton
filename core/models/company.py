@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import signals
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.translation import activate, ugettext_lazy as _
 
 from dateutil.relativedelta import relativedelta
@@ -15,6 +16,9 @@ from core.mixins import AuditableMixin
 class Company(AuditableMixin, models.Model):
     name = models.CharField(
         max_length=50, unique=True, verbose_name=_("Name")
+    )
+    slug = models.SlugField(
+        editable=False, unique=True, verbose_name=_("Slug")
     )
     user = models.ForeignKey(
         User, related_name='companies', on_delete=models.CASCADE,
@@ -41,6 +45,10 @@ class Company(AuditableMixin, models.Model):
 
     def __str__(self):
         return "%s" % self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse_lazy('core:company_detail')

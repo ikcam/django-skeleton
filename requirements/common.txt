@@ -1,6 +1,9 @@
 beautifulsoup4
 celery
+channels
+channels_redis
 culqipy
+daphne
 dateutils
 django>=2.0
 django-addanother

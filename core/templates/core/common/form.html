@@ -5,53 +5,53 @@
 {% block title %}{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}{% endblock title %}
 
 {% block breadcrumb %}
-    <ol class="breadcrumb">
-        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-        {% if form and not object %}
-            <li><a href="{% url form|form_model_url %}">{{ form|form_model_name_plural }}</a></li>
-        {% endif %}
-        {% if object %}
-            <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
-        {% endif %}
-        <li class="active">
-            <strong>{% if form and object %}{% trans "Change" %}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %}{% endif %}</strong>
-        </li>
-    </ol>
+  <ol class="breadcrumb">
+    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
+    {% if form and not object %}
+      <li><a href="{% url form|form_model_url %}">{{ form|form_model_name_plural }}</a></li>
+    {% endif %}
+    {% if object %}
+      <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
+    {% endif %}
+    <li class="active">
+      <strong>{% if form and object %}{% trans "Change" %}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %}{% endif %}</strong>
+    </li>
+  </ol>
 {% endblock breadcrumb %}
 
 {% block page_header %}
-    <h2>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}</h2>
+  <h2>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}</h2>
 {% endblock page_header %}
 
 
 {% block content %}
-    <div class="tabs-container">
-        <div class="tabs-left">
-            {% include "core/common/tabs.html" %}
+  <div class="tabs-container">
+    <div class="tabs-left">
+      {% include "core/common/tabs.html" %}
 
-            <div class="tab-content">
-                <div class="tab-pane active">
-                    <div class="panel-body">
-                        {% block content_inner %}
-                            <form class="form" method="POST" action="" enctype="multipart/form-data" role="form" novalidate>
-                                {% include "common/form-simple.html" %}
-                            </form>
-                        {% endblock %}
-                    </div>
-                </div>
-            </div>
+      <div class="tab-content">
+        <div class="tab-pane active">
+          <div class="panel-body">
+            {% block content_inner %}
+              <form class="form" method="POST" action="" enctype="multipart/form-data" role="form" novalidate>
+                {% include "common/form-simple.html" %}
+              </form>
+            {% endblock %}
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endblock content %}
 
 {% block scripts_footer %}
-    {{ form.media }}
+  {{ form.media }}
 
-    {% for extra_form in extra_form_list %}
-        {{ extra_form.media }}
-    {% endfor %}
+  {% for extra_form in extra_form_list %}
+    {{ extra_form.media }}
+  {% endfor %}
 
-    {% for formset in formset_list %}
-        {{ formset.media }}
-    {% endfor %}
+  {% for formset in formset_list %}
+    {{ formset.media }}
+  {% endfor %}
 {% endblock %}

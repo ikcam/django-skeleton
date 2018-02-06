@@ -9,6 +9,7 @@ class ModelAutocomplete(
     CompanyRequiredMixin, autocomplete.Select2QuerySetSequenceView
 ):
     def get_queryset(self):
+        """Reconfigure."""
         messages = Message.objects.filter(company=self.company)
 
         if self.q:

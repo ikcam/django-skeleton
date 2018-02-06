@@ -2,30 +2,30 @@
 
 {% if not view.is_popup %}
 <ul class="nav nav-tabs" role="tablist">
-    <li {% if 'company' in request.resolver_match.url_name %}class="active"{% endif %}>
-        <a id="company" href="{% url 'core:company_detail' %}">
-            {% trans "Company" %}
-        </a>
-    </li>
-    <li {% if 'invite' in request.resolver_match.url_name %}class="active"{% endif %}>
-        <a id="invite" href="{% url 'core:invite_list' %}">
-            {% trans "Invites" %}
-        </a>
-    </li>
-    <li {% if 'invoice' in request.resolver_match.url_name %}class="active"{% endif %}>
-        <a id="invoice" href="{% url 'core:invoice_list' %}">
-            {% trans "Invoices" %}
-        </a>
-    </li>
-    <li {% if 'role' in request.resolver_match.url_name %}class="active"{% endif %}>
-        <a id="role" href="{% url 'core:role_list' %}">
-            {% trans "Roles" %}
-        </a>
-    </li>
-    <li {% if 'user' in request.resolver_match.url_name %}class="active"{% endif %}>
-        <a id="user" href="{% url 'core:user_list' %}">
-            {% trans "Users" %}
-        </a>
-    </li>
+  <li {% if 'company' in request.resolver_match.url_name %}class="active"{% endif %}>
+    <a id="company" href="{% url 'core:company_detail' %}">
+      {% trans "Company" %}
+    </a>
+  </li>
+  <li {% if 'invite' in request.resolver_match.url_name %}class="active"{% endif %}>
+    <a id="invite" href="{% url 'core:invite_list' %}">
+      {% trans "Invites" %}
+    </a>
+  </li>
+  <li {% if 'invoice' in request.resolver_match.url_name %}class="active"{% endif %}>
+    <a id="invoice" href="{% url 'core:invoice_list' %}">
+      {% trans "Invoices" %}
+    </a>
+  </li>
+  <li {% if 'role' in request.resolver_match.url_name %}class="active"{% endif %}>
+    <a id="role" href="{% url 'core:role_list' %}">
+      {% trans "Roles" %}
+    </a>
+  </li>
+  <li {% if 'user' in request.resolver_match.url_name %}class="active"{% endif %}>
+    <a id="user" href="{% url 'core:user_list' %}">
+      {% trans "Users" %}
+    </a>
+  </li>
 </ul>
 {% endif %}

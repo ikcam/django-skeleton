@@ -3,50 +3,50 @@
 {% load i18n core_tags %}
 
 {% block content %}
-    <tr>
-        <td class="content-block">
-            {% blocktrans %}This is an automatic email from {% endblocktrans %} {{ object.company }}.
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            {% blocktrans %}We are sorry to report you that the following email has bounced back to our system.{% endblocktrans %}
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            {% blocktrans %}Please check the persons email before trying again.{% endblocktrans %}.
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            {% blocktrans %}Wrong emails:{% endblocktrans %}.
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            <ul>
-                {% for email in emails %}
-                    <li>{{ email }}</li>
-                {% endfor %}
-            </ul>
-        </td>
-    </tr>
-    <tr>
-        <td class="aligncenter">
-            <a href="{% settings "SITE_URL" %}{{ object.get_absolute_url }}" class="btn-primary">
-                {% trans "View message" %}
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            {% blocktrans %}In case the upper button doesn't work you can click on the link bellow.{% endblocktrans %}
-        </td>
-    </tr>
-    <tr>
-        <td class="content-block">
-            <a href="{% settings "SITE_URL" %}{{ object.get_absolute_url }}">{% settings "SITE_URL" %}{{ object.get_absolute_url }}</a>
-        </td>
-    </tr>
+  <tr>
+    <td class="content-block">
+      {% blocktrans %}This is an automatic email from {% endblocktrans %} {{ object.company }}.
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      {% blocktrans %}We are sorry to report you that the following email has bounced back to our system.{% endblocktrans %}
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      {% blocktrans %}Please check the persons email before trying again.{% endblocktrans %}.
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      {% blocktrans %}Wrong emails:{% endblocktrans %}.
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <ul>
+        {% for email in emails %}
+          <li>{{ email }}</li>
+        {% endfor %}
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td class="aligncenter">
+      <a href="{% settings "SITE_URL" %}{{ object.get_absolute_url }}" class="btn-primary">
+        {% trans "View message" %}
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      {% blocktrans %}In case the upper button doesn't work you can click on the link bellow.{% endblocktrans %}
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <a href="{% settings "SITE_URL" %}{{ object.get_absolute_url }}">{% settings "SITE_URL" %}{{ object.get_absolute_url }}</a>
+    </td>
+  </tr>
 {% endblock content %}

@@ -43,13 +43,11 @@ def get_event_form(company):
             required=False,
             widget=forms.SplitDateTimeWidget(
                 date_attrs={
-                    'placeholder': _("Finish date (date)"),
                     'type': 'date-local',
                     'addon_before':
                         '<span class="glyphicon glyphicon-calendar"></span>',
                 },
                 time_attrs={
-                    'placeholder': _("Finish date (time)"),
                     'type': 'time-local',
                     'addon_before':
                         '<span class="glyphicon glyphicon-time"></span>',
@@ -83,7 +81,7 @@ def get_event_form(company):
         class Meta:
             fields = (
                 'model', 'share_with', 'date_start', 'date_finish', 'notify',
-                'type', 'content'
+                'is_public', 'type', 'content'
             )
             model = Event
 

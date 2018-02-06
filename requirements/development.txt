@@ -2,4 +2,6 @@
 coverage
 django-debug-toolbar
 flake8
+jedi
 pep8
+pycodestyle

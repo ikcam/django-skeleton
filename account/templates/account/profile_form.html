@@ -6,9 +6,9 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-        <li><a href="{% url "account:profile_detail" %}">{% trans "Profile" %}</a></li>
-        <li class="active"><strong>{% trans "Change your profile" %}</strong></li>
+      <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
+      <li><a href="{% url "account:profile_detail" %}">{% trans "Profile" %}</a></li>
+      <li class="active"><strong>{% trans "Change your profile" %}</strong></li>
     </ol>
 {% endblock breadcrumb %}
 
@@ -26,10 +26,10 @@
     {{ form.media }}
 
     {% for extra_form in extra_form_list %}
-        {{ extra_form.media }}
+      {{ extra_form.media }}
     {% endfor %}
 
     {% for formset in formset_list %}
-        {{ formset.media }}
+      {{ formset.media }}
     {% endfor %}
 {% endblock %}

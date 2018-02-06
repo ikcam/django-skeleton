@@ -17,6 +17,14 @@ jQuery(document).ready(function($) {
         });
         modal.find('.modal-body .event-content').text(currentEvent.content);
         modal.find('a.event-url').attr('href', currentEvent.url);
+
+        if (currentEvent.is_public){
+          modal.find('span.event-public').show();
+          modal.find('span.event-non-public').hide();
+        } else {
+          modal.find('span.event-non-public').show();
+          modal.find('span.event-public').hide();
+        }
     })
 
     $('#calendar').fullCalendar({
@@ -50,6 +58,7 @@ jQuery(document).ready(function($) {
                         start: item.date_start || item.date_creation,
                         finish: item.date_finish,
                         content: item.content,
+                        is_public: item.is_public,
                         user: item.user,
                         creation: item.date_creation,
                         url: item.actions.view.url,

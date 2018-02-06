@@ -4,36 +4,36 @@
 
 {% block content %}
     <tr>
-        <td class="content-block">
-            {% blocktrans %}Thank you for joining{% endblocktrans %} {% settings "SITE_NAME" %}!
-        </td>
+      <td class="content-block">
+        {% blocktrans %}Thank you for joining{% endblocktrans %} {% settings "SITE_NAME" %}!
+      </td>
     </tr>
     <tr>
-        <td class="content-block">
-            {% blocktrans %}Click on the following link to activate your account:{% endblocktrans %}.
-        </td>
+      <td class="content-block">
+        {% blocktrans %}Click on the following link to activate your account:{% endblocktrans %}.
+      </td>
     </tr>
     <tr>
-        <td class="aligncenter">
-            <a href="{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}" class="btn-primary">
-                {% trans "Activate now" %}
-            </a>
-        </td>
+      <td class="aligncenter">
+        <a href="{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}" class="btn-primary">
+          {% trans "Activate now" %}
+        </a>
+      </td>
     </tr>
     <tr>
-        <td class="content-block">
-            {% blocktrans %}In case the upper button doesn't work you can click on the link bellow.{% endblocktrans %}.
-        </td>
+      <td class="content-block">
+        {% blocktrans %}In case the upper button doesn't work you can click on the link bellow.{% endblocktrans %}.
+      </td>
     </tr>
     <tr>
-        <td class="content-block">
-            <a href="{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}">{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}</a>
-        </td>
+      <td class="content-block">
+        <a href="{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}">{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}</a>
+      </td>
     </tr>
 
     <tr>
-        <tr class="content-block">
-            {% blocktrans %}If clicking the URL above does not work, copy and paste the URL into a browser window.{% endblocktrans %}
-        </tr>
+      <tr class="content-block">
+        {% blocktrans %}If clicking the URL above does not work, copy and paste the URL into a browser window.{% endblocktrans %}
+      </tr>
     </tr>
 {% endblock content %}

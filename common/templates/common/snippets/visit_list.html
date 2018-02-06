@@ -1,36 +1,36 @@
 {% load boilerplate core_tags i18n %}
 
 <div class="ibox float-e-margins">
-    <div class="ibox-title">
-        <h5>{% trans "Visits" %}</h5>
-        {% include "common/ibox/tools.html" %}
-    </div>
-    <div
-        class="ibox-content table-responsive"
-        ng-controller="TableController"
-        ng-init="setUrl('{% api_list_view 'visit' object %}?limit=10')">
-        <table class="table table-hover table-striped">
-            <thead>
-                <tr>
-                    <th>{% trans "Creation date" %}</th>
-                    <th>{% trans "IP address" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% verbatim %}
-                    <tr ng-repeat="visit in data.results">
-                        <td>{{ visit.date_creation | amTimeAgo }}</td>
-                        <td>{{ visit.ip_address }}</td>
-                    </tr>
-                {% endverbatim %}
-                <tr ng-if="data.results.length < 1">
-                    <td colspan="2" class="text-center text-muted">
-                        {% trans "No information." %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <div class="ibox-title">
+    <h5>{% trans "Visits" %}</h5>
+    {% include "common/ibox/tools.html" %}
+  </div>
+  <div
+    class="ibox-content table-responsive"
+    ng-controller="TableController"
+    ng-init="setUrl('{% api_list_view 'visit' object %}?limit=10')">
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th>{% trans "Creation date" %}</th>
+          <th>{% trans "IP address" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% verbatim %}
+          <tr ng-repeat="visit in data.results">
+            <td>{{ visit.date_creation | amTimeAgo }}</td>
+            <td>{{ visit.ip_address }}</td>
+          </tr>
+        {% endverbatim %}
+        <tr ng-if="data.results.length < 1">
+          <td colspan="2" class="text-center text-muted">
+            {% trans "No information." %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-        {% include "common/pagination-angular.html" %}
-    </div>
+    {% include "common/pagination-angular.html" %}
+  </div>
 </div>

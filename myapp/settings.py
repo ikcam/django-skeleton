@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # Modules
     'boilerplate',
     'bootstrap3',
+    'channels',
     'ckeditor',
     'ckeditor_uploader',
     'corsheaders',
@@ -91,6 +92,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'myapp.wsgi.application'
+
+ASGI_APPLICATION = 'myapp.routing.application'
 
 
 AUTHENTICATION_BACKENDS = ('account.backends.AuthenticationBackend',)

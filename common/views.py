@@ -12,6 +12,7 @@ from boilerplate.mixins import (
 
 from core.constants import PIXEL_GIF_DATA
 from core.mixins import CompanyCreateMixin, CompanyQuerySetMixin
+from core.models import Company
 from .models import Event, Link, Message
 from . import forms, tasks
 
@@ -56,6 +57,26 @@ class EventDelete(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     permissions_required = 'common:delete_event'
     success_url = reverse_lazy('common:event_list')
     template_name_suffix = '_form'
+
+
+class EventPublic(DetailView):
+    model = Event
+    template_name_suffix = '_public'
+
+    def get_company(self):
+        try:
+            return Company.objects.get(
+                slug=self.kwargs['slug']
+            )
+        except Company.DoesNotExist:
+            raise Http404
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            company=self.get_company(),
+            is_public=True,
+        )
 
 
 class LinkList(CompanyQuerySetMixin, ActionListMixin, ListView):

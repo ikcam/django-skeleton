@@ -70,6 +70,9 @@ class Event(AuditableMixin):
         validators=[validate_comma_separated_integer_list],
         verbose_name=_("Notified")
     )
+    is_public = models.BooleanField(
+        default=False, verbose_name=_("Public")
+    )
     type = models.SlugField(
         choices=TYPE_CHOICES, verbose_name=_("Type")
     )
@@ -86,6 +89,10 @@ class Event(AuditableMixin):
         return "%s" % self.subject
 
     def get_absolute_url(self):
+        if self.is_public:
+            return reverse_lazy(
+                'common:event_public', args=[self.company.slug, self.pk]
+            )
         if self.model:
             return self.model.get_absolute_url()
         return reverse_lazy('common:event_change', args=[self.pk])
@@ -106,6 +113,26 @@ class Event(AuditableMixin):
 
     def get_notified_display(self, turn):
         return dict(self.NOTIFICATION_OPTIONS).get(int(turn))
+
+    @property
+    def google_calendar_url(self):
+        start_string = self.date.strftime('%Y%m%dT%H%M%SZ')
+        finish_string = (self.date_finish or self.date).strftime(
+            '%Y%m%dT%H%M%SZ'
+        )
+
+        url = (
+            'https://www.google.com/calendar/render?action=TEMPLATE'
+            '&text={subject}&details={content}&'
+            'dates={date_start}%2F{date_finish}'
+        ).format(
+            subject=self.subject,
+            content=self.content,
+            date_start=start_string,
+            date_finish=finish_string
+        )
+
+        return url
 
     @property
     def notify_list(self):
