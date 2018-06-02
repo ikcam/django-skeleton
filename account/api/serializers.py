@@ -1,14 +1,16 @@
-from django.contrib.auth import password_validation
+from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
-from account.models import Colaborator, Notification, Profile
-from api.serializers import ActionSerializer
+from account.models import Colaborator, Notification
+from myapp.api.serializers import ActionSerializer
 from core.models import Company
+
+
+UserModel = get_user_model()
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -82,29 +84,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         return data
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    company = CompanySerializer()
-
-    class Meta:
-        exclude = (
-            'user', 'companies', 'activation_key', 'date_key_expiration',
-            'facebook_id', 'facebook_access_token'
-        )
-        model = Profile
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    profile = UserProfileSerializer()
-    companies_available = ColaboratorSerializer(many=True)
-
-    class Meta:
-        fields = (
-            'id', 'username', 'first_name', 'last_name', 'email', 'profile',
-            'companies_available'
-        )
-        model = User
-
-
 class SetPasswordSerializer(serializers.Serializer):
     new_password1 = serializers.CharField()
     new_password2 = serializers.CharField()
@@ -134,15 +113,7 @@ class SetPasswordSerializer(serializers.Serializer):
         return self.user
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = (
-            'id', 'username', 'first_name', 'last_name', 'email'
-        )
-        model = User
-
-
-class SignUpSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.EmailField()
@@ -154,7 +125,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             'username', 'password1', 'password2', 'first_name', 'last_name',
             'email'
         )
-        model = User
+        model = UserModel
 
     def validate(self, data):
         if data['password1'] != data['password2']:
@@ -172,7 +143,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         return data
 
     def validate_email(self, data):
-        exists = User.objects.filter(email=data).exists()
+        exists = UserModel.objects.filter(email=data).exists()
         if exists:
             raise serializers.ValidationError(
                 _("A user with that email already exists.")
@@ -184,3 +155,23 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.set_password(self.validated_data["password1"])
         user.save()
         return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'username', 'first_name', 'last_name', 'email'
+        )
+        model = UserModel
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+    companies = ColaboratorSerializer(many=True)
+
+    class Meta:
+        fields = (
+            'username', 'first_name', 'last_name', 'email',
+            'companies'
+        )
+        model = UserModel

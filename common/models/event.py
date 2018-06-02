@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.contrib.auth.models import ContentType, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -16,6 +17,9 @@ from core.constants import (
 )
 from core.mixins import AuditableMixin
 from core.models import Company
+
+
+User = get_user_model()
 
 
 class Event(AuditableMixin):

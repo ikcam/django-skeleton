@@ -2,16 +2,16 @@
 
 {% load core_tags i18n %}
 
-{% block title %}{% trans "Profile" %}{% endblock title %}
+{% block title %}{% trans "User" %}{% endblock title %}
 
 {% block breadcrumb %}
   <ol class="breadcrumb">
     <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-    <li class="active"><strong>{% trans "Profile" %}</strong></li>
+    <li class="active"><strong>{% trans "User" %}</strong></li>
   </ol>
 {% endblock breadcrumb %}
 
-{% block page_header %}<h2>{% trans "Profile" %}</h2>{% endblock %}
+{% block page_header %}<h2>{% trans "User" %}</h2>{% endblock %}
 
 {% block page_actions %}
   <a class="btn btn-info" role="button" href="{% url "account:profile_update" %}">

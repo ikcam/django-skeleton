@@ -2,16 +2,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.views import (
     INTERNAL_RESET_URL_TOKEN, INTERNAL_RESET_SESSION_TOKEN
 )
-from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
+from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework import permissions, status, views, viewsets
 from rest_framework.response import Response
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 
 from . import filters, serializers
-from api.mixins import CompanyQuerySetMixin
+from myapp.api.mixins import CompanyQuerySetMixin
 from account.models import Notification
 
 
@@ -22,6 +22,7 @@ class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
     filter_class = filters.NotificationFilterSet
     model = Notification
     queryset = Notification.objects.all()
+    permission_classes = (permissions.AllowAny, )
     serializer_class = serializers.NotificationSerializer
 
     def get_queryset(self):
@@ -31,29 +32,40 @@ class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
         )
 
 
-class ProfileViewSet(viewsets.ViewSet):
-    queryset = User.objects.all()
+class UserViewSet(viewsets.ModelViewSet):
+    model = UserModel
+    queryset = UserModel.objects.all()
 
-    def list(self, request):
-        serializer = serializers.ProfileSerializer(request.user)
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return serializers.UserCreateSerializer
+        elif self.request.method in ('PUT', 'PATCH'):
+            return serializers.UserUpdateSerializer
+        elif self.request.method == 'GET':
+            return serializers.UserDetailSerializer
+
+    def list(self, request, *args, **kwargs):
+        if not request.user:
+            return Response(
+                {'detail': _("Credentials not provided.")},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = self.get_serializer_class()(request.user)
         return Response(serializer.data)
 
-    @list_route(methods=['get', 'post', 'patch'])
-    def profile(self, request):
-        if request.method in ['PATCH', 'POST']:
-            serializer = serializers.UserProfileSerializer(
-                request.user.profile, data=request.data, partial=True
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-        else:
-            serializer = serializers.UserProfileSerializer(
-                request.user.profile
-            )
+    def retrieve(self, request, *args, **kwargs):
+        return Response(
+            {'detail': _("Forbidden")},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
-        return Response(serializer.data)
-
-    @list_route(methods=['post'])
+    @action(
+        detail=False,
+        methods=['post'],
+        url_path='password-change',
+        url_name='password_change'
+    )
     def password_change(self, request):
         serializer_class = serializers.PasswordChangeSerializer
         serializer = serializer_class(data=request.data)
@@ -134,16 +146,3 @@ class PasswordResetConfirmView(views.APIView):
             serializer.save()
             return Response({}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SignUpView(generics.CreateAPIView):
-    model = User
-    permission_classes = (permissions.AllowAny, )
-    queryset = User.objects.all()
-    serializer_class = serializers.SignUpSerializer
-
-    @classmethod
-    def as_view(cls, actions=None, **initkwargs):
-        initkwargs.pop('suffix')
-        initkwargs.pop('basename')
-        return super().as_view(**initkwargs)

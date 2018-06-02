@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -9,6 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 from core.constants import LEVEL_INFO, LEVEL_SUCCESS
 from core.mixins import AuditableMixin
 from core.models import Company
+
+
+User = get_user_model()
 
 
 class Notification(AuditableMixin):

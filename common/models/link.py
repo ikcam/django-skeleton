@@ -1,7 +1,7 @@
 import hashlib
 import random
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.functional import cached_property
@@ -10,6 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 from core.mixins import AuditableMixin
 from core.models import Company
 from .message import Message
+
+
+User = get_user_model()
 
 
 class Link(AuditableMixin):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.serializers import ActionSerializer
+from myapp.api.serializers import ActionSerializer
 from common.models import Event, Link, Message, Visit
 
 

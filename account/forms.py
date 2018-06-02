@@ -1,25 +1,11 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
 
-from .models import Profile
-
-
-class ProfileForm(forms.ModelForm):
-    class Meta:
-        exclude = ('nav_expanded', )
-        model = Profile
-        widgets = {
-            'language': autocomplete.ListSelect2(
-                url='core:language_autocomplete',
-            ),
-            'timezone': autocomplete.ListSelect2(
-                url='core:timezone_autocomplete',
-            ),
-        }
+UserModel = get_user_model()
 
 
 class SignUpForm(UserCreationForm):
@@ -38,12 +24,12 @@ class SignUpForm(UserCreationForm):
             'username', 'password1', 'password2', 'first_name',
             'last_name', 'email'
         )
-        model = User
+        model = UserModel
 
     def clean_email(self):
         data = self.cleaned_data['email']
 
-        if User.objects.filter(email=data).exists():
+        if UserModel.objects.filter(email=data).exists():
             raise forms.ValidationError(
                 _("A user with that email already exists.")
             )
@@ -65,7 +51,7 @@ class SignUpInviteForm(UserCreationForm):
         fields = (
             'username', 'password1', 'password2', 'first_name', 'last_name'
         )
-        model = User
+        model = UserModel
 
 
 class UserCreateForm(UserCreationForm):
@@ -82,7 +68,7 @@ class UserCreateForm(UserCreationForm):
     def clean_email(self):
         data = self.cleaned_data['email']
 
-        if User.objects.filter(email=data).exists():
+        if UserModel.objects.filter(email=data).exists():
             raise forms.ValidationError(
                 _("A user with that email already exists.")
             )
@@ -92,14 +78,11 @@ class UserCreateForm(UserCreationForm):
 
 class UserUpdateForm(UserChangeForm):
     class Meta:
-        fields = ('password', 'username', 'first_name', 'last_name', 'email')
-        model = User
-
-
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        fields = ('language', 'timezone', 'photo')
-        model = Profile
+        fields = (
+            'password', 'username', 'first_name', 'last_name', 'email',
+            'language', 'timezone', 'photo'
+        )
+        model = UserModel
         widgets = {
             'language': autocomplete.ListSelect2(
                 url='core:language_autocomplete',

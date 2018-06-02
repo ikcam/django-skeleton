@@ -2,8 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404, HttpResponse
@@ -25,7 +24,9 @@ from facebook import auth_url, GraphAPI, parse_signed_request
 from core.mixins import CompanyQuerySetMixin
 from core.models import Invite
 from . import forms
-from .models import Notification, Profile
+from .models import Notification
+
+UserModel = get_user_model()
 
 
 class Activate(NoLoginRequiredMixin, DetailView):
@@ -38,11 +39,11 @@ class Activate(NoLoginRequiredMixin, DetailView):
         token = self.get_token()
 
         try:
-            return Profile.objects.get(
+            return UserModel.objects.get(
                 activation_key=token,
-                user__is_active=False,
+                is_active=False,
             )
-        except Profile.DoesNotExist:
+        except UserModel.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
@@ -116,7 +117,7 @@ class LoginFacebookView(View):
 
             # Check if another user with that ID exists
             if (
-                User.objects
+                UserModel.objects
                     .exclude(pk=user.pk)
                     .filter(facebook_id=fb_user.get('id'))
                     .exists()
@@ -128,35 +129,38 @@ class LoginFacebookView(View):
                         "Facebook account already."
                     )
                 )
-                return redirect('profile:detail')
+                return redirect('account:user_detail')
             elif (
-                user.profile.facebook_id and
-                user.profile.facebook_id == fb_user.get('id')
+                user.facebook_id and
+                user.facebook_id == fb_user.get('id')
             ):
                 login(request, user)
                 return redirect(self.success_url)
             else:
-                user.profile.facebook_id = fb_user.get('id')
-                user.profile.access_token = access_token
-                user.profile.save()
+                user.facebook_id = fb_user.get('id')
+                user.facebook_access_token = access_token
+                user.save(
+                    update_fields=['facebook_id', 'facebook_access_token']
+                )
         else:
             # Get or create the user
             try:
-                user = User.objects.get(profile__facebook_id=fb_user.get('id'))
+                user = UserModel.objects.get(
+                    facebook_id=fb_user.get('id')
+                )
             except ObjectDoesNotExist:
-                user = User.objects.create(
+                user = UserModel.objects.create(
                     first_name=fb_user.get('first_name'),
                     last_name=fb_user.get('last_name'),
                     email=fb_user.get('email'),
                     password='temp',
                     username=fb_user.get('id'),
                 )
-                password = User.objects.make_random_password()
+                password = UserModel.objects.make_random_password()
+                user.facebook_id = fb_user.get('id')
+                user.access_token = access_token
                 user.set_password(password)
                 user.save()
-                user.profile.facebook_id = fb_user.get('id')
-                user.profile.access_token = access_token
-                user.profile.save()
 
             login(request, user)
         return redirect(self.success_url)
@@ -172,13 +176,13 @@ class LogoutFacebookView(View):
         )
 
         try:
-            user = User.objects.get(profile__facebook_id=data['user_id'])
-        except User.DoesNotExist:
+            user = UserModel.objects.get(facebook_id=data['user_id'])
+        except UserModel.DoesNotExist:
             raise PermissionDenied
 
-        user.profile.facebook_id = None
-        user.profile.facebook_access_token = None
-        user.profile.save()
+        user.facebook_id = None
+        user.facebook_access_token = None
+        user.save()
 
         return HttpResponse('', content_type='text/plain')
 
@@ -194,7 +198,7 @@ class NotificationDetail(CompanyQuerySetMixin, DetailView):
 
 class NotificationReadAll(CompanyQuerySetMixin, ListView):
     model = Notification
-    success_url = reverse_lazy('account:profile_detail')
+    success_url = reverse_lazy('account:user_detail')
 
     def get(self, request, *args, **kwargs):
         qs = self.get_queryset()
@@ -207,31 +211,28 @@ class NotificationReadAll(CompanyQuerySetMixin, ListView):
             return redirect(self.success_url)
 
 
-class ProfileDetail(LoginRequiredMixin, DetailView):
-    model = User
-    template_name = 'account/profile_detail.html'
+class UserDetail(LoginRequiredMixin, DetailView):
+    model = UserModel
+    template_name = 'account/user_detail.html'
 
     def get_object(self):
         return self.request.user
 
 
-class ProfilePassword(LoginRequiredMixin, RedirectView):
+class UserPassword(LoginRequiredMixin, RedirectView):
     permanent = False
     pattern_name = 'account:password_change'
 
 
-class ProfileUpdate(
+class UserUpdate(
     ExtraFormsAndFormsetsMixin, LoginRequiredMixin, UpdateMessageMixin,
     UpdateView
 ):
-    extra_form_list = (
-        ('profile', 'user', forms.UserProfileForm),
-    )
     form_class = forms.UserUpdateForm
-    model = User
+    model = UserModel
     success_message = _("Your profile has been updated successfully.")
-    success_url = reverse_lazy("account:profile_detail")
-    template_name = 'account/profile_form.html'
+    success_url = reverse_lazy("account:user_detail")
+    template_name = 'account/user_form.html'
 
     def get_object(self):
         return self.request.user
@@ -239,7 +240,7 @@ class ProfileUpdate(
 
 class SignUp(NoLoginRequiredMixin, CreateMessageMixin, CreateView):
     form_class = forms.SignUpForm
-    model = User
+    model = UserModel
     success_url = reverse_lazy('account:login')
     success_message = _(
         'Please check your email and activate your account. '
@@ -258,7 +259,7 @@ class SignUpInvite(
     CreateMessageMixin, CreateView
 ):
     form_class = forms.SignUpInviteForm
-    model = User
+    model = UserModel
     success_url = reverse_lazy('account:login')
     success_message = _(
         'Please check your email and activate your account. '
@@ -269,20 +270,21 @@ class SignUpInvite(
     def dispatch(self, request, *args, **kwargs):
         invite = self.get_invite()
         company = self.get_company()
+        user = request.user
 
         if (
-            request.user.is_authenticated and
-            request.user.email == invite.email
+            user.is_authenticated and
+            user.email == invite.email
         ):
-            request.user.profile.company = company
-            request.user.profile.colaborator_set.create(
+            user.company = company
+            user.save(update_fields=['company'])
+            user.companies.create(
                 company=company
             )
-            request.user.profile.save()
 
             invite.is_active = False
-            invite.user = request.user
-            invite.save()
+            invite.user = user
+            invite.save(update_fields=['is_active', 'user'])
 
             messages.success(
                 request,
@@ -326,15 +328,15 @@ class SignUpInvite(
 
         company = self.get_company()
 
-        self.object.profile.company = company
-        self.object.profile.language = company.language
-        self.object.profile.save()
-        self.object.profile.colaborator_set.create(
+        self.object.company = company
+        self.object.language = company.language
+        self.object.save(update_fields=['company', 'language'])
+        self.object.companies.create(
             company=company
         )
 
         invite.is_active = False
         invite.user = self.object
-        invite.save()
+        invite.save(update_fields=['is_active', 'user'])
 
         return response

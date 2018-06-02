@@ -1,5 +1,8 @@
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class AuthenticationBackend(ModelBackend):
@@ -7,8 +10,7 @@ class AuthenticationBackend(ModelBackend):
         try:
             # This is where the magic happens
             return User.objects.select_related(
-                'profile',
-                'profile__company',
+                'company',
             ).get(
                 pk=user_id
             )

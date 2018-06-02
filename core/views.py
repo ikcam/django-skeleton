@@ -1,7 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.urls import reverse_lazy
@@ -18,7 +18,7 @@ from boilerplate.mixins import (
 )
 from django_addanother.views import CreatePopupMixin
 
-from account.forms import UserCreateForm, UserProfileForm
+from account.forms import UserCreateForm
 from account.models import Colaborator
 from .mixins import (
     CompanyCreateMixin, CompanyQuerySetMixin, CompanyRequiredMixin,
@@ -26,6 +26,8 @@ from .mixins import (
 )
 from .models import Company, Invite, Invoice, Role
 from . import forms, tasks
+
+UserModel = get_user_model()
 
 
 class Index(TemplateView):
@@ -311,7 +313,7 @@ class RoleDelete(
 class UserList(
     CompanyRequiredMixin, ListView
 ):
-    model = User
+    model = UserModel
     paginate_by = 30
     template_name = 'core/user_list.html'
     permissions_required = 'auth:view_user'
@@ -326,7 +328,7 @@ class UserCreate(
     CompanyRequiredMixin, CreateMessageMixin, CreateView
 ):
     form_class = UserCreateForm
-    model = User
+    model = UserModel
     template_name = 'core/user_form.html'
     success_url = reverse_lazy("core:user_list")
     permissions_required = 'auth:add_user'
@@ -353,11 +355,8 @@ class UserUpdate(
     CompanyRequiredMixin, ExtraFormsAndFormsetsMixin, UpdateMessageMixin,
     UpdateView
 ):
-    extra_form_list = (
-        ('profile', 'user', UserProfileForm),
-    )
     form_class = forms.UserChangeForm
-    model = User
+    model = UserModel
     permissions_required = 'auth:change_user'
     template_name = 'core/user_form.html'
     success_url = reverse_lazy("core:user_list")
@@ -367,7 +366,7 @@ class UserPassword(
     CompanyRequiredMixin, UpdateMessageMixin, UpdateView
 ):
     form_class = SetPasswordForm
-    model = User
+    model = UserModel
     permissions_required = 'auth:change_user'
     template_name = 'core/user_form.html'
 
@@ -395,7 +394,7 @@ class UserPermissions(
 class UserRemove(
     CompanyRequiredMixin, DetailView
 ):
-    model = User
+    model = UserModel
     permissions_required = 'auth:delete_user'
     template_name = 'core/user_form.html'
 

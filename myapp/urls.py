@@ -48,6 +48,6 @@ urlpatterns += i18n_patterns(
     ),
     path(
         _('api/'),
-        include(('api.urls', 'api'), namespace='api')
+        include(('myapp.api.urls', 'api'), namespace='api')
     ),
 )

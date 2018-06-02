@@ -30,17 +30,17 @@ urlpatterns = [
     # Views
     path(
         '',
-        views.ProfileDetail.as_view(),
-        name='profile_detail'
+        views.UserDetail.as_view(),
+        name='user_detail'
     ),
     path(
         _('password/'),
-        views.ProfilePassword.as_view(),
+        views.UserPassword.as_view(),
     ),
     path(
         _('change/'),
-        views.ProfileUpdate.as_view(),
-        name='profile_update'
+        views.UserUpdate.as_view(),
+        name='user_update'
     ),
     path(
         _('activate/<token>/'),

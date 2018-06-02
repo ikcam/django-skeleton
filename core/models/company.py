@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import signals
 from django.urls import reverse_lazy
@@ -21,7 +20,7 @@ class Company(AuditableMixin, models.Model):
         editable=False, unique=True, verbose_name=_("Slug")
     )
     user = models.ForeignKey(
-        User, related_name='companies', on_delete=models.CASCADE,
+        'account.User', related_name='+', on_delete=models.CASCADE,
         verbose_name=_("User")
     )
     date_next_invoice = models.DateTimeField(

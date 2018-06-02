@@ -1,7 +1,6 @@
 import hashlib
 import random
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -31,8 +30,9 @@ class Invite(AuditableMixin, models.Model):
         verbose_name=_("Activation key")
     )
     user = models.OneToOneField(
-        User, blank=True, null=True, editable=False, related_name='invite',
-        on_delete=models.SET_NULL, verbose_name=_("User")
+        'account.User', blank=True, null=True, editable=False,
+        related_name='invite', on_delete=models.SET_NULL,
+        verbose_name=_("User")
     )
 
     class Meta:

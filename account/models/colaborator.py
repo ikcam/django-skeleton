@@ -1,15 +1,18 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import Company, Role
-from .profile import Profile
+
+
+User = get_user_model()
 
 
 class Colaborator(models.Model):
-    profile = models.ForeignKey(
-        Profile, editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Profile")
+    user = models.ForeignKey(
+        User, editable=False, on_delete=models.CASCADE,
+        verbose_name=_("User")
     )
     company = models.ForeignKey(
         Company, editable=False, related_name='users_all',
@@ -29,14 +32,10 @@ class Colaborator(models.Model):
     )
 
     class Meta:
-        ordering = ['profile', ]
-        unique_together = ('profile', 'company')
+        ordering = ['user', ]
+        unique_together = ('user', 'company')
         verbose_name = _("Colaborator")
         verbose_name_plural = _("Colaborators")
 
     def __str__(self):
         return "%s" % self.profile
-
-    @property
-    def user(self):
-        return self.profile.user

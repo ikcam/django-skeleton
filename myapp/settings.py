@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'account',
     # Common and API at the end
     'common',
-    'api',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +124,8 @@ AUTH_PASSWORD_VALIDATORS = [
         ),
     },
 ]
+
+AUTH_USER_MODEL = 'account.User'
 
 
 # Internationalization
