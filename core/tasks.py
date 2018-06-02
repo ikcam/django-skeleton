@@ -8,7 +8,7 @@ logger = get_task_logger(__name__)
 
 
 def model_task(model, company_id, task, user_id=None, pk=None, data=None):
-    from django.contrib.auth.models import User
+    from account.models import User
     from core.models.company import Company
 
     if company_id:

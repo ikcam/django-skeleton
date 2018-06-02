@@ -69,7 +69,7 @@ class Notification(AuditableMixin):
     @classmethod
     def set_read_all(cls, user):
         user.notifications.filter(
-            company=user.profile.company,
+            company=user.company,
             date_read__isnull=True
         ).update(date_read=timezone.now())
         return (LEVEL_SUCCESS, _("All notifications were mark as read."))

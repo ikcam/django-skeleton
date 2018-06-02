@@ -16,7 +16,7 @@
 
             <div class="list-group">
                 {% for object in object_list %}
-                    <a class="list-group-item {% if request.user.profile.company == object %}active{% endif %}" href="{% url 'core:company_switch' object.id %}"><i class="fa fa-building"></i> {{ object }} {% if request.user.profile.company == object %}({% trans "active" %}){% endif %}</a></li>
+                    <a class="list-group-item {% if request.user.company == object %}active{% endif %}" href="{% url 'core:company_switch' object.id %}"><i class="fa fa-building"></i> {{ object }} {% if request.user.company == object %}({% trans "active" %}){% endif %}</a></li>
                 {% endfor %}
             </div>
             <p>{% trans "or" %}</p>

@@ -40,7 +40,7 @@ class AuditableMixin(models.Model):
 class CompanyRequiredMixin:
     company = None
     company_field = 'company'
-    permissions_required = None
+    permission_required = None
     raise_exception = True
 
     def dispatch(self, request, *args, **kwargs):
@@ -48,28 +48,28 @@ class CompanyRequiredMixin:
 
         if not user.is_authenticated:
             return self.handle_no_permission()
-        elif not user.profile.company:
+        elif not user.company:
             return self.handle_no_permission()
 
-        if not user.profile.company_profile.is_active:
-            user.profile.company = None
-            user.profile.save()
+        if not user.company_profile.is_active:
+            user.company = None
+            user.save()
             return redirect('core:company_choose')
 
-        self.company = user.profile.company
+        self.company = user.company
 
         if not self.company:
             return redirect('core:company_choose')
         elif not self.company.is_active:
             return redirect('core:company_activate')
 
-        permissions_required = self.get_permissions_required()
+        permission_required = self.get_permission_required()
 
-        if permissions_required and isinstance(permissions_required, tuple):
-            if not user.has_company_perms(permissions_required):
+        if permission_required and isinstance(permission_required, tuple):
+            if not user.has_company_perms(permission_required):
                 return self.handle_no_permission()
-        elif permissions_required:
-            if not user.has_company_perm(permissions_required):
+        elif permission_required:
+            if not user.has_company_perm(permission_required):
                 return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
@@ -88,8 +88,8 @@ class CompanyRequiredMixin:
     def get_company_field(self):
         return self.company_field
 
-    def get_permissions_required(self):
-        return self.permissions_required
+    def get_permission_required(self):
+        return self.permission_required
 
     def handle_no_permission(self, msg=None):
         if self.raise_exception:

@@ -4,7 +4,6 @@ from io import BytesIO
 import pytz
 import random
 
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
@@ -19,6 +18,7 @@ from django.utils.translation import ugettext_lazy as _
 from boilerplate.mail import SendEmail
 from boilerplate.signals import add_view_permissions
 from PIL import Image
+from rest_framework.authtoken.models import Token
 
 from core.constants import ACCOUNT_ACTIVATION_HOURS
 from core.models import Company
@@ -126,7 +126,7 @@ class User(AbstractUser):
         self.save()
 
         # Change created objects
-        self.user.invite.delete()
+        self.invite.delete()
 
     def company_switch(self, company):
         if not isinstance(company, Company):
@@ -163,7 +163,7 @@ class User(AbstractUser):
         return True
 
     def key_generate(self):
-        if self.user.is_active:
+        if self.is_active:
             return False
         elif (
             self.date_key_expiration and
@@ -200,7 +200,7 @@ class User(AbstractUser):
 
     def key_send(self):
         email = SendEmail(
-            to=self.user.email,
+            to=self.email,
             template_name_suffix='key',
             subject=_("Activate your account"),
             is_html=True
@@ -284,83 +284,63 @@ class User(AbstractUser):
         else:
             self.photo_thumb.delete(save=True)
 
+    def add_notification(self, company, model, obj, response):
+        level, content = response
 
-def add_notification(self, company, model, obj, response):
-    level, content = response
+        if hasattr(obj, 'pk'):
+            self.notifications.create(
+                company=company,
+                model=obj,
+                level=level,
+                content=content,
+                destination=obj.get_absolute_url(),
+            )
+        else:
+            ct = ContentType.objects.get(
+                app_label=model._meta.app_label,
+                model=model._meta.model_name
+            )
+            destination = reverse_lazy('{}:{}_list'.format(
+                model._meta.app_label, model._meta.model_name
+            ))
+            self.notifications.create(
+                company=company,
+                contenttype=ct,
+                level=level,
+                content=content,
+                destination=destination,
+            )
 
-    if hasattr(obj, 'pk'):
-        self.notifications.create(
-            company=company,
-            model=obj,
-            level=level,
-            content=content,
-            destination=obj.get_absolute_url(),
+    def companies_available(self):
+        return self.colaborator_set.filter(
+            is_active=True
+        ).exclude(company_id=self.company.pk)
+
+    def notifications_unread(self):
+        return self.notifications.filter(
+            company=self.company,
+            date_read__isnull=True
         )
-    else:
-        ct = ContentType.objects.get(
-            app_label=model._meta.app_label,
-            model=model._meta.model_name
-        )
-        destination = reverse_lazy('{}:{}_list'.format(
-            model._meta.app_label, model._meta.model_name
-        ))
-        self.notifications.create(
-            company=company,
-            contenttype=ct,
-            level=level,
-            content=content,
-            destination=destination,
-        )
 
+    def has_company_perm(self, perm, obj=None):
+        if self.is_superuser:
+            return True
+        elif self.is_staff:
+            return self.has_perm(perm, obj)
+        elif self == self.company.user:
+            return True
 
-def companies_available(self):
-    return self.colaborator_set.filter(
-        is_active=True
-    ).exclude(company_id=self.company.pk)
+        return perm in self.perms
 
+    def has_company_perms(self, perm_list, obj=None):
+        if self.is_superuser:
+            return True
+        elif self.is_staff:
+            return self.has_perms(perm_list, obj)
+        elif self == self.company.user:
+            return True
 
-def notifications_unread(self):
-    return self.notifications.filter(
-        company=self.profile.company,
-        date_read__isnull=True
-    )
-
-
-def has_company_perm(self, perm, obj=None):
-    if self.is_superuser:
-        return True
-    elif self.is_staff:
-        return self.has_perm(perm, obj)
-    elif self == self.company.user:
-        return True
-
-    return perm in self.perms
-
-
-def has_company_perms(self, perm_list, obj=None):
-    if self.is_superuser:
-        return True
-    elif self.is_staff:
-        return self.has_perms(perm_list, obj)
-    elif self == self.company.user:
-        return True
-
-    return all(self.has_company_perm(perm, obj) for perm in perm_list)
-
-
-def user_str(self):
-    if self.first_name and self.last_name:
-        return '%s %s' % (self.first_name, self.last_name)
-    else:
-        return self.username
-
-
-User.add_to_class('__str__', user_str)
-User.add_to_class('add_notification', add_notification)
-User.add_to_class('companies_available', companies_available)
-User.add_to_class('notifications_unread', notifications_unread)
-User.add_to_class('has_company_perm', has_company_perm)
-User.add_to_class('has_company_perms', has_company_perms)
+        return all(self.has_company_perm(perm, obj) for perm in perm_list)
 
 
 def post_save_user(sender, instance, created, **kwargs):

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
 
-UserModel = get_user_model()
+from .models import User
 
 
 class SignUpForm(UserCreationForm):
@@ -24,12 +24,12 @@ class SignUpForm(UserCreationForm):
             'username', 'password1', 'password2', 'first_name',
             'last_name', 'email'
         )
-        model = UserModel
+        model = User
 
     def clean_email(self):
         data = self.cleaned_data['email']
 
-        if UserModel.objects.filter(email=data).exists():
+        if User.objects.filter(email=data).exists():
             raise forms.ValidationError(
                 _("A user with that email already exists.")
             )
@@ -51,7 +51,7 @@ class SignUpInviteForm(UserCreationForm):
         fields = (
             'username', 'password1', 'password2', 'first_name', 'last_name'
         )
-        model = UserModel
+        model = User
 
 
 class UserCreateForm(UserCreationForm):
@@ -68,7 +68,7 @@ class UserCreateForm(UserCreationForm):
     def clean_email(self):
         data = self.cleaned_data['email']
 
-        if UserModel.objects.filter(email=data).exists():
+        if User.objects.filter(email=data).exists():
             raise forms.ValidationError(
                 _("A user with that email already exists.")
             )
@@ -82,7 +82,7 @@ class UserUpdateForm(UserChangeForm):
             'password', 'username', 'first_name', 'last_name', 'email',
             'language', 'timezone', 'photo'
         )
-        model = UserModel
+        model = User
         widgets = {
             'language': autocomplete.ListSelect2(
                 url='core:language_autocomplete',

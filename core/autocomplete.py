@@ -52,12 +52,12 @@ class RoleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if (
             not self.request.user.is_authenticated or
-            not self.request.user.profile.company
+            not self.request.user.company
         ):
             return Role.objects.none()
 
         qs = Role.objects.filter(
-            company=self.request.user.profile.company,
+            company=self.request.user.company,
         )
 
         if self.q:

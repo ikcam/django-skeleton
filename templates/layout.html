@@ -31,7 +31,7 @@
     <![endif]-->
     {% block scripts_header %}{% endblock scripts_header %}
   </head>
-  <body {% if not request.user.profile.nav_expanded %}class="mini-navbar"{% endif %}>
+  <body {% if not request.user.nav_expanded %}class="mini-navbar"{% endif %}>
     <script>
       window.fbAsyncInit = function() {
         FB.init({
@@ -91,7 +91,7 @@
     {% block css_footer %}{% endblock css_footer %}
 
     <script>
-      var api_url_profile = '{% url "api:account:user-profile" %}';
+      var api_url_profile = '{% url "api:account:user-list" %}';
       var site_language = '{{ LANGUAGE_CODE }}';
       var site_timezone = '{{ TIME_ZONE }}';
     </script>

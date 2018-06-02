@@ -6,13 +6,13 @@
     <ul class="nav metismenu" id="side-menu">
       <li class="nav-header">
         <div id="profileDropdown" class="dropdown profile-element">
-          {% if request.user.profile.photo_thumb %}
-            <span><img src="{{ request.user.profile.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px"></span>
+          {% if request.user.photo_thumb %}
+            <span><img src="{{ request.user.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px"></span>
           {% endif %}
           <a id="profileBtn" data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
             <span class="clear">
               <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
-              <span class="text-muted text-xs block">{{ request.user.profile.company }} <b class="caret"></b></span>
+              <span class="text-muted text-xs block">{{ request.user.company }} <b class="caret"></b></span>
             </span>
           </a>
           <ul class="dropdown-menu animated fadeIn m-t-xs" aria-labelledby="profileBtn">
@@ -26,7 +26,7 @@
                 <li class="divider"></li>
               {% endif %}
             {% endfor %}
-            <li><a href="{% url 'account:profile_detail' %}">{% trans 'Profile' %}</a></li>
+            <li><a href="{% url 'account:user_detail' %}">{% trans 'Profile' %}</a></li>
             <li class="divider"></li>
             <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
           </ul>

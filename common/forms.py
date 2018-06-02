@@ -1,8 +1,8 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
+from account.models import User
 from .models import Event, Link
 
 """ Custom field """

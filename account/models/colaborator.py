@@ -38,4 +38,4 @@ class Colaborator(models.Model):
         verbose_name_plural = _("Colaborators")
 
     def __str__(self):
-        return "%s" % self.profile
+        return "%s" % self.user

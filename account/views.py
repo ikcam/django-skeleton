@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404, HttpResponse
@@ -24,9 +24,7 @@ from facebook import auth_url, GraphAPI, parse_signed_request
 from core.mixins import CompanyQuerySetMixin
 from core.models import Invite
 from . import forms
-from .models import Notification
-
-UserModel = get_user_model()
+from .models import Notification, User
 
 
 class Activate(NoLoginRequiredMixin, DetailView):
@@ -39,11 +37,11 @@ class Activate(NoLoginRequiredMixin, DetailView):
         token = self.get_token()
 
         try:
-            return UserModel.objects.get(
+            return User.objects.get(
                 activation_key=token,
                 is_active=False,
             )
-        except UserModel.DoesNotExist:
+        except User.DoesNotExist:
             raise Http404
 
     def get(self, request, *args, **kwargs):
@@ -117,7 +115,7 @@ class LoginFacebookView(View):
 
             # Check if another user with that ID exists
             if (
-                UserModel.objects
+                User.objects
                     .exclude(pk=user.pk)
                     .filter(facebook_id=fb_user.get('id'))
                     .exists()
@@ -145,18 +143,18 @@ class LoginFacebookView(View):
         else:
             # Get or create the user
             try:
-                user = UserModel.objects.get(
+                user = User.objects.get(
                     facebook_id=fb_user.get('id')
                 )
             except ObjectDoesNotExist:
-                user = UserModel.objects.create(
+                user = User.objects.create(
                     first_name=fb_user.get('first_name'),
                     last_name=fb_user.get('last_name'),
                     email=fb_user.get('email'),
                     password='temp',
                     username=fb_user.get('id'),
                 )
-                password = UserModel.objects.make_random_password()
+                password = User.objects.make_random_password()
                 user.facebook_id = fb_user.get('id')
                 user.access_token = access_token
                 user.set_password(password)
@@ -176,8 +174,8 @@ class LogoutFacebookView(View):
         )
 
         try:
-            user = UserModel.objects.get(facebook_id=data['user_id'])
-        except UserModel.DoesNotExist:
+            user = User.objects.get(facebook_id=data['user_id'])
+        except User.DoesNotExist:
             raise PermissionDenied
 
         user.facebook_id = None
@@ -212,7 +210,7 @@ class NotificationReadAll(CompanyQuerySetMixin, ListView):
 
 
 class UserDetail(LoginRequiredMixin, DetailView):
-    model = UserModel
+    model = User
     template_name = 'account/user_detail.html'
 
     def get_object(self):
@@ -229,7 +227,7 @@ class UserUpdate(
     UpdateView
 ):
     form_class = forms.UserUpdateForm
-    model = UserModel
+    model = User
     success_message = _("Your profile has been updated successfully.")
     success_url = reverse_lazy("account:user_detail")
     template_name = 'account/user_form.html'
@@ -240,7 +238,7 @@ class UserUpdate(
 
 class SignUp(NoLoginRequiredMixin, CreateMessageMixin, CreateView):
     form_class = forms.SignUpForm
-    model = UserModel
+    model = User
     success_url = reverse_lazy('account:login')
     success_message = _(
         'Please check your email and activate your account. '
@@ -259,7 +257,7 @@ class SignUpInvite(
     CreateMessageMixin, CreateView
 ):
     form_class = forms.SignUpInviteForm
-    model = UserModel
+    model = User
     success_url = reverse_lazy('account:login')
     success_message = _(
         'Please check your email and activate your account. '

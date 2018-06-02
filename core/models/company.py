@@ -95,9 +95,9 @@ class Company(AuditableMixin, models.Model):
 
 def post_save_company(sender, instance, created, **kwargs):
     if created:
-        instance.user.profile.company = instance
-        instance.user.profile.colaborator_set.create(company=instance)
-        instance.user.profile.save()
+        instance.user.company = instance
+        instance.user.colaborator_set.create(company=instance)
+        instance.user.save()
         instance.generate_next_invoice()
 
 

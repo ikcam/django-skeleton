@@ -1,9 +1,10 @@
 from django.contrib.messages.constants import SUCCESS
 from django.contrib.messages.storage import default_storage
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.test import override_settings, RequestFactory, TestCase
 
+from account.models import User
 from core.constants import LEVEL_ERROR, LEVEL_SUCCESS
 from core.models import Company
 from . import views
@@ -29,9 +30,9 @@ class CoreTestCase(TestCase):
             name='Company', email='company@test.com', user=self.user
         )
         # Setup colaborator
-        self.colaborator.profile.company = self.company
-        self.colaborator.profile.save()
-        self.colaborator.profile.colaborator_set.create(
+        self.colaborator.company = self.company
+        self.colaborator.save()
+        self.colaborator.colaborator_set.create(
             company=self.company
         )
         # Request factory

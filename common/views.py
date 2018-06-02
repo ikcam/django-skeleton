@@ -23,7 +23,7 @@ class EventList(ActionListMixin, CompanyQuerySetMixin, ListView):
     )
     model = Event
     paginate_by = 30
-    permissions_required = 'common:view_event'
+    permission_required = 'common:view_event'
 
     def get_queryset(self):
         return self.model.objects.none()
@@ -31,14 +31,14 @@ class EventList(ActionListMixin, CompanyQuerySetMixin, ListView):
 
 class EventDetail(CompanyQuerySetMixin, DetailView):
     model = Event
-    permissions_required = 'common:view_event'
+    permission_required = 'common:view_event'
 
 
 class EventCreate(
     UserCreateMixin, CompanyCreateMixin, CreateMessageMixin, CreateView
 ):
     model = Event
-    permissions_required = 'common:add_event'
+    permission_required = 'common:add_event'
 
     def get_form_class(self):
         return forms.get_event_form(self.company)
@@ -46,7 +46,7 @@ class EventCreate(
 
 class EventUpdate(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
     model = Event
-    permissions_required = 'common:change_event'
+    permission_required = 'common:change_event'
 
     def get_form_class(self):
         return forms.get_event_form(self.company)
@@ -54,7 +54,7 @@ class EventUpdate(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
 
 class EventDelete(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     model = Event
-    permissions_required = 'common:delete_event'
+    permission_required = 'common:delete_event'
     success_url = reverse_lazy('common:event_list')
     template_name_suffix = '_form'
 
@@ -85,12 +85,12 @@ class LinkList(CompanyQuerySetMixin, ActionListMixin, ListView):
     )
     model = Link
     paginate_by = 30
-    permissions_required = 'common:view_link'
+    permission_required = 'common:view_link'
 
 
 class LinkDetail(CompanyQuerySetMixin, DetailView):
     model = Link
-    permissions_required = 'common:view_link'
+    permission_required = 'common:view_link'
 
 
 class LinkCreate(
@@ -98,18 +98,18 @@ class LinkCreate(
 ):
     form_class = forms.LinkForm
     model = Link
-    permissions_required = 'common:add_link'
+    permission_required = 'common:add_link'
 
 
 class LinkUpdate(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
     form_class = forms.LinkForm
     model = Link
-    permissions_required = 'common:change_link'
+    permission_required = 'common:change_link'
 
 
 class LinkDelete(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     model = Link
-    permissions_required = 'common:delete_link'
+    permission_required = 'common:delete_link'
     success_url = reverse_lazy('common:link_list')
     template_name_suffix = '_form'
 
@@ -189,17 +189,17 @@ class LinkPublicToken(DetailView):
 class MessageList(CompanyQuerySetMixin, ListView):
     model = Message
     paginate_by = 30
-    permissions_required = 'common:view_message'
+    permission_required = 'common:view_message'
 
 
 class MessageDetail(CompanyQuerySetMixin, DetailView):
     model = Message
-    permissions_required = 'common:view_message'
+    permission_required = 'common:view_message'
 
 
 class MessageFrame(CompanyQuerySetMixin, DetailView):
     model = Message
-    permissions_required = 'common:view_message'
+    permission_required = 'common:view_message'
     template_name_suffix = '_frame'
 
 

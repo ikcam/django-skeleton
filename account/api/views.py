@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.views import (
     INTERNAL_RESET_URL_TOKEN, INTERNAL_RESET_SESSION_TOKEN
 )
@@ -12,10 +11,7 @@ from rest_framework.decorators import action
 
 from . import filters, serializers
 from myapp.api.mixins import CompanyQuerySetMixin
-from account.models import Notification
-
-
-UserModel = get_user_model()
+from account.models import Notification, User
 
 
 class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
@@ -33,8 +29,11 @@ class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    model = UserModel
-    queryset = UserModel.objects.all()
+    model = User
+    queryset = User.objects.all()
+
+    def get_object(self):
+        return self.request.user
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -104,8 +103,8 @@ class PasswordResetConfirmView(views.APIView):
     def get_user(self, uidb64):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
-            user = UserModel._default_manager.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = User._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         return user
 

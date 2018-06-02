@@ -1,5 +1,6 @@
 from django.db.models import Q
-from django.contrib.auth.models import Group, Permission, User
+from django.contrib.auth.models import Group, Permission
+from .models import User
 
 from dal import autocomplete
 
@@ -21,7 +22,7 @@ class PermissionAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if (
             not self.request.user.is_authenticated or
-            not self.request.user.profile.company
+            not self.request.user.company
         ):
             return Permission.objects.none()
 
@@ -55,12 +56,12 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if (
             not self.request.user.is_authenticated or
-            not self.request.user.profile.company
+            not self.request.user.company
         ):
             return User.objects.none()
 
         qs = User.objects.filter(
-            profile__companies=self.request.user.profile.company
+            profile__companies=self.request.user.company
         ).order_by('username')
 
         if self.q:
@@ -77,12 +78,12 @@ class UserOtherAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if (
             not self.request.user.is_authenticated or
-            not self.request.user.profile.company
+            not self.request.user.company
         ):
             return User.objects.none()
 
         qs = User.objects.filter(
-            profile__companies=self.request.user.profile.company
+            profile__companies=self.request.user.company
         ).exclude(pk=self.request.user.pk).order_by('username')
 
         if self.q:

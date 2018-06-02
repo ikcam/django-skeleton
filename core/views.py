@@ -19,7 +19,7 @@ from boilerplate.mixins import (
 from django_addanother.views import CreatePopupMixin
 
 from account.forms import UserCreateForm
-from account.models import Colaborator
+from account.models import Colaborator, User
 from .mixins import (
     CompanyCreateMixin, CompanyQuerySetMixin, CompanyRequiredMixin,
     ModelActionMixin
@@ -27,14 +27,12 @@ from .mixins import (
 from .models import Company, Invite, Invoice, Role
 from . import forms, tasks
 
-UserModel = get_user_model()
-
 
 class Index(TemplateView):
     template_name = 'core/index.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.profile.company:
+        if request.user.is_authenticated and request.user.company:
             return redirect(reverse_lazy('core:dashboard'))
 
         return super().get(request, *args, **kwargs)
@@ -70,7 +68,7 @@ class CompanyActivate(
         if not self.request.user.is_authenticated:
             raise Http404
 
-        company = self.request.user.profile.company
+        company = self.request.user.company
 
         if not company or not company.last_invoice:
             raise PermissionDenied
@@ -106,7 +104,7 @@ class CompanyDetail(
     CompanyRequiredMixin, DetailView
 ):
     model = Company
-    permissions_required = 'core:view_company'
+    permission_required = 'core:view_company'
 
     def get_object(self):
         if (
@@ -131,10 +129,10 @@ class CompanyUpdate(
 ):
     form_class = forms.CompanyForm
     model = Company
-    permissions_required = 'core:change_company'
+    permission_required = 'core:change_company'
 
     def get_object(self):
-        return self.request.user.profile.company
+        return self.request.user.company
 
 
 class CompanyChoose(
@@ -144,7 +142,7 @@ class CompanyChoose(
     template_name = 'core/company_choose.html'
 
     def get_queryset(self):
-        return self.request.user.profile.companies.all()
+        return self.request.user.companies.all()
 
 
 class CompanySwitch(
@@ -155,7 +153,7 @@ class CompanySwitch(
 
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
-        request.user.profile.company_switch(obj)
+        request.user.company_switch(obj)
         messages.success(
             request,
             _("You have saccessfully switched to: %s") % obj
@@ -173,7 +171,7 @@ class InvoiceList(
 ):
     model = Invoice
     paginate_by = 30
-    permissions_required = 'core:view_invoice'
+    permission_required = 'core:view_invoice'
 
 
 class InvoiceDetail(
@@ -182,7 +180,7 @@ class InvoiceDetail(
     form_class = forms.CulqiTokenForm
     model = Invoice
     template_name = 'core/invoice_detail.html'
-    permissions_required = 'core:view_invoice'
+    permission_required = 'core:view_invoice'
 
     def get_object(self):
         try:
@@ -218,7 +216,7 @@ class InviteList(
     )
     model = Invite
     paginate_by = 30
-    permissions_required = 'core:view_invite'
+    permission_required = 'core:view_invite'
     related_properties = ('user', )
 
 
@@ -227,7 +225,7 @@ class InviteCreate(
 ):
     form_class = forms.InviteForm
     model = Invite
-    permissions_required = 'core:add_invite'
+    permission_required = 'core:add_invite'
 
 
 class InviteUpdate(
@@ -235,7 +233,7 @@ class InviteUpdate(
 ):
     form_class = forms.InviteForm
     model = Invite
-    permissions_required = 'core:change_invite'
+    permission_required = 'core:change_invite'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -250,7 +248,7 @@ class InviteDelete(
     model = Invite
     success_url = reverse_lazy('core:invite_list')
     template_name_suffix = '_form'
-    permissions_required = 'core:delete_invite'
+    permission_required = 'core:delete_invite'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -264,7 +262,7 @@ class InviteSend(
 ):
     model_action = 'send'
     model = Invite
-    permissions_required = 'core:send_invite'
+    permission_required = 'core:send_invite'
     task_module = tasks
     success_url = reverse_lazy('core:invite_list')
 
@@ -277,14 +275,14 @@ class RoleList(
     )
     model = Role
     paginate_by = 30
-    permissions_required = 'core:view_role'
+    permission_required = 'core:view_role'
 
 
 class RoleCreate(
     CreatePopupMixin, CompanyCreateMixin, CreateMessageMixin, CreateView
 ):
     model = Role
-    permissions_required = 'core:view_role'
+    permission_required = 'core:view_role'
 
     def get_form_class(self):
         return forms.get_role_form(self.company)
@@ -294,7 +292,7 @@ class RoleUpdate(
     CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
 ):
     model = Role
-    permissions_required = 'core:change_role'
+    permission_required = 'core:change_role'
     template_name_suffix = '_form'
 
     def get_form_class(self):
@@ -305,7 +303,7 @@ class RoleDelete(
     CompanyQuerySetMixin, DeleteMessageMixin, DeleteView
 ):
     model = Role
-    permissions_required = 'core:delete_role'
+    permission_required = 'core:delete_role'
     success_url = reverse_lazy('core:role_list')
     template_name_suffix = '_form'
 
@@ -313,14 +311,14 @@ class RoleDelete(
 class UserList(
     CompanyRequiredMixin, ListView
 ):
-    model = UserModel
+    model = User
     paginate_by = 30
     template_name = 'core/user_list.html'
-    permissions_required = 'auth:view_user'
+    permission_required = 'auth:view_user'
 
     def get_queryset(self):
         return self.company.users_all.all().select_related(
-            'profile', 'profile__user'
+            'user'
         )
 
 
@@ -328,10 +326,10 @@ class UserCreate(
     CompanyRequiredMixin, CreateMessageMixin, CreateView
 ):
     form_class = UserCreateForm
-    model = UserModel
+    model = User
     template_name = 'core/user_form.html'
     success_url = reverse_lazy("core:user_list")
-    permissions_required = 'auth:add_user'
+    permission_required = 'auth:add_user'
 
     def form_valid(self, form):
         form.instance.first_name = form.cleaned_data.get('first_name')
@@ -343,10 +341,10 @@ class UserCreate(
         if not hasattr(self, 'object'):
             raise Exception("An error has ocurred.")
 
-        self.object.profile.company = self.company
-        self.object.profile.language = self.company.language
-        self.object.profile.save()
-        self.object.profile.colaborator_set.create(company=self.company)
+        self.object.company = self.company
+        self.object.language = self.company.language
+        self.object.save()
+        self.object.colaborator_set.create(company=self.company)
 
         return response
 
@@ -356,8 +354,8 @@ class UserUpdate(
     UpdateView
 ):
     form_class = forms.UserChangeForm
-    model = UserModel
-    permissions_required = 'auth:change_user'
+    model = User
+    permission_required = 'auth:change_user'
     template_name = 'core/user_form.html'
     success_url = reverse_lazy("core:user_list")
 
@@ -366,8 +364,8 @@ class UserPassword(
     CompanyRequiredMixin, UpdateMessageMixin, UpdateView
 ):
     form_class = SetPasswordForm
-    model = UserModel
-    permissions_required = 'auth:change_user'
+    model = User
+    permission_required = 'auth:change_user'
     template_name = 'core/user_form.html'
 
     def get_form(self):
@@ -383,7 +381,7 @@ class UserPermissions(
     CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
 ):
     model = Colaborator
-    permissions_required = 'auth:change_user'
+    permission_required = 'auth:change_user'
     success_url = reverse_lazy('core:user_list')
     template_name = 'core/user_form.html'
 
@@ -394,8 +392,8 @@ class UserPermissions(
 class UserRemove(
     CompanyRequiredMixin, DetailView
 ):
-    model = UserModel
-    permissions_required = 'auth:delete_user'
+    model = User
+    permission_required = 'auth:delete_user'
     template_name = 'core/user_form.html'
 
     def get_queryset(self):
@@ -404,9 +402,9 @@ class UserRemove(
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
-        company = self.request.user.profile.company
+        company = self.request.user.company
 
-        obj.profile.company_remove(company, request.user)
+        obj.company_remove(company, request.user)
 
         messages.success(
             request,

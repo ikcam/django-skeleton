@@ -1,16 +1,13 @@
-from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 
-from account.models import Colaborator, Notification
+from account.models import Colaborator, Notification, User
 from myapp.api.serializers import ActionSerializer
 from core.models import Company
-
-
-UserModel = get_user_model()
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -125,7 +122,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'username', 'password1', 'password2', 'first_name', 'last_name',
             'email'
         )
-        model = UserModel
+        model = User
 
     def validate(self, data):
         if data['password1'] != data['password2']:
@@ -143,7 +140,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return data
 
     def validate_email(self, data):
-        exists = UserModel.objects.filter(email=data).exists()
+        exists = User.objects.filter(email=data).exists()
         if exists:
             raise serializers.ValidationError(
                 _("A user with that email already exists.")
@@ -162,16 +159,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         fields = (
             'username', 'first_name', 'last_name', 'email'
         )
-        model = UserModel
+        model = User
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
     company = CompanySerializer()
-    companies = ColaboratorSerializer(many=True)
+    colaborator_set = ColaboratorSerializer(read_only=True, many=True)
 
     class Meta:
         fields = (
             'username', 'first_name', 'last_name', 'email',
-            'companies'
+            'company', 'colaborator_set'
         )
-        model = UserModel
+        model = User

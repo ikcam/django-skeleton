@@ -1,10 +1,11 @@
 from datetime import timedelta
 from django.contrib.messages.storage import default_storage
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from django.test import override_settings, RequestFactory, TestCase
 from django.utils import timezone
 
 from core.constants import ACCOUNT_ACTIVATION_HOURS
+from .models import User
 from . import views
 
 
@@ -29,38 +30,38 @@ class ProfileTestCase(TestCase):
         gclooney = User.objects.get(username="gclooney")
         bcooper = User.objects.get(username="bcooper")
 
-        self.assertIsNone(gclooney.profile.activation_key)
-        self.assertIsNone(gclooney.profile.date_key_expiration)
-        self.assertIsNotNone(bcooper.profile.activation_key)
-        self.assertIsNotNone(bcooper.profile.date_key_expiration)
+        self.assertIsNone(gclooney.activation_key)
+        self.assertIsNone(gclooney.date_key_expiration)
+        self.assertIsNotNone(bcooper.activation_key)
+        self.assertIsNotNone(bcooper.date_key_expiration)
 
     def test_user_key_generation(self):
         gclooney = User.objects.get(username="gclooney")
         bcooper = User.objects.get(username="bcooper")
 
-        gclooney_key = gclooney.profile.key_generate()
-        bcooper_key = bcooper.profile.key_generate()
+        gclooney_key = gclooney.key_generate()
+        bcooper_key = bcooper.key_generate()
 
         self.assertFalse(gclooney_key)
         self.assertFalse(bcooper_key)
 
-        bcooper.profile.date_key_expiration = (
+        bcooper.date_key_expiration = (
             timezone.now() - timedelta(hours=ACCOUNT_ACTIVATION_HOURS)
         )
-        bcooper.profile.save()
+        bcooper.save()
 
-        self.assertTrue(bcooper.profile.key_generate())
+        self.assertTrue(bcooper.key_generate())
 
     def test_user_key_activation(self):
         gclooney = User.objects.get(username="gclooney")
         bcooper = User.objects.get(username="bcooper")
-        self.assertFalse(gclooney.profile.key_deactivate())
+        self.assertFalse(gclooney.key_deactivate())
 
         request = self.factory.get('/fake-path')
         request.user = AnonymousUser()
         request._messages = default_storage(request)
         response = views.Activate.as_view()(
             request,
-            token=bcooper.profile.activation_key
+            token=bcooper.activation_key
         )
         self.assertEqual(response.status_code, 302)

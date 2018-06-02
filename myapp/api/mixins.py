@@ -10,31 +10,31 @@ from rest_framework.response import Response
 class CompanyRequiredMixin:
     company = None
     company_field = 'company'
-    permissions_required = None
+    permission_required = None
 
     def get_company_field(self):
         return self.company_field
 
-    def get_permissions_required(self):
-        return self.permissions_required
+    def get_permission_required(self):
+        return self.permission_required
 
     def handle_no_permission(self, msg=None):
         raise PermissionDenied(msg)
 
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs)
-        self.company = request.user.profile.company
+        self.company = request.user.company
 
         if not self.company.is_active:
             return self.handle_no_permission()
 
-        permissions_required = self.get_permissions_required()
+        permission_required = self.get_permission_required()
 
-        if permissions_required and isinstance(permissions_required, tuple):
-            if not request.user.has_company_perms(permissions_required):
+        if permission_required and isinstance(permission_required, tuple):
+            if not request.user.has_company_perms(permission_required):
                 return self.handle_no_permission()
-        elif permissions_required:
-            if not request.user.has_company_perm(permissions_required):
+        elif permission_required:
+            if not request.user.has_company_perm(permission_required):
                 return self.handle_no_permission()
 
 
@@ -54,7 +54,7 @@ class CompanyCreateMixin(CompanyRequiredMixin):
             kwargs = {}
 
         kwargs.update({
-            'company': self.request.user.profile.company,
+            'company': self.request.user.company,
         })
 
         return kwargs

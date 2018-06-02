@@ -13,10 +13,10 @@ class TimezoneMiddleware(MiddlewareMixin):
         user = request.user
 
         if user.is_authenticated:
-            tzname = user.profile.timezone
+            tzname = user.timezone
             timezone.activate(pytz.timezone(tzname))
 
-            language = user.profile.language
+            language = user.language
             url_parts = resolve(request.path)
 
             if (
@@ -34,7 +34,7 @@ class SiteURLMiddleware(MiddlewareMixin):
         user = request.user
 
         if user.is_authenticated and not settings.DEBUG:
-            company = user.profile.company
+            company = user.company
             domain_current = request.META['HTTP_HOST']
 
             if company and company.custom_domain:
