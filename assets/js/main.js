@@ -103,7 +103,7 @@ jQuery(document).ready(function($){
       useCurrent: false,
     });
 
-    new Clipboard('.btn[data-clipboard-target^="#"]');
+    new ClipboardJS('.btn[data-clipboard-target^="#"]');
 
     $('#profileDropdown').on('show.bs.dropdown', function(event){
       console.log(event);

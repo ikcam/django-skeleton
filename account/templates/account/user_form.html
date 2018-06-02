@@ -1,8 +1,6 @@
-{% extends "layout.html" %}
+{% extends "common/template_form.html" %}
 
 {% load core_tags i18n %}
-
-{% block title %}{% trans "Change your profile" %}{% endblock title %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -15,21 +13,3 @@
 {% block page_header %}
     <h2>{% trans "Change your profile" %}</h2>
 {% endblock page_header %}
-
-{% block content %}
-    {% trans "Change your profile" as form_title %}
-    {% include "common/form.html" %}
-{% endblock content %}
-
-
-{% block scripts_footer %}
-    {{ form.media }}
-
-    {% for extra_form in extra_form_list %}
-      {{ extra_form.media }}
-    {% endfor %}
-
-    {% for formset in formset_list %}
-      {{ formset.media }}
-    {% endfor %}
-{% endblock %}

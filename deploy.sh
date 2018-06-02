@@ -51,6 +51,8 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py compilemessages --locale=es
 
+bower install
+
 supervisorctl reread
 supervisorctl update
 supervisorctl restart myapp_gunicorn

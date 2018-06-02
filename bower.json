@@ -1,0 +1,39 @@
+{
+  "name": "Django Skeleton",
+  "homepage": "https://github.com/ikcam/django-skeleton",
+  "authors": [
+    "Irving Kcam <me@ikcam.com>"
+  ],
+  "description": "Vendor packages for Django Skeleton",
+  "main": "bower.json",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "angular": "^1.7.0",
+    "angular-moment": "^1.2.0",
+    "moment": "^2.22.2",
+    "bootstrap": "3.3.7",
+    "font-awesome": "4.7.0",
+    "angular-i18n": "^1.7.0",
+    "clipboard": "^2.0.1",
+    "clockpicker": "^0.0.7",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47",
+    "fullcalendar": "^3.9.0",
+    "metisMenu": "^2.7.7",
+    "PACE": "pace#^1.0.2",
+    "jquery-slimscroll": "^1.3.8",
+    "wow": "WOW#^1.1.2",
+    "bootstrap-social": "^5.1.1"
+  },
+  "resolutions": {
+    "angular": "^1.7.0"
+  }
+}

@@ -72,3 +72,8 @@ docs/_build/
 
 # PyBuilder
 target/
+
+
+# Bower
+node_modules/
+bower_components/

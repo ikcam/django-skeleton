@@ -13,10 +13,10 @@
     <title>{% block title %}{% endblock title %} | {% settings "SITE_NAME" %}</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
-    <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.css" %}" >
-    <link rel="stylesheet" href="{% static "css/plugins/clockpicker/clockpicker.css" %}">
-    <link rel="stylesheet" href="{% static "css/plugins/datetimepicker/bootstrap-datetimepicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}" >
+    <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" >
+    <link rel="stylesheet" href="{% static "bower_components/clockpicker/dist/bootstrap-clockpicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}">
     <link rel="stylesheet" href="{% static "css/animate.css" %}" >
     <link rel="stylesheet" href="{% static "css/style.css" %}" >
     <link rel="stylesheet" href="{% static "css/custom.css" %}">
@@ -96,21 +96,21 @@
       var site_timezone = '{{ TIME_ZONE }}';
     </script>
     <script src="{% url 'javascript-catalog' %}"></script>
-    <script src="{% static 'js/vendor/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'js/vendor/moment/moment.js' %}"></script>
+    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
+    <script src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
     {% if LANGUAGE_CODE != 'en' %}
-      <script src="{% static 'js/vendor/moment/locale/'|add:LANGUAGE_CODE|add:'.js' %}"></script>
+      <script src="{% static 'bower_components/moment/locale/'|add:LANGUAGE_CODE|add:'.js' %}"></script>
+      <script src="{% static 'bower_components/angular-i18n/angular-locale_'|add:LANGUAGE_CODE|add:'-'|add:LANGUAGE_CODE|add:'.js' %}"></script>
     {% endif %}
-    <script src="{% static 'js/vendor/angular/angular.min.js' %}"></script>
-      <script src="{% static 'js/vendor/angular/i18n/angular-locale_'|add:LANGUAGE_CODE|add:'-'|add:LANGUAGE_CODE|add:'.js' %}"></script>
-    <script src="{% static 'js/vendor/angular-moment/angular-moment.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
-    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
-    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
-    <script src="{% static 'js/plugins/clipboard/clipboard.min.js' %}"></script>
-    <script src="{% static 'js/plugins/clockpicker/clockpicker.js' %}"></script>
-    <script src="{% static 'js/plugins/datetimepicker/bootstrap-datetimepicker.js' %}"></script>
+    <script src="{% static 'bower_components/angular-moment/angular-moment.min.js' %}"></script>
+    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower_components/metisMenu/dist/metisMenu.min.js' %}"></script>
+    <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'bower_components/PACE/pace.min.js' %}"></script>
+    <script src="{% static 'bower_components/clipboard/dist/clipboard.min.js' %}"></script>
+    <script src="{% static 'bower_components/clockpicker/dist/bootstrap-clockpicker.min.js' %}"></script>
+    <script src="{% static 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'js/plugins/inlines.js' %}"></script>
     <script src="{% static 'js/plugins/livelist.js' %}"></script>
     <script src="{% static 'js/plugins/remote-table.js' %}"></script>
