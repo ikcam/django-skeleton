@@ -86,7 +86,7 @@ class InviteForm(forms.ModelForm):
                 'email', _("An invite with that email already exists.")
             )
 
-        if company.users_all.filter(profile__user__email=email).exists():
+        if company.users_all.filter(user__email=email).exists():
             self.add_error(
                 'email', _("A user with that email already exists.")
             )

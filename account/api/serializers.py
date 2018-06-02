@@ -169,6 +169,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'username', 'first_name', 'last_name', 'email',
-            'company', 'colaborator_set'
+            'language', 'timezone', 'photo', 'company', 'colaborator_set',
         )
         model = User

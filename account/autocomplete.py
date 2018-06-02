@@ -33,7 +33,6 @@ class PermissionAutocomplete(autocomplete.Select2QuerySetView):
         ).exclude(
             content_type__model__in=(
                 'colaborator', 'group', 'logentry', 'payment', 'permission',
-                'profile',
             )
         ).exclude(
             codename__in=(
@@ -61,7 +60,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
             return User.objects.none()
 
         qs = User.objects.filter(
-            profile__companies=self.request.user.company
+            companies=self.request.user.company
         ).order_by('username')
 
         if self.q:
@@ -83,7 +82,7 @@ class UserOtherAutocomplete(autocomplete.Select2QuerySetView):
             return User.objects.none()
 
         qs = User.objects.filter(
-            profile__companies=self.request.user.company
+            companies=self.request.user.company
         ).exclude(pk=self.request.user.pk).order_by('username')
 
         if self.q:
