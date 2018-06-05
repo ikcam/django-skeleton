@@ -12,15 +12,17 @@ def settings(context, name):
         company = context['company']
         site_url = company.custom_domain or django_settings.SITE_URL
         site_name = company.name
+        site_short_name = '{}+'.format(site_name[:2])
     except Exception:
         try:
             company = context['object'].company
             site_url = company.custom_domain or django_settings.SITE_URL
             site_name = company.name
+            site_short_name = '{}+'.format(site_name[:2])
         except Exception:
             site_url = django_settings.SITE_URL
             site_name = django_settings.SITE_NAME
-    site_short_name = '{}+'.format(site_name[:2])
+            site_short_name = django_settings.SITE_SHORT_NAME
 
     secure_settings = {
         'SITE_URL': site_url,
