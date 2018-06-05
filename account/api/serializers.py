@@ -12,7 +12,7 @@ from core.models import Company
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'switch_url')
         model = Company
 
 
@@ -157,7 +157,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
-            'username', 'first_name', 'last_name', 'email'
+            'first_name', 'last_name', 'language', 'photo', 'timezone',
+            'nav_expanded',
         )
         model = User
 
@@ -168,7 +169,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            'username', 'first_name', 'last_name', 'email',
+            'username', 'first_name', 'last_name', 'email', 'nav_expanded',
             'language', 'timezone', 'photo', 'company', 'colaborator_set',
         )
         model = User

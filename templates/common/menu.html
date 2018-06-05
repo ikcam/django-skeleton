@@ -5,11 +5,11 @@
   <div class="sidebar-collapse">
     <ul class="nav metismenu" id="side-menu">
       <li class="nav-header">
-        <div id="profileDropdown" class="dropdown profile-element">
+        <div id="remoteDropdownProfile" class="dropdown profile-element">
           {% if request.user.photo_thumb %}
             <span><img src="{{ request.user.photo_thumb.url }}" class="img-circle" alt="{{ request.user }}" height="48px" width="48px"></span>
           {% endif %}
-          <a id="profileBtn" data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
             <span class="clear">
               <span class="block m-t-xs"><strong class="font-bold">{{ request.user }}</strong></span>
               <span class="text-muted text-xs block">{{ request.user.company }} <b class="caret"></b></span>
@@ -20,12 +20,12 @@
               <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
               <li id="companies" class="divider"></li>
             {% endif %}
-            {% for company in companies_available %}
-              <li><a href="{% url 'core:company_switch' company.pk %}?next={{ request.path }}">{{ company }}</a></li>
-              {% if forloop.last %}
-                <li class="divider"></li>
-              {% endif %}
-            {% endfor %}
+            {% verbatim %}
+            <li ng-repeat="company in data.colaborator_set">
+              <a href="{{ company.switch_url }}">{{ company.name }}</a>
+            </li>
+            {% endverbatim %}
+            <li class="divider" ng-if="data.colaborator_set.length > 0"></li>
             <li><a href="{% url 'account:user_detail' %}">{% trans 'Profile' %}</a></li>
             <li class="divider"></li>
             <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>

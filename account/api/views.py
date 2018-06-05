@@ -3,9 +3,8 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
-from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import permissions, status, views, viewsets
+from rest_framework import mixins, permissions, status, views, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
@@ -28,7 +27,12 @@ class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
         )
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
     model = User
     queryset = User.objects.all()
 
@@ -42,22 +46,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return serializers.UserUpdateSerializer
         elif self.request.method == 'GET':
             return serializers.UserDetailSerializer
-
-    def list(self, request, *args, **kwargs):
-        if not request.user:
-            return Response(
-                {'detail': _("Credentials not provided.")},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        serializer = self.get_serializer_class()(request.user)
-        return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        return Response(
-            {'detail': _("Forbidden")},
-            status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
 
     @action(
         detail=False,

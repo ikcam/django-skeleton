@@ -99,5 +99,5 @@ angular.module('app', ['angularMoment'])
 });
 
 angular.element(function(){
-    angular.bootstrap(document, ['app']);
+    angular.bootstrap(document.querySelector('#mainContent'), ['app']);
 });

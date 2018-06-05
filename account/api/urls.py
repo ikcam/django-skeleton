@@ -21,5 +21,15 @@ urlpatterns = [
         'reset/<uidb64>/<token>/',
         views.PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'
+    ),
+    path(
+        'user/',
+        views.UserViewSet.as_view({
+            'get': 'retrieve',
+            'post': 'create',
+            'put': 'update',
+            'patch': 'update',
+        }),
+        name='user'
     )
 ] + router.urls
