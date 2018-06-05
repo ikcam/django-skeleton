@@ -34,7 +34,27 @@
           <div class="panel-body">
             {% block content_inner %}
               <form class="form" method="POST" action="" enctype="multipart/form-data" role="form" novalidate>
-                {% include "common/form-simple.html" %}
+                {% if form %}
+                  {% include "common/form-simple.html" %}
+                {% else %}
+                  {% blocktrans with model_name=object|model_name %}
+                    <p>Are you sure you want to delete the <b>{{ model_name }}: "{{ object }}"</b>?</p>
+                    <p>After confirm you <b>won't be able to undo this action</b>. Be careful.</p>
+                    <p>Click on "<b>Delete</b>" to confirm this action or click on "<b>Back</b>" to get back.</p>
+                  {% endblocktrans %}
+
+                  {% trans 'You will also delete the following elements:' %}
+                  <ul>{{ object|get_deleted_objects|unordered_list }}</ul>
+
+                  <div class="row">
+                    <div class="col-xs-6 col-sm-5 col-md-3 col-lg-3 text-center">
+                      <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {% trans 'Delete' %}</button>
+                    </div>
+                    <div class="col-xs-6 col-sm-5 col-md-3 col-lg-3 text-center">
+                      <a class="btn btn-default" href="javascript:history.back(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Back' %}</a>
+                    </div>
+                  </div>
+                {% endif %}
               </form>
             {% endblock %}
           </div>

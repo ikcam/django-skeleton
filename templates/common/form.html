@@ -15,8 +15,6 @@
           </div>
         {% endif %}
         <div class="ibox-content">
-          {% bootstrap_form_errors form type='non_fields' layout='horizontal' %}
-
           {% bootstrap_form form layout="horizontal" %}
 
           {% if not extra_form_list and not formset_list %}
@@ -58,11 +56,11 @@
         <ul>{{ object|get_deleted_objects|unordered_list }}</ul>
 
         <div class="row">
-          <div class="col-xs-6 text-center">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
             <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {% trans 'Delete' %}</button>
           </div>
-          <div class="col-xs-6 text-center">
-          	<a class="btn btn-default" href="javascript:history.back(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}</a>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
+          	<a class="btn btn-default" href="javascript:history.back(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Back' %}</a>
           </div>
         </div>
       </div>
