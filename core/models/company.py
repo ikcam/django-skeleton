@@ -92,6 +92,10 @@ class Company(AuditableMixin, models.Model):
             self.date_next_invoice = next_
             self.save()
 
+    @property
+    def switch_url(self):
+        return reverse_lazy('core:company_switch', args=[self.pk])
+
 
 def post_save_company(sender, instance, created, **kwargs):
     if created:
