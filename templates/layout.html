@@ -91,7 +91,7 @@
     {% block css_footer %}{% endblock css_footer %}
 
     <script>
-      var api_url_profile = '{% url "api:account:user-list" %}';
+      var api_url_profile = '{% url "api:account:user" %}';
       var site_language = '{{ LANGUAGE_CODE }}';
       var site_timezone = '{{ TIME_ZONE }}';
     </script>
@@ -114,6 +114,7 @@
     <script src="{% static 'js/plugins/inlines.js' %}"></script>
     <script src="{% static 'js/plugins/livelist.js' %}"></script>
     <script src="{% static 'js/plugins/remote-table.js' %}"></script>
+    <script src="{% static 'js/plugins/notifications.js' %}"></script>
     <script src="{% static 'js/inspinia.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 
