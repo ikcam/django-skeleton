@@ -76,13 +76,6 @@ class CompanyRequiredMixin:
 
     def get_context_data(self, **kwargs):
         kwargs['company'] = self.company
-        kwargs['companies_available'] = (
-            self.request.user.companies_available()
-        )
-        kwargs['notifications_unread'] = (
-            self.request.user.notifications_unread()
-        )
-
         return super().get_context_data(**kwargs)
 
     def get_company_field(self):
