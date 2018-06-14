@@ -1,0 +1,137 @@
+from django.urls import path
+from django.utils.translation import ugettext_lazy as _
+
+from . import views
+
+urlpatterns = [
+    # JobDescription - job-descriptions - jobdescription
+    path(
+        _('job-descriptions/'),
+        views.JobDescriptionListView.as_view(),
+        name='jobdescription_list'
+    ),
+    path(
+        _('job-descriptions/add/'),
+        views.JobDescriptionCreateView.as_view(),
+        name='jobdescription_add'
+    ),
+    path(
+        _('job-descriptions/<int:pk>/'),
+        views.JobDescriptionDetailView.as_view(),
+        name='jobdescription_change'
+    ),
+    path(
+        _('job-descriptions/<int:pk>/change/'),
+        views.JobDescriptionUpdateView.as_view(),
+        name='jobdescription_change'
+    ),
+    path(
+        _('job-descriptions/<int:pk>/delete/'),
+        views.JobDescriptionDeleteView.as_view(),
+        name='jobdescription_delete'
+    ),
+    # Customer - customers - customer
+    path(
+        _('customers/'),
+        views.CustomerListView.as_view(),
+        name='customer_list'
+    ),
+    path(
+        _('customers/add/'),
+        views.CustomerCreateView.as_view(),
+        name='customer_add'
+    ),
+    path(
+        _('customers/<int:pk>/'),
+        views.CustomerDetailView.as_view(),
+        name='customer_change'
+    ),
+    path(
+        _('customers/<int:pk>/change/'),
+        views.CustomerUpdateView.as_view(),
+        name='customer_change'
+    ),
+    path(
+        _('customers/<int:pk>/delete/'),
+        views.CustomerDeleteView.as_view(),
+        name='customer_delete'
+    ),
+    # Opportunity - opportunities - opportunity
+    path(
+        _('opportunities/'),
+        views.OpportunityListView.as_view(),
+        name='opportunity_list'
+    ),
+    path(
+        _('opportunities/add/'),
+        views.OpportunityCreateView.as_view(),
+        name='opportunity_add'
+    ),
+    path(
+        _('opportunities/<int:pk>/'),
+        views.OpportunityDetailView.as_view(),
+        name='opportunity_change'
+    ),
+    path(
+        _('opportunities/<int:pk>/change/'),
+        views.OpportunityUpdateView.as_view(),
+        name='opportunity_change'
+    ),
+    path(
+        _('opportunities/<int:pk>/delete/'),
+        views.OpportunityDeleteView.as_view(),
+        name='opportunity_delete'
+    ),
+    # Status - status - status
+    path(
+        _('status/'),
+        views.StatusListView.as_view(),
+        name='status_list'
+    ),
+    path(
+        _('status/add/'),
+        views.StatusCreateView.as_view(),
+        name='status_add'
+    ),
+    path(
+        _('status/<int:pk>/'),
+        views.StatusDetailView.as_view(),
+        name='status_change'
+    ),
+    path(
+        _('status/<int:pk>/change/'),
+        views.StatusUpdateView.as_view(),
+        name='status_change'
+    ),
+    path(
+        _('status/<int:pk>/delete/'),
+        views.StatusDeleteView.as_view(),
+        name='status_delete'
+    ),
+    # Source - sources - source
+    path(
+        _('sources/'),
+        views.SourceListView.as_view(),
+        name='source_list'
+    ),
+    path(
+        _('sources/add/'),
+        views.SourceCreateView.as_view(),
+        name='source_add'
+    ),
+    path(
+        _('sources/<int:pk>/'),
+        views.SourceDetailView.as_view(),
+        name='source_change'
+    ),
+    path(
+        _('sources/<int:pk>/change/'),
+        views.SourceUpdateView.as_view(),
+        name='source_change'
+    ),
+    path(
+        _('sources/<int:pk>/delete/'),
+        views.SourceDeleteView.as_view(),
+        name='source_delete'
+    ),
+]

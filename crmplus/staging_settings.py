@@ -50,7 +50,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Site info
 
-SITE_URL = 'http://stating.myapp.com'
+SITE_URL = 'http://stating.crmplus.balegogroup.com'
 
 SITE_NAME = 'My App (Staging)'
 

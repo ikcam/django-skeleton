@@ -16,7 +16,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 # Site info
 
-SITE_URL = 'http://tests.myapp.com'
+SITE_URL = 'http://tests.crmplus.balegogroup.com'
 
 SITE_NAME = 'My App (Tests)'
 

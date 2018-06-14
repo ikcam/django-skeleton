@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 
 from account.models import Colaborator, Notification, User
-from myapp.api.serializers import ActionSerializer
+from crmplus.api.serializers import ActionSerializer
 from core.models import Company
 
 

@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from myapp.api.mixins import CompanyQuerySetMixin, NestedReadOnlyViewset
+from crmplus.api.mixins import CompanyQuerySetMixin, NestedReadOnlyViewset
 from common.models import Event, Link, Message, Visit
 from . import filters, serializers
 

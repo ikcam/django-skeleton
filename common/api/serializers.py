@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from myapp.api.serializers import ActionSerializer
+from crmplus.api.serializers import ActionSerializer
 from common.models import Event, Link, Message, Visit
 
 

@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from . import filters, serializers
-from myapp.api.mixins import CompanyQuerySetMixin
+from crmplus.api.mixins import CompanyQuerySetMixin
 from account.models import Notification, User
 
 

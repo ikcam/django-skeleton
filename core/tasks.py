@@ -1,7 +1,7 @@
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
-from myapp.celery import app
+from crmplus.celery import app
 
 
 logger = get_task_logger(__name__)

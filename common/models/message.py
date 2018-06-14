@@ -207,7 +207,7 @@ class Message(AuditableMixin):
 
         from_email = "%s <%s>" % (self.from_name, self.from_email)
         headers = {
-            'MyApp-ID': '{}-{}'.format(self.company.pk, self.pk)
+            'crmplus-ID': '{}-{}'.format(self.company.pk, self.pk)
         }
 
         email = EmailMultiAlternatives(
