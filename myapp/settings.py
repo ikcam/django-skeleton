@@ -49,9 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     # Apps
-    'account',
     'core',
-    'crm',
+    'account',
     # Common and API at the end
     'common',
 ]
@@ -71,7 +70,7 @@ MIDDLEWARE = [
     'core.middleware.SiteURLMiddleware',
 ]
 
-ROOT_URLCONF = 'crmplus.urls'
+ROOT_URLCONF = 'myapp.urls'
 
 TEMPLATES = [
     {
@@ -91,9 +90,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'crmplus.wsgi.application'
+WSGI_APPLICATION = 'myapp.wsgi.application'
 
-ASGI_APPLICATION = 'crmplus.routing.application'
+ASGI_APPLICATION = 'myapp.routing.application'
 
 
 AUTHENTICATION_BACKENDS = ('account.backends.AuthenticationBackend',)
@@ -177,7 +176,7 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 
-SESSION_COOKIE_NAME = 'crmplussessionid'
+SESSION_COOKIE_NAME = 'myappsessionid'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 

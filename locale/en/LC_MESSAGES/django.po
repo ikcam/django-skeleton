@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-11 12:23-0500\n"
+"POT-Creation-Date: 2017-11-04 22:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,225 +17,144 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: account/admin.py:24
-msgid "Personal info"
-msgstr ""
-
-#: account/admin.py:31 account/models/colaborator.py:31 core/forms.py:128
-#: core/models/role.py:19 core/templates/core/user_list.html:35
-msgid "Permissions"
-msgstr ""
-
-#: account/admin.py:39
-msgid "Important dates"
-msgstr ""
-
-#: account/api/filters.py:11 common/models/message.py:334
-msgid "Read"
-msgstr ""
-
-#: account/api/serializers.py:79 account/api/serializers.py:95
-#: account/api/serializers.py:130
-msgid "The two password fields didn't match."
-msgstr ""
-
-#: account/api/serializers.py:146 account/forms.py:34 account/forms.py:73
-#: core/forms.py:91
-msgid "A user with that email already exists."
-msgstr ""
-
 #: account/apps.py:7
 msgid "Account"
 msgstr ""
 
-#: account/models/colaborator.py:15 account/models/notification.py:24
-#: account/models/user.py:82 account/models/user.py:83
-#: account/templates/account/user_detail.html:5
-#: account/templates/account/user_detail.html:10
-#: account/templates/account/user_detail.html:14 common/models/event.py:47
-#: common/models/link.py:29 common/models/message.py:40
-#: common/templates/common/link_detail.html:14
-#: common/templates/common/message_detail.html:15 core/models/company.py:24
-#: core/models/invite.py:35 core/templates/core/company_detail.html:10
-#: core/templates/core/invite_list.html:13
+#: account/forms.py:48 account/forms.py:87
+msgid "A user with that email already exists."
+msgstr ""
+
+#: account/models.py:30 core/models/company.py:19 core/models/invite.py:38
+#: core/templates/core/company_detail.html:39
+#: core/templates/core/invite_list.html:37
 msgid "User"
 msgstr ""
 
-#: account/models/colaborator.py:19 account/models/notification.py:20
-#: account/models/user.py:41 account/templates/account/user_detail.html:61
-#: common/models/event.py:43 common/models/link.py:21
-#: common/models/message.py:36 core/models/company.py:42
-#: core/models/invite.py:17 core/models/invoice.py:20 core/models/role.py:13
+#: account/models.py:34 account/models.py:229
+#: account/templates/account/profile_detail.html:61 core/models/company.py:27
+#: core/models/invite.py:21 core/models/invoice.py:19 core/models/role.py:12
 #: core/templates/core/common/tabs.html:7
-#: core/templates/core/invoice_detail.html:16 templates/common/menu.html:65
+#: core/templates/core/invoice_detail.html:37 templates/common/menu.html:46
 msgid "Company"
 msgstr ""
 
-#: account/models/colaborator.py:22
-msgid "Join date"
-msgstr ""
-
-#: account/models/colaborator.py:25 core/mixins.py:19
-#: core/templates/core/invite_list.html:14
-#: core/templates/core/user_list.html:20
-msgid "Active"
-msgstr ""
-
-#: account/models/colaborator.py:37
-msgid "Colaborator"
-msgstr ""
-
-#: account/models/colaborator.py:38
-msgid "Colaborators"
-msgstr ""
-
-#: account/models/notification.py:29 common/models/event.py:51
-#: common/models/message.py:45
-msgid "Content type"
-msgstr ""
-
-#: account/models/notification.py:32 common/models/event.py:54
-#: common/models/message.py:48
-msgid "Object ID"
-msgstr ""
-
-#: account/models/notification.py:37 common/models/message.py:56
-msgid "Read date"
-msgstr ""
-
-#: account/models/notification.py:40
-msgid "Level"
-msgstr ""
-
-#: account/models/notification.py:43 common/models/event.py:84
-#: common/models/message.py:92 common/templates/common/event_email.html:19
-#: common/templates/common/event_list.html:27
-#: common/templates/common/message_detail.html:69
-msgid "Content"
-msgstr ""
-
-#: account/models/notification.py:46 common/models/link.py:36
-#: common/templates/common/link_detail.html:28
-#: common/templates/common/link_list.html:9
-#: common/templates/common/snippets/link_list.html:15
-msgid "Destination"
-msgstr ""
-
-#: account/models/notification.py:51
-msgid "Notification"
-msgstr ""
-
-#: account/models/notification.py:52
-msgid "Notifications"
-msgstr ""
-
-#: account/models/notification.py:75
-msgid "All notifications were mark as read."
-msgstr ""
-
-#: account/models/notification.py:79
-msgid "Notification was read already."
-msgstr ""
-
-#: account/models/notification.py:82
-msgid "Notification has been marked as read."
-msgstr ""
-
-#: account/models/notification.py:86
-msgid "Notification is unread already."
-msgstr ""
-
-#: account/models/notification.py:89
-msgid "Notification has been marked as unread."
-msgstr ""
-
-#: account/models/user.py:37 core/models/invite.py:30
-msgid "Activation key"
-msgstr ""
-
-#: account/models/user.py:45 account/templates/account/user_detail.html:65
-#: core/models/company.py:43
+#: account/models.py:37 account/templates/account/profile_detail.html:65
+#: core/models/company.py:28
 msgid "Companies"
 msgstr ""
 
-#: account/models/user.py:49
+#: account/models.py:41 core/models/invite.py:34
+msgid "Activation key"
+msgstr ""
+
+#: account/models.py:45
 msgid "Date key expiration"
 msgstr ""
 
-#: account/models/user.py:53
-msgid "Facebook ID"
-msgstr ""
-
-#: account/models/user.py:57
-msgid "Facebook access token"
-msgstr ""
-
-#: account/models/user.py:61 account/templates/account/user_detail.html:53
-#: core/models/company.py:34 core/templates/core/company_detail.html:30
+#: account/models.py:49
 msgid "Language"
 msgstr ""
 
-#: account/models/user.py:64
-msgid "Nav expanded"
-msgstr ""
-
-#: account/models/user.py:68
-msgid "Photo"
-msgstr ""
-
-#: account/models/user.py:72
-msgid "Photo thumb"
-msgstr ""
-
-#: account/models/user.py:76 account/templates/account/user_detail.html:57
+#: account/models.py:53 account/templates/account/profile_detail.html:57
 msgid "Timezone"
 msgstr ""
 
-#: account/models/user.py:109 account/models/user.py:133
+#: account/models.py:56
+msgid "Nav expanded"
+msgstr ""
+
+#: account/models.py:61 account/models.py:225
+#: account/templates/account/profile_detail.html:6
+#: account/templates/account/profile_detail.html:12
+#: account/templates/account/profile_detail.html:17
+#: account/templates/account/profile_form.html:10
+#: account/templates/registration/password_change.html:10
+#: account/templates/registration/password_change.html:16
+#: account/templates/registration/password_done.html:8
+#: account/templates/registration/password_done.html:14
+#: account/templates/registration/password_done.html:28
+#: templates/common/menu.html:26
+msgid "Profile"
+msgstr ""
+
+#: account/models.py:62
+msgid "Profiles"
+msgstr ""
+
+#: account/models.py:86 account/models.py:107
 msgid "company must be a Company instance."
 msgstr ""
 
-#: account/models/user.py:114
-msgid "Can't remove from your own company."
-msgstr ""
-
-#: account/models/user.py:141
+#: account/models.py:115
 msgid "Invalid company."
 msgstr ""
 
-#: account/models/user.py:205
+#: account/models.py:169
 msgid "Activate your account"
 msgstr ""
 
-#: account/templates/account/user_detail.html:9
-#: account/templates/account/user_form.html:7
+#: account/models.py:232
+msgid "Join date"
+msgstr ""
+
+#: account/models.py:235 core/mixins.py:19
+#: core/templates/core/invite_list.html:38
+#: core/templates/core/user_list.html:43
+msgid "Active"
+msgstr ""
+
+#: account/models.py:241 core/models/role.py:18
+#: core/templates/core/user_list.html:59
+msgid "Permissions"
+msgstr ""
+
+#: account/models.py:247
+msgid "Colaborator"
+msgstr ""
+
+#: account/models.py:248
+msgid "Colaborators"
+msgstr ""
+
+#: account/templates/account/profile_detail.html:11
+#: account/templates/account/profile_form.html:9
 #: account/templates/registration/password_change.html:9
 #: account/templates/registration/password_done.html:13
 #: account/templates/registration/reset_confirm.html:25
-#: account/templates/registration/reset_done.html:18
-#: core/templates/core/common/detail.html:9
-#: core/templates/core/common/form.html:9
-#: core/templates/core/common/list.html:9 core/templates/core/dashboard.html:9
-#: core/templates/core/index.html:23 core/templates/core/user_form.html:7
+#: account/templates/registration/reset_done.html:21
+#: core/templates/core/company_detail.html:9
+#: core/templates/core/company_form.html:17
+#: core/templates/core/dashboard.html:9 core/templates/core/index.html:23
+#: core/templates/core/invite_form.html:17
+#: core/templates/core/invite_list.html:9
+#: core/templates/core/invoice_detail.html:9
+#: core/templates/core/invoice_list.html:9
+#: core/templates/core/role_form.html:17 core/templates/core/role_list.html:9
+#: core/templates/core/user_form.html:17 core/templates/core/user_list.html:9
 #: templates/common/breadcrumbs/detail.html:4
 #: templates/common/breadcrumbs/form.html:4
 #: templates/common/breadcrumbs/list.html:4
 msgid "Home"
 msgstr ""
 
-#: account/templates/account/user_detail.html:19 common/models/link.py:70
-#: common/templates/common/event_list.html:37 core/models/role.py:35
-#: core/templates/core/common/detail.html:21
-#: core/templates/core/common/form.html:5
-#: core/templates/core/common/form.html:17
-#: core/templates/core/common/form.html:23
-#: core/templates/core/user_form.html:14 core/templates/core/user_list.html:40
+#: account/templates/account/profile_detail.html:23 core/models/role.py:31
+#: core/templates/core/company_create.html:7
+#: core/templates/core/company_create.html:18
+#: core/templates/core/company_detail.html:21
+#: core/templates/core/company_form.html:7
+#: core/templates/core/company_form.html:29
+#: core/templates/core/company_form.html:43
+#: core/templates/core/invite_form.html:7
+#: core/templates/core/invite_form.html:27 core/templates/core/role_form.html:7
+#: core/templates/core/role_form.html:27 core/templates/core/user_form.html:7
+#: core/templates/core/user_form.html:26 core/templates/core/user_list.html:63
 #: templates/common/breadcrumbs/form.html:28
-#: templates/common/template_form.html:5 templates/common/template_form.html:12
+#: templates/common/form-buttons.html:5
 msgid "Change"
 msgstr ""
 
-#: account/templates/account/user_detail.html:23
+#: account/templates/account/profile_detail.html:27
 #: account/templates/registration/password_change.html:5
 #: account/templates/registration/password_change.html:11
 #: account/templates/registration/password_change.html:20
@@ -244,107 +163,93 @@ msgstr ""
 msgid "Password change"
 msgstr ""
 
-#: account/templates/account/user_detail.html:30
-#: common/templates/common/link_detail.html:8
+#: account/templates/account/profile_detail.html:34
 msgid "Information"
 msgstr ""
 
-#: account/templates/account/user_detail.html:37
-#: core/templates/core/user_list.html:16
+#: account/templates/account/profile_detail.html:41
+#: core/templates/core/user_list.html:39
 msgid "Username"
 msgstr ""
 
-#: account/templates/account/user_detail.html:41
-#: core/templates/core/user_list.html:17
+#: account/templates/account/profile_detail.html:45
+#: core/templates/core/user_list.html:40
 msgid "First name"
 msgstr ""
 
-#: account/templates/account/user_detail.html:45
-#: core/templates/core/user_list.html:18
+#: account/templates/account/profile_detail.html:49
+#: core/templates/core/user_list.html:41
 msgid "Last name"
 msgstr ""
 
-#: account/templates/account/user_detail.html:49 core/forms.py:55
-#: core/models/company.py:30 core/models/invite.py:23
-#: core/templates/core/company_detail.html:18
-#: core/templates/core/invite_list.html:10
-#: core/templates/core/user_list.html:19
+#: account/templates/account/profile_detail.html:53 core/forms.py:43
+#: core/models/invite.py:27 core/templates/core/invite_list.html:34
+#: core/templates/core/user_list.html:42
 msgid "Email"
 msgstr ""
 
-#: account/templates/account/user_form.html:8
-#: account/templates/registration/password_change.html:10
-#: account/templates/registration/password_change.html:16
-#: account/templates/registration/password_done.html:8
-#: account/templates/registration/password_done.html:14
-#: account/templates/registration/password_done.html:28
-#: templates/common/menu.html:29 templates/common/top-navigation.html:59
-msgid "Profile"
-msgstr ""
-
-#: account/templates/account/user_form.html:9
-#: account/templates/account/user_form.html:14
+#: account/templates/account/profile_form.html:5
+#: account/templates/account/profile_form.html:11
+#: account/templates/account/profile_form.html:16
+#: account/templates/account/profile_form.html:20
 msgid "Change your profile"
 msgstr ""
 
-#: account/templates/registration/login.html:9
-#: account/templates/registration/login.html:34
+#: account/templates/registration/login.html:5
+#: account/templates/registration/login.html:23
 #: account/templates/registration/reset_complete.html:18
-#: account/templates/registration/signup.html:21
+#: account/templates/registration/signup.html:20
+#: templates/common/top-navigation.html:23
 msgid "Log in"
 msgstr ""
 
-#: account/templates/registration/login.html:17
+#: account/templates/registration/login.html:13
 msgid "Welcome to"
 msgstr ""
 
-#: account/templates/registration/login.html:19
+#: account/templates/registration/login.html:15
 msgid ""
 "\n"
-"            This is a small but powerfull tool to send invoices and messages "
-"to\n"
-"            potencial customers and customers as well.\n"
-"        "
+"                    This is a small but powerfull tool to send invoices and "
+"messages to\n"
+"                    potencial customers and customers as well.\n"
+"                "
 msgstr ""
 
-#: account/templates/registration/login.html:24
+#: account/templates/registration/login.html:20
 msgid "Login in. To see it in action."
 msgstr ""
 
-#: account/templates/registration/login.html:30
-msgid "Login with Facebbok"
-msgstr ""
-
-#: account/templates/registration/login.html:37
+#: account/templates/registration/login.html:26
 msgid "Forgot password?"
 msgstr ""
 
-#: account/templates/registration/login.html:38
+#: account/templates/registration/login.html:27
 msgid "Do not have an account?"
 msgstr ""
 
-#: account/templates/registration/login.html:39
+#: account/templates/registration/login.html:28
 msgid "Create an account"
 msgstr ""
 
-#: account/templates/registration/login.html:43
+#: account/templates/registration/login.html:32
 #: account/templates/registration/reset_complete.html:28
 #: account/templates/registration/reset_confirm.html:34
-#: account/templates/registration/reset_done.html:28
+#: account/templates/registration/reset_done.html:31
 #: account/templates/registration/reset_form.html:30
-#: account/templates/registration/signup.html:25
+#: account/templates/registration/signup.html:24
 #: core/templates/core/index.html:540 templates/common/footer.html:7
 msgid "Code + Design + Hosting with"
 msgstr ""
 
-#: account/templates/registration/login.html:45
+#: account/templates/registration/login.html:34
 #: account/templates/registration/reset_complete.html:30
 #: account/templates/registration/reset_confirm.html:36
-#: account/templates/registration/reset_done.html:30
+#: account/templates/registration/reset_done.html:33
 #: account/templates/registration/reset_form.html:32
-#: account/templates/registration/signup.html:27
+#: account/templates/registration/signup.html:26
 #: core/templates/core/index.html:542 templates/common/footer.html:9
-#: templates/mail/layout.html:278
+#: templates/mail/layout.html:280
 msgid "by"
 msgstr ""
 
@@ -419,26 +324,28 @@ msgid ""
 "used.  Please request a new password reset."
 msgstr ""
 
-#: account/templates/registration/reset_done.html:16
-msgid ""
-"We've emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
-msgstr ""
-
-#: account/templates/registration/reset_done.html:17
-msgid ""
-"If you don't receive an email, please make sure you've entered the address "
-"you registered with, and check your spam folder."
-msgstr ""
-
+#: account/templates/registration/reset_done.html:13
 #: account/templates/registration/reset_form.html:13
 msgid ""
 "Enter your email address and your password will be reset and emailed to you."
 msgstr ""
 
+#: account/templates/registration/reset_done.html:17
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: account/templates/registration/reset_done.html:19
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
 #: account/templates/registration/signup.html:5
 #: account/templates/registration/signup.html:13
-#: account/templates/registration/signup.html:17
+#: account/templates/registration/signup.html:16
+#: templates/common/top-navigation.html:26
 msgid "Sign up"
 msgstr ""
 
@@ -450,654 +357,130 @@ msgstr ""
 msgid "Create account to see it in action."
 msgstr ""
 
-#: account/templates/registration/signup.html:20
+#: account/templates/registration/signup.html:19
 msgid "Already have an account?"
 msgstr ""
 
 #: account/urls.py:11
-msgid "groups/autocomplete/"
+msgid "^groups/autocomplete/$"
 msgstr ""
 
 #: account/urls.py:16
-msgid "permissions/autocomplete/"
+msgid "^permissions/autocomplete/$"
 msgstr ""
 
 #: account/urls.py:21
-msgid "users/autocomplete/"
+msgid "^users/autocomplete/$"
 msgstr ""
 
-#: account/urls.py:26
-msgid "users/other/autocomplete/"
+#: account/urls.py:27 core/urls.py:9
+msgid "^$"
 msgstr ""
 
-#: account/urls.py:37
-msgid "password/"
+#: account/urls.py:32
+msgid "^password/$"
+msgstr ""
+
+#: account/urls.py:36
+msgid "^change/$"
 msgstr ""
 
 #: account/urls.py:41
-msgid "change/"
+msgid "^activate/(?P<token>[0-9A-Za-z_\\-]+)/$"
 msgstr ""
 
 #: account/urls.py:46
-msgid "activate/<token>/"
+msgid "^login/$"
 msgstr ""
 
-#: account/urls.py:51
-msgid "login/"
+#: account/urls.py:53
+msgid "^logout/$"
 msgstr ""
 
 #: account/urls.py:58
-msgid "login/facebook/"
+msgid "^password-change/$"
 msgstr ""
 
-#: account/urls.py:63
-msgid "logout/"
-msgstr ""
-
-#: account/urls.py:68
-msgid "logout/facebook/"
+#: account/urls.py:66
+msgid "^password-change/done/$"
 msgstr ""
 
 #: account/urls.py:73
-msgid "notifications/read/all/"
+msgid "^password-reset/$"
 msgstr ""
 
-#: account/urls.py:78
-msgid "notifications/<int:pk>/"
+#: account/urls.py:84
+msgid "^password-reset/done/$"
 msgstr ""
 
-#: account/urls.py:83
-msgid "password-change/"
+#: account/urls.py:92
+msgid ""
+"^reset/(?P<uidb64>[0-9A-Za-z_\\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]"
+"{1,20})/$"
 msgstr ""
 
-#: account/urls.py:91
-msgid "password-change/done/"
-msgstr ""
-
-#: account/urls.py:98
-msgid "password-reset/"
+#: account/urls.py:102
+msgid "^reset/done/$"
 msgstr ""
 
 #: account/urls.py:109
-msgid "password-reset/done/"
+msgid "^signup/$"
 msgstr ""
 
-#: account/urls.py:116
-msgid "reset/<uidb64>/<token>/"
+#: account/urls.py:113
+msgid "^signup/invite/(?P<pk>[0-9]+)/(?P<token>[0-9A-Za-z_\\-]+)/$"
 msgstr ""
 
-#: account/urls.py:124
-msgid "reset/done/"
-msgstr ""
-
-#: account/urls.py:131
-msgid "signup/"
-msgstr ""
-
-#: account/urls.py:136
-msgid "signup/invite/<int:pk>/<token>/"
-msgstr ""
-
-#: account/views.py:56
+#: account/views.py:52
 msgid ""
 "Your activation key has expired. A new token has been generated and sended "
 "to your email."
 msgstr ""
 
-#: account/views.py:66
+#: account/views.py:62
 msgid "Your account is activated now. You can login now."
 msgstr ""
 
-#: account/views.py:71 common/models/message.py:232
+#: account/views.py:67
 msgid "An error has ocurred."
 msgstr ""
 
-#: account/views.py:126
-msgid "Another user is registered with that Facebook account already."
-msgstr ""
-
-#: account/views.py:231
+#: account/views.py:95
 msgid "Your profile has been updated successfully."
 msgstr ""
 
-#: account/views.py:244 account/views.py:263
+#: account/views.py:108 account/views.py:127
 msgid ""
 "Please check your email and activate your account. Then you will be able to "
 "login."
 msgstr ""
 
-#: account/views.py:289
+#: account/views.py:152
 #, python-format
 msgid "%s has been added to your company list."
 msgstr ""
 
-#: common/api/filters.py:13
-msgid "Since date"
-msgstr ""
-
-#: common/api/filters.py:17
-msgid "Until date"
-msgstr ""
-
-#: common/apps.py:7
-msgid "Common"
-msgstr ""
-
-#: common/forms.py:26 common/models/event.py:62
-#: common/templates/common/event_email.html:31
-msgid "Start date"
-msgstr ""
-
-#: common/forms.py:42 common/models/event.py:65
-msgid "Finish date"
-msgstr ""
-
-#: common/forms.py:58
-msgid "Object"
-msgstr ""
-
-#: common/forms.py:68 common/models/event.py:70
-msgid "Notify"
-msgstr ""
-
-#: common/forms.py:72 common/forms.py:76 common/models/event.py:59
-msgid "Share with"
-msgstr ""
-
-#: common/models/event.py:27
-msgid "At time"
-msgstr ""
-
-#: common/models/event.py:28
-msgid "10 minutes before"
-msgstr ""
-
-#: common/models/event.py:29
-msgid "30 minutes before"
-msgstr ""
-
-#: common/models/event.py:30
-msgid "60 minutes before"
-msgstr ""
-
-#: common/models/event.py:31
-msgid "24 hours before"
-msgstr ""
-
-#: common/models/event.py:34
-msgid "Appointment"
-msgstr ""
-
-#: common/models/event.py:35
-msgid "Call"
-msgstr ""
-
-#: common/models/event.py:36
-msgid "Job start"
-msgstr ""
-
-#: common/models/event.py:37
-msgid "Private"
-msgstr ""
-
-#: common/models/event.py:38
-msgid "Task"
-msgstr ""
-
-#: common/models/event.py:75
-msgid "Notified"
-msgstr ""
-
-#: common/models/event.py:78
-msgid "Public"
-msgstr ""
-
-#: common/models/event.py:81
-msgid "Type"
-msgstr ""
-
-#: common/models/event.py:89
-msgid "Event"
-msgstr ""
-
-#: common/models/event.py:90 templates/common/menu.html:47
-msgid "Events"
-msgstr ""
-
-#: common/models/event.py:187
-msgid "Event has no user."
-msgstr ""
-
-#: common/models/event.py:201
-#, python-format
-msgid "[%(company)s] Event reminder"
-msgstr ""
-
-#: common/models/link.py:25 common/models/message.py:100
-#: common/templates/common/link_detail.html:23
-msgid "Message"
-msgstr ""
-
-#: common/models/link.py:33 common/models/message.py:66
-msgid "Token"
-msgstr ""
-
-#: common/models/link.py:41 common/models/visit.py:11
-msgid "Link"
-msgstr ""
-
-#: common/models/link.py:42 common/templates/common/snippets/link_list.html:5
-#: templates/common/menu.html:53
-msgid "Links"
-msgstr ""
-
-#: common/models/link.py:71 core/models/invite.py:61 core/models/role.py:36
-#: core/templates/core/common/form.html:5
-#: core/templates/core/common/form.html:17
-#: core/templates/core/common/form.html:23
-#: core/templates/core/common/form.html:51
-#: core/templates/core/user_form.html:14
-#: templates/common/breadcrumbs/form.html:32 templates/common/form.html:60
-#: templates/common/formset.html:11 templates/common/template_form.html:5
-#: templates/common/template_form.html:12
-msgid "Delete"
-msgstr ""
-
-#: common/models/message.py:30
-msgid "Inbound"
-msgstr ""
-
-#: common/models/message.py:31
-msgid "Outbound"
-msgstr ""
-
-#: common/models/message.py:53
-msgid "Fail date"
-msgstr ""
-
-#: common/models/message.py:59
-msgid "Send date"
-msgstr ""
-
-#: common/models/message.py:63 common/templates/common/message_detail.html:35
-#: common/templates/common/message_list.html:11
-msgid "Direction"
-msgstr ""
-
-#: common/models/message.py:70
-msgid "From email"
-msgstr ""
-
-#: common/models/message.py:73
-msgid "From name"
-msgstr ""
-
-#: common/models/message.py:76
-msgid "To email"
-msgstr ""
-
-#: common/models/message.py:79
-msgid "To email CC"
-msgstr ""
-
-#: common/models/message.py:82
-msgid "To email BCC"
-msgstr ""
-
-#: common/models/message.py:85
-msgid "Reply to email"
-msgstr ""
-
-#: common/models/message.py:88 common/templates/common/event_email.html:13
-#: common/templates/common/message_detail.html:59
-msgid "Subject"
-msgstr ""
-
-#: common/models/message.py:101 templates/common/menu.html:59
-msgid "Messages"
-msgstr ""
-
-#: common/models/message.py:182
-#, python-format
-msgid "[%(company)s] Message has bounce"
-msgstr ""
-
-#: common/models/message.py:200
-msgid "Email was sent already."
-msgstr ""
-
-#: common/models/message.py:230
-msgid "Email sent successfully."
-msgstr ""
-
-#: common/models/message.py:302
-msgid "Message was read already."
-msgstr ""
-
-#: common/models/message.py:305
-msgid "Message has been marked as read."
-msgstr ""
-
-#: common/models/message.py:324
-msgid "Message is unread already."
-msgstr ""
-
-#: common/models/message.py:327
-msgid "Message has been marked as unread."
-msgstr ""
-
-#: common/models/message.py:332
-msgid "Failed"
-msgstr ""
-
-#: common/models/message.py:336 core/models/invite.py:58
-#: core/templates/core/invite_list.html:12
-msgid "Send"
-msgstr ""
-
-#: common/models/message.py:338
-msgid "Unsend"
-msgstr ""
-
-#: common/models/visit.py:14
-#: common/templates/common/snippets/visit_list.html:16
-msgid "IP address"
-msgstr ""
-
-#: common/models/visit.py:19
-msgid "Visit"
-msgstr ""
-
-#: common/models/visit.py:20 common/templates/common/snippets/visit_list.html:5
-msgid "Visits"
-msgstr ""
-
-#: common/templates/common/event_email.html:8
-msgid "You're receiving this email because you have a event reminder from"
-msgstr ""
-
-#: common/templates/common/event_email.html:25
-#: common/templates/common/link_detail.html:18
-#: common/templates/common/link_list.html:10
-#: common/templates/common/message_detail.html:19
-#: common/templates/common/message_list.html:12
-#: common/templates/common/snippets/link_list.html:16
-#: common/templates/common/snippets/visit_list.html:15 core/mixins.py:13
-#: core/templates/core/company_detail.html:22
-#: core/templates/core/invite_list.html:11
-#: core/templates/core/invoice_detail.html:20
-#: core/templates/core/role_list.html:10
-msgid "Creation date"
-msgstr ""
-
-#: common/templates/common/event_email.html:37
-msgid "URL"
-msgstr ""
-
-#: common/templates/common/event_list.html:16
-msgid "Close"
-msgstr ""
-
-#: common/templates/common/event_list.html:23
-msgid "Date"
-msgstr ""
-
-#: common/templates/common/event_list.html:25
-msgid "End"
-msgstr ""
-
-#: common/templates/common/event_list.html:32
-msgid "This is a public event."
-msgstr ""
-
-#: common/templates/common/event_list.html:33
-msgid "This is a non-public event."
-msgstr ""
-
-#: common/templates/common/event_list.html:36
-msgid "Share"
-msgstr ""
-
-#: common/templates/common/event_public.html:20
-msgid "Type:"
-msgstr ""
-
-#: common/templates/common/event_public.html:21
-msgid "Created:"
-msgstr ""
-
-#: common/templates/common/event_public.html:21
-msgid "ago"
-msgstr ""
-
-#: common/templates/common/event_public.html:24
-msgid "By:"
-msgstr ""
-
-#: common/templates/common/event_public.html:28
-msgid "From:"
-msgstr ""
-
-#: common/templates/common/event_public.html:31
-msgid "Until:"
-msgstr ""
-
-#: common/templates/common/event_public.html:34
-msgid "Subject:"
-msgstr ""
-
-#: common/templates/common/event_public.html:35
-msgid "Content:"
-msgstr ""
-
-#: common/templates/common/event_public.html:40
-msgid "Add to Google Calendar"
-msgstr ""
-
-#: common/templates/common/event_public.html:44
-#: core/templates/core/common/form.html:54 templates/common/form.html:63
-msgid "Back"
-msgstr ""
-
-#: common/templates/common/event_public.html:50 templates/common/footer.html:12
-msgid "Copyright &copy; 2018. All rights reserved for"
-msgstr ""
-
-#: common/templates/common/link_detail.html:32
-msgid "Public URL"
-msgstr ""
-
-#: common/templates/common/link_detail.html:36
-#: common/templates/common/link_list.html:11
-#: common/templates/common/snippets/link_list.html:17
-msgid "Open"
-msgstr ""
-
-#: common/templates/common/link_detail.html:40
-#: common/templates/common/link_list.html:12
-#: common/templates/common/snippets/link_list.html:18
-msgid "Total visits"
-msgstr ""
-
-#: common/templates/common/link_list.html:13
-#: core/templates/core/invite_list.html:15
-#: core/templates/core/invoice_list.html:14
-#: core/templates/core/role_list.html:11 core/templates/core/user_list.html:21
-#: templates/common/template_list.html:36
-msgid "Options"
-msgstr ""
-
-#: common/templates/common/link_list.html:29
-#: common/templates/common/message_list.html:29
-#: common/templates/common/snippets/link_list.html:35
-#: common/templates/common/snippets/visit_list.html:28
-#: core/templates/core/invite_list.html:42
-#: core/templates/core/invoice_list.html:32
-#: core/templates/core/role_list.html:26 templates/common/template_list.html:50
-msgid "No information."
-msgstr ""
-
-#: common/templates/common/message_bounce.html:8 templates/mail/layout.html:272
-msgid "This is an automatic email from "
-msgstr ""
-
-#: common/templates/common/message_bounce.html:13
-msgid ""
-"We are sorry to report you that the following email has bounced back to our "
-"system."
-msgstr ""
-
-#: common/templates/common/message_bounce.html:18
-msgid "Please check the persons email before trying again."
-msgstr ""
-
-#: common/templates/common/message_bounce.html:23
-msgid "Wrong emails:"
-msgstr ""
-
-#: common/templates/common/message_bounce.html:38
-msgid "View message"
-msgstr ""
-
-#: common/templates/common/message_bounce.html:44
-#: core/templates/core/invite_email.html:25 templates/mail/key.html:25
-msgid "In case the upper button doesn't work you can click on the link bellow."
-msgstr ""
-
-#: common/templates/common/message_detail.html:9
-msgid "Details"
-msgstr ""
-
-#: common/templates/common/message_detail.html:23
-#: common/templates/common/message_list.html:13 core/mixins.py:16
-msgid "Modification date"
-msgstr ""
-
-#: common/templates/common/message_detail.html:31
-#: common/templates/common/message_list.html:14
-msgid "Status"
-msgstr ""
-
-#: common/templates/common/message_detail.html:39
-#: common/templates/common/message_list.html:9
-msgid "From"
-msgstr ""
-
-#: common/templates/common/message_detail.html:43
-#: common/templates/common/message_list.html:10
-msgid "To"
-msgstr ""
-
-#: common/templates/common/message_detail.html:47
-msgid "CC"
-msgstr ""
-
-#: common/templates/common/message_detail.html:51
-msgid "BCC"
-msgstr ""
-
-#: common/templates/common/message_detail.html:55
-msgid "Reply to"
-msgstr ""
-
-#: common/urls.py:10
-msgid "model-autocomplete/"
-msgstr ""
-
-#: common/urls.py:16
-msgid "events/"
-msgstr ""
-
-#: common/urls.py:21
-msgid "events/add/"
-msgstr ""
-
-#: common/urls.py:26
-msgid "events/<int:pk>/"
-msgstr ""
-
-#: common/urls.py:31
-msgid "events/<int:pk>/change/"
-msgstr ""
-
-#: common/urls.py:36
-msgid "events/<int:pk>/delete/"
-msgstr ""
-
-#: common/urls.py:41
-msgid "events/<slug>/<int:pk>/"
-msgstr ""
-
-#: common/urls.py:47
-msgid "links/"
-msgstr ""
-
-#: common/urls.py:52
-msgid "links/add/"
-msgstr ""
-
-#: common/urls.py:57
-msgid "links/<int:pk>/"
-msgstr ""
-
-#: common/urls.py:62
-msgid "links/<int:pk>/change/"
-msgstr ""
-
-#: common/urls.py:67
-msgid "links/<int:pk>/delete/"
-msgstr ""
-
-#: common/urls.py:72
-msgid "ld/<int:pk>/"
-msgstr ""
-
-#: common/urls.py:77
-msgid "lt/<token>/"
-msgstr ""
-
-#: common/urls.py:83
-msgid "messages/"
-msgstr ""
-
-#: common/urls.py:88
-msgid "messages/<int:pk>/"
-msgstr ""
-
-#: common/urls.py:93
-msgid "messages/<int:pk>/frame/"
-msgstr ""
-
-#: common/urls.py:98
-msgid "messages/pixel/<token>/"
-msgstr ""
-
-#: common/views.py:22 common/views.py:84 core/templates/core/common/form.html:5
-#: core/templates/core/common/form.html:17
-#: core/templates/core/common/form.html:23
-#: core/templates/core/company_create.html:16
-#: core/templates/core/user_form.html:14 core/templates/core/user_list.html:8
-#: core/views.py:215 core/views.py:274
-#: templates/common/breadcrumbs/form.html:30
-#: templates/common/template_form.html:5 templates/common/template_form.html:12
-msgid "Add"
+#: api/apps.py:7
+msgid "API"
 msgstr ""
 
 #: core/apps.py:7
 msgid "Core"
 msgstr ""
 
-#: core/forms.py:17 core/models/role.py:25
-#: core/templates/core/common/tabs.html:22
-msgid "Roles"
-msgstr ""
-
-#: core/forms.py:51
+#: core/forms.py:39
 msgid "Token ID"
 msgstr ""
 
-#: core/forms.py:86
-msgid "An invite with that email already exists."
+#: core/mixins.py:13 core/templates/core/company_detail.html:43
+#: core/templates/core/invite_list.html:35
+#: core/templates/core/invoice_detail.html:41
+#: core/templates/core/role_list.html:34
+msgid "Creation date"
+msgstr ""
+
+#: core/mixins.py:16
+msgid "Modification date"
 msgstr ""
 
 #: core/mixins.py:27
@@ -1108,7 +491,13 @@ msgstr ""
 msgid "Instance is inactive."
 msgstr ""
 
-#: core/mixins.py:109 core/mixins.py:134
+#: core/mixins.py:72
+msgid ""
+"You have a pending invoice, please go to \"Company\" > \"Invoices\" and pay "
+"your last invoice."
+msgstr ""
+
+#: core/mixins.py:114 core/mixins.py:139
 msgid "Company must be set."
 msgstr ""
 
@@ -1120,32 +509,19 @@ msgstr ""
 msgid "Action was performed successfully."
 msgstr ""
 
-#: core/models/company.py:17 core/models/invite.py:20 core/models/role.py:16
-#: core/templates/core/company_detail.html:14
-#: core/templates/core/invite_list.html:9
-#: core/templates/core/invoice_list.html:9 core/templates/core/role_list.html:9
-#: templates/common/template_list.html:35
+#: core/models/company.py:16 core/models/invite.py:24 core/models/role.py:15
+#: core/templates/core/company_detail.html:35
+#: core/templates/core/invite_list.html:33
+#: core/templates/core/invoice_list.html:33
+#: core/templates/core/role_list.html:33
 msgid "Name"
 msgstr ""
 
-#: core/models/company.py:20
-msgid "Slug"
-msgstr ""
-
-#: core/models/company.py:27 core/templates/core/company_detail.html:26
-msgid "Next invoice date"
-msgstr ""
-
-#: core/models/company.py:37
+#: core/models/company.py:22
 msgid "Custom domain"
 msgstr ""
 
-#: core/models/company.py:81
-#, python-format
-msgid "%(cicle)sy fee for %(company)s."
-msgstr ""
-
-#: core/models/invite.py:26
+#: core/models/invite.py:30
 msgid "Sent date"
 msgstr ""
 
@@ -1157,46 +533,70 @@ msgstr ""
 msgid "Invites"
 msgstr ""
 
-#: core/models/invite.py:84
+#: core/models/invite.py:60 templates/common/form-simple.html:10
+msgid "Send"
+msgstr ""
+
+#: core/models/invite.py:61 core/models/role.py:32
+#: core/templates/core/company_create.html:11
+#: core/templates/core/company_create.html:22
+#: core/templates/core/company_form.html:11
+#: core/templates/core/company_form.html:33
+#: core/templates/core/company_form.html:47
+#: core/templates/core/invite_form.html:11
+#: core/templates/core/invite_form.html:31
+#: core/templates/core/role_form.html:11 core/templates/core/role_form.html:31
+#: core/templates/core/user_form.html:11 core/templates/core/user_form.html:30
+#: templates/common/breadcrumbs/form.html:32 templates/common/form.html:62
+msgid "Delete"
+msgstr ""
+
+#: core/models/invite.py:75
 msgid "Invite was used already."
 msgstr ""
 
-#: core/models/invite.py:95
-#, python-format
-msgid "You have receive an invitation to join %(company)s"
+#: core/models/invite.py:77
+msgid "Activation key not set."
 msgstr ""
 
-#: core/models/invoice.py:23 core/models/payment.py:15
+#: core/models/invite.py:82
+#, python-format
+msgid "You have receive an invite to join %(company)s"
+msgstr ""
+
+#: core/models/invoice.py:22 core/models/payment.py:15
 #: core/templates/core/company_activate.html:22
-#: core/templates/core/invoice_detail.html:28
-#: core/templates/core/invoice_list.html:10
+#: core/templates/core/invoice_detail.html:49
+#: core/templates/core/invoice_list.html:34
 msgid "Description"
 msgstr ""
 
-#: core/models/invoice.py:27
+#: core/models/invoice.py:26
 msgid "Aditional fees"
 msgstr ""
 
-#: core/models/invoice.py:31 core/templates/core/invoice_detail.html:40
+#: core/models/invoice.py:30 core/templates/core/invoice_detail.html:61
 msgid "Subtotal"
 msgstr ""
 
-#: core/models/invoice.py:36 core/models/payment.py:12
+#: core/models/invoice.py:35 core/models/payment.py:12
 #: core/templates/core/company_activate.html:21
+#: core/templates/core/invoice_detail.html:5
+#: core/templates/core/invoice_detail.html:17
 msgid "Invoice"
 msgstr ""
 
-#: core/models/invoice.py:37 core/templates/core/common/tabs.html:17
+#: core/models/invoice.py:36 core/templates/core/common/tabs.html:17
 msgid "Invoices"
 msgstr ""
 
-#: core/models/invoice.py:47 crmplus/api/serializers.py:15
+#: core/models/invoice.py:46
 msgid "View"
 msgstr ""
 
 #: core/models/payment.py:18 core/templates/core/company_activate.html:24
-#: core/templates/core/invoice_detail.html:44
-#: core/templates/core/invoice_list.html:13
+#: core/templates/core/invoice_detail.html:65
+#: core/templates/core/invoice_list.html:36
 msgid "Total"
 msgstr ""
 
@@ -1208,28 +608,17 @@ msgstr ""
 msgid "Payments"
 msgstr ""
 
-#: core/models/role.py:24
+#: core/models/role.py:23
 msgid "Role"
 msgstr ""
 
-#: core/templates/core/common/form.html:40
-#, python-format
-msgid ""
-"\n"
-"                    <p>Are you sure you want to delete the <b>"
-"%(model_name)s: \"%(object)s\"</b>?</p>\n"
-"                    <p>After confirm you <b>won't be able to undo this "
-"action</b>. Be careful.</p>\n"
-"                    <p>Click on \"<b>Delete</b>\" to confirm this action or "
-"click on \"<b>Back</b>\" to get back.</p>\n"
-"                  "
+#: core/models/role.py:24 core/templates/core/common/tabs.html:22
+msgid "Roles"
 msgstr ""
 
-#: core/templates/core/common/form.html:46 templates/common/form.html:55
-msgid "You will also delete the following elements:"
-msgstr ""
-
-#: core/templates/core/common/tabs.html:27 core/templates/core/user_form.html:9
+#: core/templates/core/common/tabs.html:27
+#: core/templates/core/user_form.html:19 core/templates/core/user_list.html:11
+#: core/templates/core/user_list.html:17
 msgid "Users"
 msgstr ""
 
@@ -1245,7 +634,7 @@ msgid ""
 msgstr ""
 
 #: core/templates/core/company_activate.html:31
-#: core/templates/core/invoice_detail.html:7
+#: core/templates/core/invoice_detail.html:22
 msgid "Credit Card"
 msgstr ""
 
@@ -1277,17 +666,32 @@ msgstr ""
 msgid "Go to your dashboard"
 msgstr ""
 
-#: core/templates/core/company_create.html:5
-#: core/templates/core/company_create.html:14
-msgid "Add Company"
+#: core/templates/core/company_create.html:9
+#: core/templates/core/company_create.html:20
+#: core/templates/core/company_create.html:33
+#: core/templates/core/company_create.html:35
+#: core/templates/core/company_form.html:9
+#: core/templates/core/company_form.html:31
+#: core/templates/core/company_form.html:45
+#: core/templates/core/invite_form.html:9
+#: core/templates/core/invite_form.html:29 core/templates/core/role_form.html:9
+#: core/templates/core/role_form.html:29 core/templates/core/user_form.html:9
+#: core/templates/core/user_form.html:28 core/templates/core/user_list.html:25
+#: core/views.py:208 core/views.py:248
+#: templates/common/breadcrumbs/form.html:30
+msgid "Add"
 msgstr ""
 
-#: core/templates/core/company_create.html:20
+#: core/templates/core/company_create.html:39
 msgid "Back to companies"
 msgstr ""
 
+#: core/templates/core/company_detail.html:47
+msgid "Next invoice date"
+msgstr ""
+
 #: core/templates/core/dashboard.html:5 core/templates/core/dashboard.html:14
-#: templates/common/menu.html:41
+#: templates/common/menu.html:40
 msgid "Dashboard"
 msgstr ""
 
@@ -1315,184 +719,191 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: core/templates/core/invite_email.html:8
-msgid "You're receiving this email because you have been invited to join"
+#: core/templates/core/invite_list.html:36
+msgid "Sent"
 msgstr ""
 
-#: core/templates/core/invite_email.html:13
-msgid "Click on the following button to join "
+#: core/templates/core/invite_list.html:39
+#: core/templates/core/invoice_list.html:37
+#: core/templates/core/role_list.html:35 core/templates/core/user_list.html:44
+msgid "Options"
 msgstr ""
 
-#: core/templates/core/invite_email.html:19
-msgid "Join now"
+#: core/templates/core/invite_list.html:66
+#: core/templates/core/invoice_list.html:54
+#: core/templates/core/role_list.html:50
+msgid "No information."
 msgstr ""
 
-#: core/templates/core/invoice_detail.html:8
+#: core/templates/core/invoice_detail.html:23
 msgid "PayPal"
 msgstr ""
 
-#: core/templates/core/invoice_detail.html:24
-#: core/templates/core/invoice_list.html:11
+#: core/templates/core/invoice_detail.html:30
+msgid "Details"
+msgstr ""
+
+#: core/templates/core/invoice_detail.html:45
 msgid "Expiration date"
 msgstr ""
 
-#: core/templates/core/invoice_detail.html:32
-#: core/templates/core/invoice_list.html:12
-msgid "Paid"
+#: core/templates/core/invoice_detail.html:53
+#: core/templates/core/invoice_list.html:35
+msgid "Payed"
 msgstr ""
 
-#: core/templates/core/invoice_detail.html:36
+#: core/templates/core/invoice_detail.html:57
 msgid "Aditional fee"
 msgstr ""
 
-#: core/templates/core/user_list.html:44
+#: core/templates/core/user_list.html:67
 msgid "Remove"
 msgstr ""
 
 #: core/urls.py:14
-msgid "dashboard/"
+msgid "^dashboard/$"
 msgstr ""
 
 #: core/urls.py:20
-msgid "countries/autocomplete/"
+msgid "^countries/autocomplete/$"
 msgstr ""
 
 #: core/urls.py:26
-msgid "languages/autocomplete/"
+msgid "^languages/autocomplete/$"
 msgstr ""
 
 #: core/urls.py:32
-msgid "timezones/autocomplete/"
+msgid "^timezones/autocomplete/$"
 msgstr ""
 
 #: core/urls.py:38 core/urls.py:43
-msgid "company/"
+msgid "^company/$"
 msgstr ""
 
 #: core/urls.py:48
-msgid "company/activate/"
+msgid "^company/activate/$"
 msgstr ""
 
 #: core/urls.py:53
-msgid "company/add/"
+msgid "^company/add/$"
 msgstr ""
 
 #: core/urls.py:58
-msgid "company/change/"
+msgid "^company/change/$"
 msgstr ""
 
 #: core/urls.py:63
-msgid "company/choose/"
+msgid "^company/choose/$"
 msgstr ""
 
 #: core/urls.py:68
-msgid "company/switch/<int:pk>/"
+msgid "^company/switch/(?P<pk>[0-9]+)/$"
 msgstr ""
 
 #: core/urls.py:74
-msgid "company/invoices/"
+msgid "^company/invoices/$"
 msgstr ""
 
 #: core/urls.py:79
-msgid "company/invoices/<int:pk>/"
+msgid "^company/invoices/(?P<pk>[0-9]+)/$"
 msgstr ""
 
 #: core/urls.py:85
-msgid "company/invites/"
+msgid "^company/invites/$"
 msgstr ""
 
 #: core/urls.py:90
-msgid "company/invites/add/"
+msgid "^company/invites/add/$"
 msgstr ""
 
 #: core/urls.py:95
-msgid "company/invites/<int:pk>/delete/"
+msgid "^company/invites/(?P<pk>[0-9]+)/delete/$"
 msgstr ""
 
 #: core/urls.py:100
-msgid "company/invites/<int:pk>/send/"
+msgid "^company/invites/(?P<pk>[0-9]+)/send/$"
 msgstr ""
 
 #: core/urls.py:106
-msgid "company/roles/autocomplete/"
+msgid "^company/roles/autocomplete/$"
 msgstr ""
 
 #: core/urls.py:111
-msgid "company/roles"
+msgid "^company/roles/$"
 msgstr ""
 
 #: core/urls.py:116
-msgid "company/roles/add/"
+msgid "^company/roles/add/$"
 msgstr ""
 
 #: core/urls.py:121
-msgid "company/roles/<int:pk>/change/"
+msgid "^company/roles/(?P<pk>[0-9]+)/change/$"
 msgstr ""
 
 #: core/urls.py:126
-msgid "company/roles/<int:pk>/delete/"
+msgid "^company/roles/(?P<pk>[0-9]+)/delete/$"
 msgstr ""
 
 #: core/urls.py:132
-msgid "company/users/"
+msgid "^company/users/$"
 msgstr ""
 
 #: core/urls.py:137
-msgid "company/users/add/"
+msgid "^company/users/add/$"
 msgstr ""
 
 #: core/urls.py:142
-msgid "company/users/<int:pk>/change/"
+msgid "^company/users/(?P<pk>[0-9]+)/change/$"
 msgstr ""
 
 #: core/urls.py:147
-msgid "company/users/<int:pk>/password/"
+msgid "^company/users/(?P<pk>[0-9]+)/password/$"
 msgstr ""
 
 #: core/urls.py:152
-msgid "company/users/<int:pk>/permissions/"
+msgid "^company/users/(?P<pk>[0-9]+)/permissions/$"
 msgstr ""
 
 #: core/urls.py:157
-msgid "company/users/<int:pk>/remove/"
+msgid "^company/users/(?P<pk>[0-9]+)/remove/$"
 msgstr ""
 
-#: core/views.py:159
+#: core/views.py:151
 #, python-format
 msgid "You have saccessfully switched to: %s"
 msgstr ""
 
-#: core/views.py:412
+#: core/views.py:384
 #, python-format
 msgid "%(object)s has been removed from your company %(company)s."
 msgstr ""
 
-#: crmplus/settings.py:149
+#: myapp/settings.py:132
 msgid "English"
 msgstr ""
 
-#: crmplus/settings.py:150
+#: myapp/settings.py:133
 msgid "Spanish"
 msgstr ""
 
-#: crmplus/settings.py:151
+#: myapp/settings.py:134
 msgid "French"
 msgstr ""
 
-#: crmplus/urls.py:33
-msgid "admin/"
+#: myapp/urls.py:24
+msgid "^"
 msgstr ""
 
-#: crmplus/urls.py:41
-msgid "account/"
+#: myapp/urls.py:25
+msgid "^admin/"
 msgstr ""
 
-#: crmplus/urls.py:46
-msgid "common/"
+#: myapp/urls.py:26
+msgid "^account/"
 msgstr ""
 
-#: crmplus/urls.py:50
-msgid "api/"
+#: myapp/urls.py:28
+msgid "^api/"
 msgstr ""
 
 #: templates/400.html:5
@@ -1556,21 +967,16 @@ msgid ""
 "our developers so it won't happen again."
 msgstr ""
 
+#: templates/common/footer.html:12
+msgid "Copyright &copy; 2017. All rights reserved for"
+msgstr ""
+
 #: templates/common/form-buttons.html:3
 msgid "Clear"
 msgstr ""
 
-#: templates/common/form-buttons.html:4 templates/common/form-buttons.html:5
-#: templates/common/form-simple.html:10
-msgid "Save"
-msgstr ""
-
-#: templates/common/form-buttons.html:6
-msgid "Save and add another"
-msgstr ""
-
-#: templates/common/form-buttons.html:7
-msgid "Save and continue editing"
+#: templates/common/form-buttons.html:4
+msgid "Submit"
 msgstr ""
 
 #: templates/common/form-filter.html:6 templates/common/form-filter.html:12
@@ -1581,29 +987,32 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: templates/common/form.html:49
+#: templates/common/form.html:51
 #, python-format
 msgid ""
 "\n"
-"          <p>Are you sure you want to delete the <b>%(model_name)s: "
+"                <p>Are you sure you want to delete the <b>%(model_name)s: "
 "\"%(object)s\"</b>?</p>\n"
-"          <p>After confirm you <b>won't be able to undo this action</b>. Be "
-"careful.</p>\n"
-"          <p>Click on \"<b>Delete</b>\" to confirm this action or click on "
-"\"<b>Back</b>\" to get back.</p>\n"
-"        "
+"                <p>After confirm you <b>won't be able to undo this action</"
+"b>. Be careful.</p>\n"
+"                <p>Click on \"<b>Delete</b>\" to confirm this action or "
+"click on \"<b>Back</b>\" to get back.</p>\n"
+"                "
 msgstr ""
 
-#: templates/common/formset.html:11
-#, python-format
-msgid "Add another %(model)s"
+#: templates/common/form.html:57
+msgid "You will also delete the following elements:"
 msgstr ""
 
-#: templates/common/menu.html:20 templates/common/top-navigation.html:50
+#: templates/common/form.html:65
+msgid "Cancel"
+msgstr ""
+
+#: templates/common/menu.html:17
 msgid "Admin"
 msgstr ""
 
-#: templates/common/menu.html:31 templates/common/top-navigation.html:63
+#: templates/common/menu.html:28 templates/common/top-navigation.html:19
 msgid "Logout"
 msgstr ""
 
@@ -1611,36 +1020,37 @@ msgstr ""
 msgid "Toggle Dropdown"
 msgstr ""
 
-#: templates/common/pagination-angular.html:4
-#: templates/common/pagination-angular.html:5
-#: templates/common/pagination.html:13 templates/common/pagination.html:15
-msgid "Prev"
-msgstr ""
-
-#: templates/common/pagination-angular.html:7
-msgid "Page"
-msgstr ""
-
-#: templates/common/pagination-angular.html:7
-msgid "of"
-msgstr ""
-
-#: templates/common/pagination-angular.html:9
-#: templates/common/pagination-angular.html:10
-#: templates/common/pagination.html:37 templates/common/pagination.html:39
-msgid "Next"
-msgstr ""
-
 #: templates/common/pagination.html:4
 msgid "Page navigation"
 msgstr ""
 
-#: templates/common/top-navigation.html:33
-msgid "Read all notifications"
+#: templates/common/pagination.html:13 templates/common/pagination.html:15
+msgid "Prev"
 msgstr ""
 
-#: templates/common/top-navigation.html:40
-msgid "All your notifications are read."
+#: templates/common/pagination.html:37 templates/common/pagination.html:39
+msgid "Next"
+msgstr ""
+
+#: templates/mail/invite.html:8
+msgid "You're receiving this email because you have been invited to join "
+msgstr ""
+
+#: templates/mail/invite.html:13 templates/mail/invite.txt:5
+msgid "Click on the following button to join "
+msgstr ""
+
+#: templates/mail/invite.html:19
+msgid "Join now"
+msgstr ""
+
+#: templates/mail/invite.html:25 templates/mail/key.html:25
+msgid "In case the upper button doesn't work you can click on the link bellow."
+msgstr ""
+
+#: templates/mail/invite.txt:3
+msgid ""
+"You're receiving this email because you have been invited to join the company"
 msgstr ""
 
 #: templates/mail/key.html:8 templates/mail/key.txt:3
@@ -1661,6 +1071,10 @@ msgid ""
 "browser window."
 msgstr ""
 
-#: templates/mail/layout.html:277
-msgid "Code + Hosting + Desing with love"
+#: templates/mail/layout.html:273
+msgid "This is an automatic email from "
+msgstr ""
+
+#: templates/mail/layout.html:278
+msgid "Code + Hosting + Desing with"
 msgstr ""

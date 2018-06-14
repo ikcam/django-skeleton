@@ -1,13 +1,13 @@
 #!/bin/bash
-NAME="crmplus"
-DJANGODIR=/var/www/crmplus.balegogroup.com/htdocs
-SOCKFILE=/var/www/crmplus.balegogroup.com/run/gunicorn.sock
-LOGFILE=/var/www/crmplus.balegogroup.com/logs/gunicorn.log
+NAME="myapp"
+DJANGODIR=/var/www/myappdir/htdocs
+SOCKFILE=/var/www/myappdir/run/gunicorn.sock
+LOGFILE=/var/www/myappdir/logs/gunicorn.log
 USER=root
 GROUP=root
 NUM_WORKERS=3
-DJANGO_SETTINGS_MODULE=crmplus.settings
-DJANGO_WSGI_MODULE=crmplus.wsgi
+DJANGO_SETTINGS_MODULE=myapp.settings
+DJANGO_WSGI_MODULE=myapp.wsgi
 
 echo "Starting $NAME as `whoami`"
 

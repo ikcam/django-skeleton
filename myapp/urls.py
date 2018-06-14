@@ -34,16 +34,12 @@ urlpatterns += i18n_patterns(
         admin.site.urls
     ),
     path(
-        _('account/'),
-        include(('account.urls', 'account'), namespace='account')
-    ),
-    path(
         '',
         include(('core.urls', 'core'), namespace='core')
     ),
     path(
-        '',
-        include(('crm.urls', 'crm'), namespace='crm')
+        _('account/'),
+        include(('account.urls', 'account'), namespace='account')
     ),
     # Common and API at the end
     path(
@@ -52,6 +48,6 @@ urlpatterns += i18n_patterns(
     ),
     path(
         _('api/'),
-        include(('crmplus.api.urls', 'api'), namespace='api')
+        include(('myapp.api.urls', 'api'), namespace='api')
     ),
 )

@@ -1,4 +1,4 @@
-from crmplus.celery import app
+from myapp.celery import app
 from core.tasks import model_task
 
 
