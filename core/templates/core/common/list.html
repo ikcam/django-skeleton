@@ -7,7 +7,7 @@
 {% block breadcrumb %}
   <ol class="breadcrumb">
     <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'core:company_detail' %}">{{ company }}</a></li>
+    <li><a href="{% url 'public:company_detail' %}">{{ company }}</a></li>
     <li class="active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
   </ol>
 {% endblock breadcrumb %}
@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block page_actions %}
-  {% include "common/options-buttons.html" with size='size-default' %}
+  {% action_buttons action_list=action_list object_list=object_list size='size-default' %}
 {% endblock %}
 
 {% block content %}
@@ -29,8 +29,8 @@
         <div role="tabpanel" class="tab-pane active">
           <div class="panel-body">
             <div class="table-responsive">
-              {% block content_inner %}{% endblock %}
             </div>
+            {% block content_inner %}{% endblock %}
           </div>
           {% include "common/pagination.html" %}
         </div>

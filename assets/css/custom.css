@@ -5,6 +5,12 @@
     }
 }
 
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
 .empty-form {
     display: none;
 }

@@ -7,14 +7,14 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import activate, ugettext_lazy as _
 
+from core.constants import LEVEL_ERROR
 from core.mixins import AuditableMixin
-from .company import Company
 
 
 class Invite(AuditableMixin, models.Model):
     company = models.ForeignKey(
-        Company, editable=False, related_name='invites',
-        on_delete=models.CASCADE, verbose_name=_("Company")
+        'core.Company', editable=False, on_delete=models.CASCADE,
+        verbose_name=_("Company")
     )
     name = models.CharField(
         max_length=50, verbose_name=_("Name")
@@ -25,13 +25,16 @@ class Invite(AuditableMixin, models.Model):
     date_send = models.DateTimeField(
         blank=True, null=True, editable=False, verbose_name=_("Sent date")
     )
+    roles = models.ManyToManyField(
+        'core.Role', blank=True, verbose_name=_("Roles")
+    )
     activation_key = models.CharField(
         max_length=255, blank=True, null=True, editable=False,
         verbose_name=_("Activation key")
     )
     user = models.OneToOneField(
-        'account.User', blank=True, null=True, editable=False,
-        related_name='invite', on_delete=models.SET_NULL,
+        'core.User', blank=True, null=True, editable=False,
+        related_name='invite', on_delete=models.CASCADE,
         verbose_name=_("User")
     )
 
@@ -48,20 +51,13 @@ class Invite(AuditableMixin, models.Model):
         return self.email
 
     def get_absolute_url(self):
-        return reverse_lazy('core:invite_list')
+        return reverse_lazy('public:invite_list')
 
     @property
     def actions(self):
-        if not self.user:
-            return (
-                (
-                    _('Send'), 'send', 'info', 'envelope', 'core:send_invite'
-                ),
-                (
-                    _('Delete'), 'delete', 'danger', 'trash',
-                    'core:delete_invite'
-                ),
-            )
+        if self.user:
+            return
+        return ('send', 'delete')
 
     @property
     def is_send(self):
@@ -81,11 +77,11 @@ class Invite(AuditableMixin, models.Model):
 
     def send(self, **kwargs):
         if self.user:
-            return ('error', _("Invite was used already."))
+            return (LEVEL_ERROR, _("Invite was used already."))
 
         self.key_generate()
         self.date_send = timezone.now()
-        self.save()
+        self.save(update_fields=['activation_key', 'date_send'])
 
         activate(self.company.language)
 
@@ -97,7 +93,7 @@ class Invite(AuditableMixin, models.Model):
             company=self.company
         )
 
-        message = self.company.messages.create(
+        message = self.company.message_set.create(
             from_name=self.company.name,
             from_email=self.company.email,
             model=self,

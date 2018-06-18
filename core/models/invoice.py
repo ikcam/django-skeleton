@@ -9,15 +9,13 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.constants import GRACE_DAYS
 from core.mixins import AuditableMixin
-from .company import Company
 from . import culqipy
 
 
 class Invoice(AuditableMixin, models.Model):
     company = models.ForeignKey(
-        Company, blank=True, null=True, editable=False,
-        related_name='invoices', on_delete=models.SET_NULL,
-        verbose_name=_("Company")
+        'core.Company', blank=True, null=True, editable=False,
+        on_delete=models.SET_NULL, verbose_name=_("Company")
     )
     description = models.TextField(
         blank=True, null=True, verbose_name=_("Description")
@@ -59,7 +57,7 @@ class Invoice(AuditableMixin, models.Model):
         }
         charge = culqipy.Charge.create(dir_charge)
 
-        self.payments.create(
+        self.payment_set.create(
             description=charge['id'],
             total=float(charge['amount'] / 100)
         )
@@ -87,7 +85,7 @@ class Invoice(AuditableMixin, models.Model):
 
     @cached_property
     def total_payments(self):
-        total = self.payments.all().aggregate(Sum('total'))['total__sum']
+        total = self.payment_set.all().aggregate(Sum('total'))['total__sum']
         total = float(total or 0)
         return round(total, 2)
 

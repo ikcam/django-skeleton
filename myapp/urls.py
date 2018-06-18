@@ -35,19 +35,10 @@ urlpatterns += i18n_patterns(
     ),
     path(
         '',
-        include(('core.urls', 'core'), namespace='core')
-    ),
-    path(
-        _('account/'),
-        include(('account.urls', 'account'), namespace='account')
-    ),
-    # Common and API at the end
-    path(
-        _('common/'),
-        include(('common.urls', 'common'), namespace='common')
+        include(('public.urls', 'public'), namespace='public')
     ),
     path(
         _('api/'),
-        include(('myapp.api.urls', 'api'), namespace='api')
+        include(('core.api.urls', 'api'), namespace='api')
     ),
 )

@@ -8,8 +8,7 @@ logger = get_task_logger(__name__)
 
 
 def model_task(model, company_id, task, user_id=None, pk=None, data=None):
-    from account.models import User
-    from core.models.company import Company
+    from core.models import Company, User
 
     if company_id:
         company = Company.objects.get(id=company_id)
@@ -56,9 +55,27 @@ def invite_task(**kwargs):
     return model_task(model=Model, **kwargs)
 
 
+@app.task(name='link_task')
+def link_task(**kwargs):
+    from common.models import Link as Model
+    return model_task(Model, **kwargs)
+
+
+@app.task(name='message_task')
+def message_task(**kwargs):
+    from common.models import Message as Model
+    return model_task(Model, **kwargs)
+
+
+@app.task(name='user_task')
+def user_task(**kwargs):
+    from core.models import User as Model
+    return model_task(model=Model, **kwargs)
+
+
 @app.task(name='companies_check')
 def companies_check():
-    from core.models.company import Company
+    from core.models import Company
     Company.check_all()
 
 

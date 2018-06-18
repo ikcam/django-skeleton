@@ -5,16 +5,6 @@ from . import autocomplete, views
 
 
 urlpatterns = [
-    path(
-        '',
-        views.Index.as_view(),
-        name='index'
-    ),
-    path(
-        _('dashboard/'),
-        views.Dashboard.as_view(),
-        name='dashboard'
-    ),
     # Country
     path(
         _('countries/autocomplete/'),
@@ -39,123 +29,11 @@ urlpatterns = [
         views.CompanyDetail.as_view(),
         name='company_list'
     ),
-    path(
-        _('company/'),
-        views.CompanyDetail.as_view(),
-        name='company_detail'
-    ),
-    path(
-        _('company/activate/'),
-        views.CompanyActivate.as_view(),
-        name='company_activate'
-    ),
-    path(
-        _('company/add/'),
-        views.CompanyCreate.as_view(),
-        name='company_add'
-    ),
-    path(
-        _('company/change/'),
-        views.CompanyUpdate.as_view(),
-        name='company_change'
-    ),
-    path(
-        _('company/choose/'),
-        views.CompanyChoose.as_view(),
-        name='company_choose'
-    ),
-    path(
-        _('company/switch/<int:pk>/'),
-        views.CompanySwitch.as_view(),
-        name='company_switch'
-    ),
-    # Invoice - invoices - invoice
-    path(
-        _('company/invoices/'),
-        views.InvoiceList.as_view(),
-        name='invoice_list'
-    ),
-    path(
-        _('company/invoices/<int:pk>/'),
-        views.InvoiceDetail.as_view(),
-        name='invoice_detail'
-    ),
-    # Invite - invites - invite
-    path(
-        _('company/invites/'),
-        views.InviteList.as_view(),
-        name='invite_list'
-    ),
-    path(
-        _('company/invites/add/'),
-        views.InviteCreate.as_view(),
-        name='invite_add'
-    ),
-    path(
-        _('company/invites/<int:pk>/delete/'),
-        views.InviteDelete.as_view(),
-        name='invite_delete'
-    ),
-    path(
-        _('company/invites/<int:pk>/send/'),
-        views.InviteSend.as_view(),
-        name='invite_send'
-    ),
-    # Role - roles - role
+    
     path(
         _('company/roles/autocomplete/'),
         autocomplete.RoleAutocomplete.as_view(),
         name='role_autocomplete'
     ),
-    path(
-        _('company/roles'),
-        views.RoleList.as_view(),
-        name='role_list'
-    ),
-    path(
-        _('company/roles/add/'),
-        views.RoleCreate.as_view(),
-        name='role_add'
-    ),
-    path(
-        _('company/roles/<int:pk>/change/'),
-        views.RoleUpdate.as_view(),
-        name='role_change'
-    ),
-    path(
-        _('company/roles/<int:pk>/delete/'),
-        views.RoleDelete.as_view(),
-        name='role_delete'
-    ),
-    # User - users - user
-    path(
-        _('company/users/'),
-        views.UserList.as_view(),
-        name='user_list'
-    ),
-    path(
-        _('company/users/add/'),
-        views.UserCreate.as_view(),
-        name='user_add'
-    ),
-    path(
-        _('company/users/<int:pk>/change/'),
-        views.UserUpdate.as_view(),
-        name='user_change'
-    ),
-    path(
-        _('company/users/<int:pk>/password/'),
-        views.UserPassword.as_view(),
-        name='user_password'
-    ),
-    path(
-        _('company/users/<int:pk>/permissions/'),
-        views.UserPermissions.as_view(),
-        name='user_permissions'
-    ),
-    path(
-        _('company/users/<int:pk>/remove/'),
-        views.UserRemove.as_view(),
-        name='user_remove'
-    ),
+
 ]

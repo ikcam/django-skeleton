@@ -133,12 +133,6 @@ class CompanyCreateMixin(CompanyRequiredMixin):
         if not self.company:
             raise Exception(_("Company must be set."))
 
-        if (
-            hasattr(form, 'valid_for_company') and
-            not form.valid_for_company(self.company)
-        ):
-            return self.form_invalid(form)
-
         setattr(form.instance, 'company', self.company)
         return super().form_valid(form)
 

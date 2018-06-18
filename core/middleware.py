@@ -17,12 +17,12 @@ class TimezoneMiddleware(MiddlewareMixin):
             timezone.activate(pytz.timezone(tzname))
 
             language = user.language
-            url_parts = resolve(request.path)
 
             if (
                 translation.get_language() != language and
                 language in [k for k, v in settings.LANGUAGES]
             ):
+                url_parts = resolve(request.path)
                 url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
                 url = translate_url(url, language)
                 translation.activate(language)

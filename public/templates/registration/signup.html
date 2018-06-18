@@ -1,0 +1,33 @@
+{% extends "layout-blank.html" %}
+
+{% load bootstrap3 core_tags i18n %}
+
+{% block title %}{% trans "Sign up" %}{% endblock title %}
+
+{% block content %}
+  <div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+      <div>
+        <h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
+      </div>
+      <h3>{% trans "Sign up" %} {% trans "in" %} {% settings "SITE_SHORT_NAME" %}</h3>
+      <p>{% trans "Create account to see it in action." %}</p>
+      {% bootstrap_messages %}
+      <form class="m-t" method="post" role="form" action="" novalidate>
+        {% trans "Sign up" as form_submit %}
+        {% include "common/form-simple.html" %}
+
+        <p class="text-muted text-center"><small>{% trans "Already have an account?" %}</small></p>
+        <a class="btn btn-sm btn-white btn-block" href="{% url 'public:login' %}">{% trans "Log in" %}</a>
+      </form>
+      <p class="m-t">
+        <small>
+          {% trans "Code + Design + Hosting with" %}
+          <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
+          {% trans "by" %}
+          <a target="_blank" href="//cubo.pe">Cubo</a>
+        </small>
+      </p>
+    </div>
+  </div>
+{% endblock content %}

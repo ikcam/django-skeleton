@@ -26,9 +26,9 @@
             </li>
             {% endverbatim %}
             <li class="divider" ng-if="data.colaborator_set.length > 0"></li>
-            <li><a href="{% url 'account:user_detail' %}">{% trans 'Profile' %}</a></li>
+            <li><a href="{% url 'public:account_detail' %}">{% trans 'Profile' %}</a></li>
             <li class="divider"></li>
-            <li><a href="{% url 'account:logout' %}">{% trans 'Logout' %}</a></li>
+            <li><a href="{% url 'public:account_logout' %}">{% trans 'Logout' %}</a></li>
           </ul>
         </div>
         <div class="logo-element">{% settings "SITE_SHORT_NAME" %}</div>
@@ -36,31 +36,31 @@
 
       {% with request.resolver_match as resolver_match %}
         <li {% if resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
-          <a href="{% url 'core:dashboard' %}">
+          <a href="{% url 'public:dashboard' %}">
             <i class="fa fa-home"></i>
             <span class="nav-label">{% trans "Dashboard" %}</span>
           </a>
         </li>
         <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-          <a href="{% url 'common:event_list' %}">
+          <a href="{% url 'public:event_list' %}">
             <i class="fa fa-calendar"></i>
             <span class="nav-label">{% trans "Events" %}</span>
           </a>
         </li>
         <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-          <a href="{% url 'common:link_list' %}">
+          <a href="{% url 'public:link_list' %}">
             <i class="fa fa-link"></i>
             <span class="nav-label">{% trans "Links" %}</span>
           </a>
         </li>
         <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
-          <a href="{% url 'common:message_list' %}">
+          <a href="{% url 'public:message_list' %}">
             <i class="fa fa-envelope"></i>
             <span class="nav-label">{% trans "Messages" %}</span>
           </a>
         </li>
         <li {% if 'core' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
-          <a href="{% url 'core:company_detail' %}">
+          <a href="{% url 'public:company_detail' %}">
             <i class="fa fa-briefcase"></i>
             <span class="nav-label">{% trans "Company" %}</span>
           </a>

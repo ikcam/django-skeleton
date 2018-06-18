@@ -1,0 +1,32 @@
+{% extends "layout-blank.html" %}
+
+{% load core_tags i18n %}
+
+{% block title %}
+    {% trans "Choose a company" %}
+{% endblock %}
+
+{% block content %}
+  <div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+      <div><h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
+      </div>
+      <h3>{% trans "Choose a company:" %}</h3>
+
+      <div class="list-group">
+        {% for object in object_list %}
+          <a class="list-group-item {% if request.user.company == object %}active{% endif %}" href="{% url 'public:company_switch' object.id %}">
+            <i class="fa fa-building"></i>
+            {{ object }}
+            {% if request.user.company == object %}({% trans "active" %}){% endif %}
+          </a>
+        {% endfor %}
+      </div>
+
+      <p>{% trans "or" %}</p>
+
+      <a class="btn btn-sm btn-white btn-block" href="{% url 'public:company_add' %}"><i class="fa fa-plus"></i> {% trans "Add a company" %}</a>
+      <a class="btn btn-sm btn-primary btn-block" href="{% url 'public:dashboard' %}"><i class="fa fa-home"></i> {% trans "Go to your dashboard" %}</a>
+    </div>
+  </div>
+{% endblock %}

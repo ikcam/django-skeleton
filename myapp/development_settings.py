@@ -6,11 +6,7 @@ from .settings import BASE_DIR, INSTALLED_APPS, MIDDLEWARE
 DEBUG = True
 
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '0.0.0.0',
-    'localhost'
-]
+ALLOWED_HOSTS = ['*']
 
 
 INTERNAL_IPS = [
@@ -44,10 +40,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
-
-CORS_ORIGIN_WHITELIST = (
-    'localhost:4200',
-)
 
 # Site info
 

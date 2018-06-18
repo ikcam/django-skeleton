@@ -11,7 +11,7 @@
         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
           <i class="fa fa-bell"></i>
         </a>
-        <ul class="dropdown-menu dropdown-messages" ng-controller="RemoteController" ng-init="setUrl('{% url 'api:account:notification-list' %}?is_read=3&limit=5')">
+        <ul class="dropdown-menu dropdown-messages" ng-controller="RemoteController" ng-init="setUrl('{% url 'api:public:notification-list' %}?is_read=3&limit=5')">
           <li ng-repeat="notification in data">
             {% verbatim %}
               <a href="{{ notification.actions.view.url }}">
@@ -28,7 +28,7 @@
           <li ng-if="data.length > 0" class="divider"></li>
           <li ng-if="data.length > 0">
             <div class="text-center link-block">
-              <a href="{% url 'account:notification_read_all' %}?next={{ request.path }}">
+              <a href="{% url 'public:notification_readall' %}?next={{ request.path }}">
                 <i class="fa fa-bell"></i>
                 <strong>{% trans "Read all notifications" %}</strong>
               </a>
@@ -44,8 +44,8 @@
         </ul>
       </li>
       <li class="dropdown visible-xs-inline-block" id="remoteDropdownTop">
-        <a class="dropdown-toggle" href="{% url 'account:user_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
-        <ul class="dropdown-menu" ng-controller="RemoteController" ng-init="setUrl('{% url 'api:account:user' %}')">
+        <a class="dropdown-toggle" href="{% url 'public:account_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+        <ul class="dropdown-menu" ng-controller="RemoteController" ng-init="setUrl('{% url 'api:public:account' %}')">
           {% if request.user.is_staff %}
             <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
             <li class="divider"></li>
@@ -56,11 +56,11 @@
           </li>
           {% endverbatim %}
           <li class="divider" ng-if="data.colaborator_set.length > 0"></li>
-          <li><a href="{% url 'account:user_detail' %}">{% trans 'Profile' %}</a></li>
+          <li><a href="{% url 'public:account_detail' %}">{% trans 'Profile' %}</a></li>
         </ul>
       </li>
       <li>
-        <a href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
+        <a href="{% url 'public:account_logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
       </li>
     </ul>
   </nav>

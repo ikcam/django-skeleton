@@ -1,5 +1,5 @@
 {
-  "name": "Django Skeleton",
+  "name": "django-skeleton",
   "homepage": "https://github.com/ikcam/django-skeleton",
   "authors": [
     "Irving Kcam <me@ikcam.com>"
@@ -7,7 +7,7 @@
   "description": "Vendor packages for Django Skeleton",
   "main": "bower.json",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",

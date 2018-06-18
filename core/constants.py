@@ -1,4 +1,39 @@
+from django.utils.translation import ugettext_lazy as _
+
 ACCOUNT_ACTIVATION_HOURS = 48
+
+ACTIONS = {
+    'add': {
+        'title': _("Add"),
+        'class': 'primary',
+        'icon': 'plus',
+        'permission_prefix': 'add',
+    },
+    'change': {
+        'title': _("Change"),
+        'class': 'success',
+        'icon': 'pencil',
+        'permission_prefix': 'change',
+    },
+    'delete': {
+        'title': _("Delete"),
+        'class': 'danger',
+        'icon': 'trash',
+        'permission_prefix': 'delete',
+    },
+    'remove': {
+        'title': _("Remove"),
+        'class': 'danger',
+        'icon': 'remove',
+        'permission_prefix': 'remove',
+    },
+    'send': {
+        'title': _("Send"),
+        'class': 'info',
+        'icon': 'envelope',
+        'permission_prefix': 'send',
+    },
+}
 
 CICLE_DAY = 'day'
 CICLE_WEEK = 'week'

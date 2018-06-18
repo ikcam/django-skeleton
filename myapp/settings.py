@@ -50,9 +50,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # Apps
     'core',
-    'account',
-    # Common and API at the end
-    'common',
+    'public',
 ]
 
 MIDDLEWARE = [
@@ -95,7 +93,7 @@ WSGI_APPLICATION = 'myapp.wsgi.application'
 ASGI_APPLICATION = 'myapp.routing.application'
 
 
-AUTHENTICATION_BACKENDS = ('account.backends.AuthenticationBackend',)
+AUTHENTICATION_BACKENDS = ('core.backends.AuthenticationBackend',)
 
 
 # Password validation
@@ -125,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'core.User'
 
 
 # Internationalization
@@ -154,11 +152,11 @@ LANGUAGES = [
 
 # Login
 
-LOGIN_URL = reverse_lazy('account:login')
+LOGIN_URL = reverse_lazy('public:login')
 
-LOGIN_REDIRECT_URL = reverse_lazy('core:dashboard')
+LOGIN_REDIRECT_URL = reverse_lazy('public:dashboard')
 
-LOGOUT_REDIRECT_URL = reverse_lazy('core:index')
+LOGOUT_REDIRECT_URL = reverse_lazy('public:index')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -192,7 +190,6 @@ CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_URL, 'uploads/')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (

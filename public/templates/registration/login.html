@@ -1,0 +1,51 @@
+{% extends "layout-blank.html" %}
+
+{% load bootstrap3 core_tags i18n staticfiles %}
+
+{% block css_header %}
+  <link rel="stylesheet" href="{% static 'bower_components/bootstrap-social/bootstrap-social.css' %}">
+{% endblock css_header %}
+
+{% block title %}{% trans "Log in" %}{% endblock title %}
+
+{% block content %}
+  <div class="middle-box text-center loginscreen animated fadeInDown">
+    <div>
+      <div>
+        <h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
+      </div>
+      <h3>{% trans "Welcome to" %} {% settings "SITE_SHORT_NAME" %}</h3>
+      <p>
+        {% blocktrans %}
+            This is a small but powerfull tool to send invoices and messages to
+            potencial customers and customers as well.
+        {% endblocktrans %}
+      </p>
+      <p>{% blocktrans %}Login in. To see it in action.{% endblocktrans %}</p>
+
+      {% bootstrap_messages %}
+
+      <a class="btn btn-sm btn-block btn-social btn-facebook" href="{% url 'public:account_login_facebook' %}">
+        <span class="fa fa-facebook"></span>
+        {% trans "Login with Facebbok" %}
+      </a>
+
+      <form class="m-t" method="post" role="form" action="" novalidate>
+        {% trans "Log in" as form_submit %}
+        {% include "common/form-simple.html" %}
+
+        <a href="{% url 'public:account_password_reset' %}"><small>{% trans "Forgot password?" %}</small></a>
+        <p class="text-muted text-center"><small>{% trans "Do not have an account?" %}</small></p>
+        <a class="btn btn-sm btn-white btn-block" href="{% url 'public:account_signup' %}">{% trans "Create an account" %}</a>
+      </form>
+      <p class="m-t">
+        <small>
+          {% trans "Code + Design + Hosting with" %}
+          <span class="text-danger glyphicon glyphicon-heart" aria-hidden="true"></span>
+          {% trans "by" %}
+          <a target="_blank" href="//cubo.pe">Cubo</a>
+        </small>
+      </p>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends "core/common/form.html" %}
+
+{% load boilerplate core_tags i18n %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'public:company_detail' %}">{{ company }}</a></li>
+        <li><a href="{% url 'public:user_list' %}">{% trans 'Users' %}</a></li>
+        {% if object %}
+            <li>{{ object }}</li>
+        {% endif %}
+        <li class="active">
+            <strong>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %}{% endif %}</strong>
+        </li>
+    </ol>
+{% endblock breadcrumb %}

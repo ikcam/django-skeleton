@@ -7,12 +7,6 @@
 {% block breadcrumb %}
   <ol class="breadcrumb">
     <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-    {% if form and not object %}
-      <li><a href="{% url form|form_model_url %}">{{ form|form_model_name_plural }}</a></li>
-    {% endif %}
-    {% if object %}
-      <li><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
-    {% endif %}
     <li class="active">
       <strong>{% if form and object %}{% trans "Change" %}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %}{% endif %}</strong>
     </li>
@@ -34,6 +28,8 @@
           <div class="panel-body">
             {% block content_inner %}
               <form class="form" method="POST" action="" enctype="multipart/form-data" role="form" novalidate>
+                {% csrf_token %}
+
                 {% if form %}
                   {% include "common/form-simple.html" %}
                 {% else %}
@@ -51,7 +47,7 @@
                       <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {% trans 'Delete' %}</button>
                     </div>
                     <div class="col-xs-6 col-sm-5 col-md-3 col-lg-3 text-center">
-                      <a class="btn btn-default" href="javascript:history.back(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Back' %}</a>
+                      <button class="btn btn-default" onClick="window.history.go(-1); return false;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Back' %}</button>
                     </div>
                   </div>
                 {% endif %}

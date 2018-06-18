@@ -20,8 +20,8 @@ class Company(AuditableMixin, models.Model):
         editable=False, unique=True, verbose_name=_("Slug")
     )
     user = models.ForeignKey(
-        'account.User', related_name='+', on_delete=models.CASCADE,
-        verbose_name=_("User")
+        'core.User', related_name='company_created_set',
+        on_delete=models.CASCADE, verbose_name=_("User")
     )
     date_next_invoice = models.DateTimeField(
         blank=True, null=True, verbose_name=_("Next invoice date")
@@ -77,7 +77,7 @@ class Company(AuditableMixin, models.Model):
         activate(self.language)
 
         if not self.date_next_invoice or today >= self.date_next_invoice:
-            self.invoices.create(
+            self.invoice_set.create(
                 description=_("%(cicle)sy fee for %(company)s.") % dict(
                     cicle=RECURRING_CICLE.title(),
                     company=self.name,
@@ -90,18 +90,18 @@ class Company(AuditableMixin, models.Model):
             else:
                 next_ = timezone.now() + relativedelta(**next_args)
             self.date_next_invoice = next_
-            self.save()
+            self.save(update_fields=['date_next_invoice'])
 
     @property
     def switch_url(self):
-        return reverse_lazy('core:company_switch', args=[self.pk])
+        return reverse_lazy('public:company_switch', args=[self.pk])
 
 
 def post_save_company(sender, instance, created, **kwargs):
     if created:
         instance.user.company = instance
+        instance.user.save(update_fields=['company'])
         instance.user.colaborator_set.create(company=instance)
-        instance.user.save()
         instance.generate_next_invoice()
 
 

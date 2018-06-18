@@ -7,7 +7,7 @@
       {% include "common/ibox/tools.html" %}
     </div>
     <div class="ibox-content">
-      <form class="form-inline" method="get" role="search">
+      <form action="" class="form-inline" method="get" role="search" novalidate>
         {% bootstrap_form form layout='inline' bound_css_class='' %}
         <button type="submit" class="btn btn-default">{% trans 'Filter' %}</button>
         <a class="btn btn-link" href="{{ request.path }}" role="button">{% trans 'Reset' %}</a>

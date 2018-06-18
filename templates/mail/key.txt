@@ -3,7 +3,7 @@
 {% blocktrans %}Thank you for joining{% endblocktrans %} {% settings "SITE_NAME" %}!
 
 {% blocktrans %}Click on the following link to activate your account:{% endblocktrans %}.
-{% settings "SITE_URL" %}{% url 'account:activate' object.activation_key %}
+{% settings "SITE_URL" %}{% url 'public:activate' object.activation_key %}
 
 {% blocktrans %}If clicking the URL above does not work, copy and paste the URL into a browser window.{% endblocktrans %}
 

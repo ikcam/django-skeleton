@@ -140,13 +140,6 @@ SITE_NAME = 'My App'
 SITE_SHORT_NAME = 'MA+'
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATICFILES_STORAGE = (
-    'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-)
-
-
 CULQI_PUBLIC_KEY = None
 
 CULQI_PRIVATE_KEY = None

@@ -78,7 +78,7 @@
           </div>
         {% endif %}
 
-        <div class="wrapper wrapper-content animated fadeInRight">
+        <div id="mainContent" class="wrapper wrapper-content animated fadeInRight">
           {% bootstrap_messages %}
 
           {% block content %}{% endblock content %}
@@ -91,7 +91,7 @@
     {% block css_footer %}{% endblock css_footer %}
 
     <script>
-      var api_url_profile = '{% url "api:account:user" %}';
+      var api_url_profile = '{% url "api:public:account" %}';
       var site_language = '{{ LANGUAGE_CODE }}';
       var site_timezone = '{{ TIME_ZONE }}';
     </script>
