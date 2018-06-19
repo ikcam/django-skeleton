@@ -53,6 +53,10 @@ class Company(AuditableMixin, models.Model):
         return reverse_lazy('core:company_detail')
 
     @property
+    def actions(self):
+        return ('change', )
+
+    @property
     def domain(self):
         return self.custom_domain or settings.SITE_URL
 

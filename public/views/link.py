@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView
 )
@@ -18,9 +17,7 @@ from public import forms
 
 
 class LinkListView(CompanyQuerySetMixin, ActionListMixin, ListView):
-    action_list = (
-        (_("Add"), 'add', 'primary', 'plus', 'common:add_link'),
-    )
+    action_list = ('add', )
     model = Link
     paginate_by = 30
     permission_required = 'core:view_link'

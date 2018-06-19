@@ -92,22 +92,15 @@ def get_event_form(company):
                 company.messages.all(),
             ),
             required=False,
-            widget=autocomplete.QuerySetSequenceSelect2(
-                'common:model_autocomplete'
-            ),
         )
         notify = MultipleChoiceField(
             label=_("Notify"), choices=Event.NOTIFICATION_OPTIONS,
             required=False, widget=CheckboxSelectMultiple
         )
         share_with = forms.ModelMultipleChoiceField(
-            label=_("Share with"), queryset=User.objects.all(),
-            required=False, widget=autocomplete.ModelSelect2Multiple(
-                url='account:user_other_autocomplete',
-                attrs={
-                    'data-placeholder': _("Share with")
-                }
-            )
+            label=_("Share with"),
+            queryset=User.objects.filter(companies=company),
+            required=False,
         )
 
         class Meta:
@@ -125,6 +118,11 @@ def get_invite_form(company):
         class Meta:
             fields = '__all__'
             model = Invite
+            widgets = {
+                'roles': autocomplete.ModelSelect2Multiple(
+                    url='public:role_autocomplete'
+                ),
+            }
 
         def clean_email(self):
             data = self.cleaned_data.get('email')

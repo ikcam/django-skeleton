@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from . import views
+from . import autocomplete, views
 
 
 urlpatterns = [
@@ -283,6 +283,11 @@ urlpatterns = [
     ),
     # Role - roles - role
     path(
+        _('company/roles/autocomplete/'),
+        autocomplete.RoleAutocomplete.as_view(),
+        name='role_autocomplete'
+    ),
+    path(
         _('company/roles/'),
         views.RoleListView.as_view(),
         name='role_list'
@@ -332,5 +337,41 @@ urlpatterns = [
         _('company/users/<int:pk>/remove/'),
         views.UserRemoveView.as_view(),
         name='user_remove'
+    ),
+    # Autocomplete
+    path(
+        _('countries/autocomplete/'),
+        autocomplete.CountryAutocomplete.as_view(),
+        name='country_autocomplete'
+    ),
+    path(
+        _('languages/autocomplete/'),
+        autocomplete.LanguageAutocomplete.as_view(),
+        name='language_autocomplete'
+    ),
+    path(
+        _('model-autocomplete/'),
+        autocomplete.ModelAutocomplete.as_view(),
+        name='model_autocomplete'
+    ),
+    path(
+        _('permissions/autocomplete/'),
+        autocomplete.PermissionAutocomplete.as_view(),
+        name='permission_autocomplete'
+    ),
+    path(
+        _('timezones/autocomplete/'),
+        autocomplete.TimezoneAutocomplete.as_view(),
+        name='timezone_autocomplete'
+    ),
+    path(
+        _('users/autocomplete/'),
+        autocomplete.UserAutocomplete.as_view(),
+        name='user_autocomplete'
+    ),
+    path(
+        _('users/other/autocomplete/'),
+        autocomplete.UserOtherAutocomplete.as_view(),
+        name='user_other_autocomplete'
     ),
 ]

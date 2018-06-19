@@ -3,10 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from .models import (
-    Company, Invite, Invoice, Payment, Role
+    Colaborator, Company, Event, Invite, Invoice, Link, Message, Payment,
+    Role, User
 )
-
-from .models import Colaborator, User
 
 
 class ColaboratorAdmin(admin.ModelAdmin):
@@ -14,15 +13,13 @@ class ColaboratorAdmin(admin.ModelAdmin):
     list_filter = ('company', )
 
 
-admin.site.register(Colaborator, ColaboratorAdmin)
-
-
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('name', 'user', )
     search_fields = ('name', )
 
 
-admin.site.register(Company, CompanyAdmin)
+class EventModelAdmin(admin.ModelAdmin):
+    model = Event
 
 
 class PaymentInline(admin.TabularInline):
@@ -36,25 +33,28 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('id', )
 
 
-admin.site.register(Invoice, InvoiceAdmin)
-
-
 class InviteAdmin(admin.ModelAdmin):
     list_display = ('name', 'company', 'email', 'user')
     list_filter = ('company', )
     search_fields = ('name', 'email')
 
 
-admin.site.register(Invite, InviteAdmin)
+class LinkModelAdmin(admin.ModelAdmin):
+    model = Link
+
+
+class MessageModelAdmin(admin.ModelAdmin):
+    model = Message
+    list_display = (
+        'from_', 'to', 'company', 'date_creation', 'direction'
+    )
+    list_filter = ('company', 'direction')
 
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'company')
     list_filter = ('company', )
     search_fields = ('name', )
-
-
-admin.site.register(Role, RoleAdmin)
 
 
 class UserAdmin(UserAdmin):
@@ -89,4 +89,12 @@ class UserAdmin(UserAdmin):
     )
 
 
+admin.site.register(Company, CompanyAdmin)
+admin.site.register(Colaborator, ColaboratorAdmin)
+admin.site.register(Event, EventModelAdmin)
+admin.site.register(Invite, InviteAdmin)
+admin.site.register(Invoice, InvoiceAdmin)
+admin.site.register(Link, LinkModelAdmin)
+admin.site.register(Message, MessageModelAdmin)
+admin.site.register(Role, RoleAdmin)
 admin.site.register(User, UserAdmin)

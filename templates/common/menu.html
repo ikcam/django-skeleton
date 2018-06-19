@@ -41,19 +41,19 @@
             <span class="nav-label">{% trans "Dashboard" %}</span>
           </a>
         </li>
-        <li {% if 'event' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+        <li {% if 'event' in resolver_match.url_name and 'public' in resolver_match.namespace %}class="active"{% endif %}>
           <a href="{% url 'public:event_list' %}">
             <i class="fa fa-calendar"></i>
             <span class="nav-label">{% trans "Events" %}</span>
           </a>
         </li>
-        <li {% if 'link' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+        <li {% if 'link' in resolver_match.url_name and 'public' in resolver_match.namespace %}class="active"{% endif %}>
           <a href="{% url 'public:link_list' %}">
             <i class="fa fa-link"></i>
             <span class="nav-label">{% trans "Links" %}</span>
           </a>
         </li>
-        <li {% if 'message' in resolver_match.url_name and 'common' in resolver_match.namespace %}class="active"{% endif %}>
+        <li {% if 'message' in resolver_match.url_name and 'public' in resolver_match.namespace %}class="active"{% endif %}>
           <a href="{% url 'public:message_list' %}">
             <i class="fa fa-envelope"></i>
             <span class="nav-label">{% trans "Messages" %}</span>

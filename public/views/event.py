@@ -1,6 +1,5 @@
 from django.http import Http404
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
     CreateView, DeleteView, DetailView, ListView, UpdateView
 )
@@ -16,9 +15,7 @@ from public import forms
 
 
 class EventListView(ActionListMixin, CompanyQuerySetMixin, ListView):
-    action_list = (
-        (_("Add"), 'add', 'primary', 'plus', 'common:add_event'),
-    )
+    action_list = ('add', )
     model = Event
     paginate_by = 30
     permission_required = 'core:view_event'
