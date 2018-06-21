@@ -55,7 +55,7 @@ class AccountActivateView(NoLoginRequiredMixin, DetailView):
                     _("An error has ocurred.")
                 )
 
-        return redirect('public:login')
+        return redirect('public:account_login')
 
 
 class AccountDetailView(LoginRequiredMixin, DetailView):
@@ -205,7 +205,7 @@ class AccountSignUpInviteView(
 ):
     form_class = forms.SignUpInviteForm
     model = User
-    success_url = reverse_lazy('public:login')
+    success_url = reverse_lazy('public:account_login')
     success_message = _(
         'Please check your email and activate your account. '
         'Then you will be able to login.'
@@ -283,7 +283,7 @@ class AccountSignUpInviteView(
 class AccountUpdateView(
     LoginRequiredMixin, UpdateMessageMixin, UpdateView
 ):
-    form_class = forms.UserUpdateForm
+    form_class = forms.AccountUpdateForm
     model = User
     success_message = _("Your profile has been updated successfully.")
     success_url = reverse_lazy("public:account_detail")

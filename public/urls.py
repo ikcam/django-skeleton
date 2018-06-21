@@ -20,7 +20,7 @@ urlpatterns = [
     path(
         _('account/activate/<token>/'),
         views.AccountActivateView.as_view(),
-        name='activate'
+        name='account_activate'
     ),
     path(
         _('account/'),

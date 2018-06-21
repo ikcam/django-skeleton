@@ -291,7 +291,6 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         task = getattr(task_module, task_name)
 
         if not settings.DEBUG:
-            print('\n\n\n\nAFJAIPOFJAOPSFJPSA')
             task = getattr(task, 'delay')
 
         if self.object:
@@ -327,6 +326,7 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):
+    allow_by_permission = False
     user_field = 'user'
 
     def get_queryset(self):

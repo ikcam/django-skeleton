@@ -1,10 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
-from django_addanother.widgets import AddAnotherWidgetWrapper
 
 from core.fields import MultipleChoiceField
 from core.models import Colaborator, Company, Event, Invite, Link, Role, User
@@ -50,10 +48,8 @@ class CompanyCreateForm(forms.ModelForm):
         model = Company
 
 
-class CompanyForm(forms.ModelForm):
-    class Meta:
-        exclude = ('user', 'date_next_invoice', 'custom_domain', )
-        model = Company
+class CompanyForm(CompanyCreateForm):
+    pass
 
 
 class CulqiTokenForm(forms.Form):
@@ -276,7 +272,7 @@ class UserCreateForm(UserCreationForm):
         return data
 
 
-class UserChangeForm(UserChangeForm):
+class AccountUpdateForm(UserChangeForm):
     class Meta:
         fields = (
             'password', 'first_name', 'last_name', 'language', 'timezone',

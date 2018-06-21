@@ -48,7 +48,7 @@ class UserCreateView(
 class UserUpdateView(
     CompanyQuerySetMixin, UpdateMessageMixin, UpdateView
 ):
-    form_class = forms.UserChangeForm
+    form_class = forms.UserUpdateForm
     model = User
     permission_required = 'auth:change_colaborator'
     template_name = 'public/user_form.html'

@@ -7,7 +7,7 @@ daphne
 dateutils
 django>=2.0
 django-addanother
-django-autocomplete-light
+-e git+https://github.com/ikcam/django-autocomplete-light.git#egg=django-autocomplete-light
 django-boilerplate
 django-bootstrap3
 django-ckeditor

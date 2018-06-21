@@ -11,8 +11,7 @@ ADMINS = [
 ]
 
 
-MANAGERS = [
-]
+MANAGERS = ADMINS
 
 
 INTERNAL_IPS = [

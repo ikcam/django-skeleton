@@ -4,11 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 
 class Colaborator(models.Model):
     user = models.ForeignKey(
-        'core.User', editable=False, on_delete=models.CASCADE,
+        'core.User', on_delete=models.CASCADE,
         verbose_name=_("User")
     )
     company = models.ForeignKey(
-        'core.Company', editable=False, on_delete=models.CASCADE,
+        'core.Company', on_delete=models.CASCADE,
         verbose_name=_("Company")
     )
     date_joined = models.DateTimeField(

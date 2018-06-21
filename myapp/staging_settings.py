@@ -7,9 +7,8 @@ DEBUG = False
 
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '0.0.0.0',
-    'localhost'
+    'stg.myapp.com',
+    'www.stg.myapp.com',
 ]
 
 
@@ -50,7 +49,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Site info
 
-SITE_URL = 'http://stating.myapp.com'
+SITE_URL = 'http://stg.myapp.com'
 
 SITE_NAME = 'My App (Staging)'
 

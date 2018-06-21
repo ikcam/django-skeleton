@@ -26,7 +26,7 @@ class InvoiceDetailView(
 
     def get_object(self):
         try:
-            obj = self.get_queryset().get(
+            obj = self.model.objects.get(
                 company=self.company,
                 pk=self.kwargs['pk']
             )

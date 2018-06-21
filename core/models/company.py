@@ -133,7 +133,7 @@ def post_save_company(sender, instance, created, **kwargs):
     if created:
         instance.user.company = instance
         instance.user.save(update_fields=['company'])
-        instance.user.colaborator_set.create(company=instance)
+        instance.user.colaborator_set.get_or_create(company=instance)
         instance.generate_next_invoice()
 
 

@@ -14,8 +14,8 @@ from . import culqipy
 
 class Invoice(AuditableMixin, models.Model):
     company = models.ForeignKey(
-        'core.Company', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("Company")
+        'core.Company', on_delete=models.CASCADE,
+        verbose_name=_("Company")
     )
     description = models.TextField(
         blank=True, null=True, verbose_name=_("Description")
@@ -38,7 +38,7 @@ class Invoice(AuditableMixin, models.Model):
         return "#%06d" % self.id
 
     def get_absolute_url(self):
-        return reverse_lazy('core:invoice_detail', args=[self.pk, ])
+        return reverse_lazy('public:invoice_detail', args=[self.pk, ])
 
     def action_list(self):
         return ('view', )
