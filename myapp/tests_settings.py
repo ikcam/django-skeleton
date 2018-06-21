@@ -19,7 +19,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 # Site info
 
-SITE_URL = 'http://tests.matrix.cubo.pe'
+SITE_URL = 'http://tests.myapp.com'
 
 SITE_NAME = 'My App (Tests)'
 

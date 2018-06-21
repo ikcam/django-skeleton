@@ -663,23 +663,23 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: matrix/settings.py:147
+#: myapp/settings.py:147
 msgid "English"
 msgstr ""
 
-#: matrix/settings.py:148
+#: myapp/settings.py:148
 msgid "Spanish"
 msgstr ""
 
-#: matrix/settings.py:149
+#: myapp/settings.py:149
 msgid "French"
 msgstr ""
 
-#: matrix/urls.py:33
+#: myapp/urls.py:33
 msgid "admin/"
 msgstr ""
 
-#: matrix/urls.py:41
+#: myapp/urls.py:41
 msgid "api/"
 msgstr ""
 

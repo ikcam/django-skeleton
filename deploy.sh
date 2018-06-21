@@ -1,8 +1,8 @@
 #!/bin/bash
 
 APP_ENV="production"
-NAME="matrix"
-DOMAIN=matrix.cubo.pe
+NAME="myapp"
+DOMAIN=myapp.com
 PROJECTDIR=/var/www/$DOMAIN
 DJANGODIR=$PROJECTDIR/htdocs
 
@@ -55,9 +55,9 @@ bower install --allow-root
 
 supervisorctl reread
 supervisorctl update
-supervisorctl restart matrix_gunicorn
-supervisorctl restart matrix_celery
-supervisorctl restart matrix_beat
+supervisorctl restart myapp_gunicorn
+supervisorctl restart myapp_celery
+supervisorctl restart myapp_beat
 
 # To enable access to Celery Flower
 chmod 777 $PROJECTDIR/run/flower.sock

@@ -2,8 +2,8 @@ import os
 from .settings import BASE_DIR, INSTALLED_APPS, TIME_ZONE
 
 ALLOWED_HOSTS = [
-    'matrix.cubo.pe',
-    'www.matrix.cubo.pe',
+    'myapp.com',
+    'www.myapp.com',
 ]
 
 
@@ -62,7 +62,7 @@ AWS_SES_REGION_ENDPOINT = 'email.{}.amazonaws.com'.format(
     AWS_SES_REGION_NAME
 )
 
-AWS_SES_CONFIGURATION_SET = 'matrix-set'
+AWS_SES_CONFIGURATION_SET = 'myapp-set'
 
 SERVER_EMAIL = os.getenv('APP_SEVER_EMAIL')
 
@@ -123,7 +123,7 @@ CACHES = {
 # Celery
 # http://docs.celeryproject.org/en/latest/django/index.html
 
-CELERY_BROKER_URL = 'amqp://matrix:kalana1@localhost:5672/matrix'
+CELERY_BROKER_URL = 'amqp://myapp:guest@localhost:5672/myapp'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 
