@@ -68,7 +68,7 @@ MIDDLEWARE = [
     'core.middleware.SiteURLMiddleware',
 ]
 
-ROOT_URLCONF = 'myapp.urls'
+ROOT_URLCONF = 'matrix.urls'
 
 TEMPLATES = [
     {
@@ -88,9 +88,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myapp.wsgi.application'
+WSGI_APPLICATION = 'matrix.wsgi.application'
 
-ASGI_APPLICATION = 'myapp.routing.application'
+ASGI_APPLICATION = 'matrix.routing.application'
 
 
 AUTHENTICATION_BACKENDS = ('core.backends.AuthenticationBackend',)
@@ -174,7 +174,7 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 
-SESSION_COOKIE_NAME = 'myappsessionid'
+SESSION_COOKIE_NAME = 'matrixsessionid'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 

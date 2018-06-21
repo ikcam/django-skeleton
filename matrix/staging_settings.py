@@ -7,8 +7,8 @@ DEBUG = False
 
 
 ALLOWED_HOSTS = [
-    'stg.myapp.com',
-    'www.stg.myapp.com',
+    'stg.matrix.cubo.pe',
+    'www.stg.matrix.cubo.pe',
 ]
 
 
@@ -49,7 +49,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Site info
 
-SITE_URL = 'http://stg.myapp.com'
+SITE_URL = 'http://stg.matrix.cubo.pe'
 
 SITE_NAME = 'My App (Staging)'
 

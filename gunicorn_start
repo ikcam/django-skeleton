@@ -1,13 +1,13 @@
 #!/bin/bash
-NAME="myapp"
-DJANGODIR=/var/www/myappdir/htdocs
-SOCKFILE=/var/www/myappdir/run/gunicorn.sock
-LOGFILE=/var/www/myappdir/logs/gunicorn.log
+NAME="matrix"
+DJANGODIR=/var/www/matrix.cubo.pe/htdocs
+SOCKFILE=/var/www/matrix.cubo.pe/run/gunicorn.sock
+LOGFILE=/var/www/matrix.cubo.pe/logs/gunicorn.log
 USER=root
 GROUP=root
 NUM_WORKERS=3
-DJANGO_SETTINGS_MODULE=myapp.settings
-DJANGO_WSGI_MODULE=myapp.wsgi
+DJANGO_SETTINGS_MODULE=matrix.settings
+DJANGO_WSGI_MODULE=matrix.wsgi
 
 echo "Starting $NAME as `whoami`"
 
