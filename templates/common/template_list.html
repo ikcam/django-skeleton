@@ -1,23 +1,15 @@
 {% extends "layout.html" %}
 
-{% load boilerplate core_tags humanize i18n %}
+{% load boilerplate djaneiro humanize i18n %}
 
 
-{% block title %}
-  {{ object_list|queryset_model_name_plural }}
-{% endblock %}
+{% block title %}{{ object_list|queryset_model_name_plural }}{% endblock %}
 
-{% block breadcrumb %}
-  {% include "common/breadcrumbs/list.html" %}
-{% endblock %}
+{% block breadcrumb %}{% breadcrumb %}{% endblock %}
 
-{% block page_header %}
-  <h2>{{ object_list|queryset_model_name_plural }}</h2>
-{% endblock %}
+{% block page_header %}<h2>{{ object_list|queryset_model_name_plural }}</h2>{% endblock %}
 
-{% block page_actions %}
-  {% action_buttons action_list=action_list object_list=object_list size='size-default' %}
-{% endblock %}
+{% block page_actions %}{% action_buttons %}{% endblock %}
 
 {% block content %}
   {% include "common/form-filter.html" %}
@@ -41,7 +33,7 @@
               <tr>
                 <td><a href="{{ object.get_absolute_url }}">{{ object }}</a></td>
                 <td class="text-right">
-                  {% include "common/options-buttons.html" with actions_grouped=True action_list=None %}
+                  {% action_buttons size='xs' %}
                 </td>
               </tr>
             {% empty %}
@@ -63,7 +55,5 @@
 {% endblock %}
 
 {% block scripts_footer %}
-  {% if form %}
-    {{ form.media }}
-  {% endif %}
+  {% if form %}{{ form.media }}{% endif %}
 {% endblock %}

@@ -26,8 +26,8 @@ class Message(AuditableMixin):
     )
 
     company = models.ForeignKey(
-        'core.Company', editable=False, related_name='messages',
-        on_delete=models.CASCADE, verbose_name=_("Company")
+        'core.Company', editable=False, on_delete=models.CASCADE,
+        verbose_name=_("Company")
     )
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
@@ -101,7 +101,7 @@ class Message(AuditableMixin):
             return "%s" % self.to
 
     def get_absolute_url(self):
-        return reverse_lazy('core:message_detail', args=[self.pk, ])
+        return reverse_lazy('public:message_detail', args=[self.pk, ])
 
     @property
     def content_html(self):
@@ -165,7 +165,7 @@ class Message(AuditableMixin):
         activate(self.company.language)
 
         from_email = "%s <%s>" % (self.from_name, self.from_email)
-        template_html = get_template('core/mail/message_bounce.html')
+        template_html = get_template('public/message_bounce.html')
         content_html = template_html.render({
             'object': self,
             'emails': data['emails']
@@ -271,7 +271,7 @@ class Message(AuditableMixin):
             src='{}{}'.format(
                 self.company.domain,
                 reverse_lazy(
-                    'core:message_pixel', args=[self.set_token()]
+                    'public:message_pixel', args=[self.set_token()]
                 )
             ),
             width='1px',

@@ -54,7 +54,7 @@ class EventUpdateView(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
 class EventDeleteView(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     model = Event
     permission_required = 'core:delete_event'
-    success_url = reverse_lazy('common:event_list')
+    success_url = reverse_lazy('public:event_list')
     template_name = 'public/event_form.html'
 
 

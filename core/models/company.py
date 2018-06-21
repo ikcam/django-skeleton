@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.models import signals
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.text import slugify
 from django.utils.translation import activate, ugettext_lazy as _
 
@@ -50,10 +52,10 @@ class Company(AuditableMixin, models.Model):
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse_lazy('core:company_detail')
+        return reverse_lazy('public:company_detail')
 
     @property
-    def actions(self):
+    def action_list(self):
         return ('change', )
 
     @property
@@ -95,6 +97,32 @@ class Company(AuditableMixin, models.Model):
                 next_ = timezone.now() + relativedelta(**next_args)
             self.date_next_invoice = next_
             self.save(update_fields=['date_next_invoice'])
+
+    @cached_property
+    def permission_queryset(self):
+        return Permission.objects.all().exclude(
+            content_type__app_label__in=(
+                'admin', 'authtoken', 'contenttypes', 'sessions'
+            )
+        ).exclude(
+            content_type__app_label='core', content_type__model__in=(
+                'colaborator', 'notification', 'payment'
+            )
+        ).exclude(
+            content_type__app_label='auth', content_type__model__in=(
+                'group', 'permission', 'colaborator'
+            )
+        ).exclude(
+            content_type__app_label='core', codename__in=(
+                'add_attachment', 'change_attachment', 'delete_attachment',
+                'add_company', 'delete_company',
+                'add_invoice', 'change_invoice', 'delete_invoice',
+                'add_message', 'change_message', 'delete_message',
+                'send_message',
+                'add_visit', 'change_visit', 'delete_visit',
+                'delete_user', 'view_user'
+            )
+        )
 
     @property
     def switch_url(self):

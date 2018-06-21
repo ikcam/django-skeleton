@@ -56,14 +56,11 @@ class Link(AuditableMixin):
         return '{0}{1}'.format(self.company.domain, path)
 
     @property
-    def actions(self):
+    def action_list(self):
         if self.is_open:
             return
 
-        return [
-            (_("Change"), 'change', 'success', 'pencil', 'core:change_link'),
-            (_("Delete"), 'delete', 'danger', 'trash', 'core:delete_link'),
-        ]
+        return ('change', 'delete')
 
     @cached_property
     def is_open(self):
@@ -86,7 +83,7 @@ class Link(AuditableMixin):
 
     @cached_property
     def total_visits(self):
-        return self.visits.all().count()
+        return self.visit_set.all().count()
 
     def visit_create(self, ip_address):
-        return self.visits.create(ip_address=ip_address)
+        return self.visit_set.create(ip_address=ip_address)

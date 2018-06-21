@@ -54,7 +54,7 @@ class Invite(AuditableMixin, models.Model):
         return reverse_lazy('public:invite_list')
 
     @property
-    def actions(self):
+    def action_list(self):
         if self.user:
             return
         return ('send', 'delete')
@@ -85,7 +85,7 @@ class Invite(AuditableMixin, models.Model):
 
         activate(self.company.language)
 
-        content_template = get_template('core/invite_email.html')
+        content_template = get_template('public/invite_email.html')
         content = content_template.render({'object': self})
         subject = _(
             "You have receive an invitation to join %(company)s"

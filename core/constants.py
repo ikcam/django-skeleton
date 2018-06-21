@@ -5,31 +5,31 @@ ACCOUNT_ACTIVATION_HOURS = 48
 ACTIONS = {
     'add': {
         'title': _("Add"),
-        'class': 'primary',
+        'level': 'primary',
         'icon': 'plus',
         'permission_prefix': 'add',
     },
     'change': {
         'title': _("Change"),
-        'class': 'success',
+        'level': 'success',
         'icon': 'pencil',
         'permission_prefix': 'change',
     },
     'delete': {
         'title': _("Delete"),
-        'class': 'danger',
+        'level': 'danger',
         'icon': 'trash',
         'permission_prefix': 'delete',
     },
     'remove': {
         'title': _("Remove"),
-        'class': 'danger',
+        'level': 'danger',
         'icon': 'remove',
         'permission_prefix': 'remove',
     },
     'send': {
         'title': _("Send"),
-        'class': 'info',
+        'level': 'info',
         'icon': 'envelope',
         'permission_prefix': 'send',
     },

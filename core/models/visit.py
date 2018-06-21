@@ -6,8 +6,8 @@ from core.mixins import AuditableMixin
 
 class Visit(AuditableMixin):
     link = models.ForeignKey(
-        'core.Link', editable=False, related_name='visits',
-        on_delete=models.CASCADE, verbose_name=_("Link")
+        'core.Link', editable=False, on_delete=models.CASCADE,
+        verbose_name=_("Link")
     )
     ip_address = models.GenericIPAddressField(
         protocol='both', verbose_name=_("IP address")

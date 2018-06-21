@@ -30,12 +30,12 @@ urlpatterns = [
     path(
         _('account/login/facebook/'),
         views.AccountLoginFacebookView.as_view(),
-        name='login_facebook'
+        name='account_login_facebook'
     ),
     path(
         _('account/logout/facebook/'),
         views.AccountLogoutFacebookView.as_view(),
-        name='logout_facebook'
+        name='account_logout_facebook'
     ),
     path(
         _('account/password/'),
@@ -134,6 +134,11 @@ urlpatterns = [
         _('company/add/'),
         views.CompanyCreateView.as_view(),
         name='company_add'
+    ),
+    path(
+        _('company/'),
+        views.CompanyDetailView.as_view(),
+        name='company_list'
     ),
     path(
         _('company/'),
@@ -316,7 +321,7 @@ urlpatterns = [
     path(
         _('company/users/add/'),
         views.UserCreateView.as_view(),
-        name='user_add'
+        name='colaborator_add'
     ),
     path(
         _('company/users/<int:pk>/change/'),
@@ -353,11 +358,6 @@ urlpatterns = [
         _('model-autocomplete/'),
         autocomplete.ModelAutocomplete.as_view(),
         name='model_autocomplete'
-    ),
-    path(
-        _('permissions/autocomplete/'),
-        autocomplete.PermissionAutocomplete.as_view(),
-        name='permission_autocomplete'
     ),
     path(
         _('timezones/autocomplete/'),

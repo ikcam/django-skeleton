@@ -1,19 +1,12 @@
 {% extends "layout.html" %}
 
-{% load i18n %}
+{% load djaneiro i18n %}
 
-{% block title %}
-  {{ object }}
-{% endblock %}
 
-{% block breadcrumb %}
-  {% include "common/breadcrumbs/detail.html" %}
-{% endblock %}
+{% block title %}{{ object }}{% endblock %}
 
-{% block page_header %}
-  <h2>{{ object }}</h2>
-{% endblock %}
+{% block breadcrumb %}{% breadcrumb %}{% endblock %}
 
-{% block page_actions %}
-  {% include "common/options-buttons.html" with size='size-default' actions_grouped=True %}
-{% endblock %}
+{% block page_header %}<h2>{{ object }}</h2>{% endblock %}
+
+{% block page_actions %}{% action_buttons %}{% endblock %}

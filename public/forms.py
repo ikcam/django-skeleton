@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.models import Permission
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
@@ -15,12 +14,28 @@ from core.widgets import CheckboxSelectMultiple
 def get_colaborator_form(company):
     class ModelForm(forms.ModelForm):
         roles = forms.ModelMultipleChoiceField(
-            label=_("Roles"), queryset=company.role_set.all(),
-            required=False, widget=AddAnotherWidgetWrapper(
-                forms.SelectMultiple,
-                reverse_lazy('public:role_add')
-            )
+            label=_("Roles"),
+            queryset=company.role_set.all(),
+            required=False,
         )
+        permissions = forms.ModelMultipleChoiceField(
+            label=_("Permissions"),
+            queryset=company.permission_queryset,
+            required=False,
+        )
+
+        class Media:
+            css = {
+                'all': (
+                    'bower_components/bootstrap-duallistbox/'
+                    'dist/bootstrap-duallistbox.min.css',
+                ),
+            }
+            js = (
+                'bower_components/bootstrap-duallistbox/'
+                'dist/jquery.bootstrap-duallistbox.min.js',
+                'js/colaborator_form.js',
+            )
 
         class Meta:
             fields = ('is_active', 'roles', 'permissions')
@@ -89,9 +104,15 @@ def get_event_form(company):
         model = autocomplete.QuerySetSequenceModelField(
             label=_("Object"),
             queryset=autocomplete.QuerySetSequence(
-                company.messages.all(),
+                company.message_set.all(),
             ),
             required=False,
+            widget=autocomplete.QuerySetSequenceSelect2(
+                'public:model_autocomplete',
+                attrs={
+                    'data-placeholder': _("Object")
+                }
+            ),
         )
         notify = MultipleChoiceField(
             label=_("Notify"), choices=Event.NOTIFICATION_OPTIONS,
@@ -101,6 +122,12 @@ def get_event_form(company):
             label=_("Share with"),
             queryset=User.objects.filter(companies=company),
             required=False,
+            widget=autocomplete.ModelSelect2Multiple(
+                url='public:user_other_autocomplete',
+                attrs={
+                    'data-placeholder': _("Share with")
+                }
+            ),
         )
 
         class Meta:
@@ -150,34 +177,25 @@ class LinkForm(forms.ModelForm):
 
 
 def get_role_form(company):
-    permissions_queryset = Permission.objects.all().exclude(
-        content_type__app_label__in=(
-            'admin', 'authtoken', 'contenttypes', 'sessions'
-        )
-    ).exclude(
-        content_type__app_label='core', content_type__model__in=(
-            'colaborator', 'notification', 'payment'
-        )
-    ).exclude(
-        content_type__app_label='auth', content_type__model__in=(
-            'group', 'permission', 'colaborator'
-        )
-    ).exclude(
-        content_type__app_label='core', codename__in=(
-            'add_attachment', 'change_attachment', 'delete_attachment',
-            'add_company', 'delete_company',
-            'add_invoice', 'change_invoice', 'delete_invoice',
-            'add_message', 'change_message', 'delete_message', 'send_message',
-            'add_visit', 'change_visit', 'delete_visit',
-            'delete_user', 'view_user'
-        )
-    )
-
     class ModelForm(forms.ModelForm):
         permissions = forms.ModelMultipleChoiceField(
-            label=_("Permissions"), queryset=permissions_queryset,
-            required=False, widget=forms.CheckboxSelectMultiple
+            label=_("Permissions"),
+            queryset=company.permission_queryset,
+            required=False,
         )
+
+        class Media:
+            css = {
+                'all': (
+                    'bower_components/bootstrap-duallistbox/'
+                    'dist/bootstrap-duallistbox.min.css',
+                ),
+            }
+            js = (
+                'bower_components/bootstrap-duallistbox/'
+                'dist/jquery.bootstrap-duallistbox.min.js',
+                'js/role_form.js',
+            )
 
         class Meta:
             fields = '__all__'
@@ -260,7 +278,10 @@ class UserCreateForm(UserCreationForm):
 
 class UserChangeForm(UserChangeForm):
     class Meta:
-        fields = ('password', 'username', 'first_name', 'last_name', 'email')
+        fields = (
+            'password', 'first_name', 'last_name', 'language', 'timezone',
+            'photo'
+        )
         model = User
 
 

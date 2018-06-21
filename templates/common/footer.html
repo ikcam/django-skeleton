@@ -9,6 +9,6 @@
       {% trans "by" %}
       <a target="_blank" href="//cubo.pe">Cubo</a>
     </div>
-    <div>{% trans "Copyright &copy; 2018. All rights reserved for" %} {% settings "SITE_NAME" %}.</div>
+    <div>{% trans "Copyright &copy;" %} {% now 'Y' %}. {% trans "All rights reserved for" %} {% settings "SITE_NAME" %}.</div>
   </div>
 {% endif %}

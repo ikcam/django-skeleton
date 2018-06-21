@@ -71,12 +71,12 @@
     </div>
     <div class="ibox-content">
       {% if object.is_html %}
-        <iframe src="{% url 'common:message_frame' object.pk %}" width="100%" height="500px" frameborder="0"></iframe>
+        <iframe src="{% url 'public:message_frame' object.pk %}" width="100%" height="500px" frameborder="0"></iframe>
       {% else %}
         <pre>{{ object.content_raw }}</pre>
       {% endif %}
     </div>
   </div>
 
-  {% include "common/snippets/link_list.html" %}
+  {% include "public/snippets/link_list.html" %}
 {% endblock %}

@@ -1,24 +1,6 @@
-{% extends "layout.html" %}
+{% extends "common/template_list.html" %}
 
-{% load boilerplate core_tags i18n %}
-
-{% block title %}{{ object_list|queryset_model_name_plural }}{% endblock title %}
-
-{% block breadcrumb %}
-  <ol class="breadcrumb">
-    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'public:company_detail' %}">{{ company }}</a></li>
-    <li class="active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
-  </ol>
-{% endblock breadcrumb %}
-
-{% block page_header %}
-  <h2>{{ object_list|queryset_model_name_plural }}</h2>
-{% endblock %}
-
-{% block page_actions %}
-  {% action_buttons action_list=action_list object_list=object_list size='size-default' %}
-{% endblock %}
+{% load boilerplate djaneiro i18n %}
 
 {% block content %}
   <div class="tabs-container">

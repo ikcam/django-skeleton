@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .routers import router
+from .routers import nested_routers, router
 from . import views
 
 
@@ -15,4 +15,4 @@ urlpatterns = [
         }),
         name='account'
     )
-] + router.urls
+] + router.urls + nested_routers

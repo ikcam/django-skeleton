@@ -152,7 +152,7 @@ LANGUAGES = [
 
 # Login
 
-LOGIN_URL = reverse_lazy('public:login')
+LOGIN_URL = reverse_lazy('public:account_login')
 
 LOGIN_REDIRECT_URL = reverse_lazy('public:dashboard')
 

@@ -89,7 +89,10 @@ class User(AbstractUser):
         else:
             return self.username
 
-    def actions(self):
+    def get_absolute_url(self):
+        return reverse_lazy('public:user_list')
+
+    def action_list(self):
         return ('change', 'remove')
 
     def can_activate(self):

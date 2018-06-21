@@ -89,11 +89,15 @@ class Event(AuditableMixin):
     def get_absolute_url(self):
         if self.is_public:
             return reverse_lazy(
-                'core:event_public', args=[self.company.slug, self.pk]
+                'public:event_public', args=[self.company.slug, self.pk]
             )
         if self.model:
             return self.model.get_absolute_url()
-        return reverse_lazy('core:event_change', args=[self.pk])
+        return reverse_lazy('public:event_change', args=[self.pk])
+
+    @property
+    def action_list(self):
+        return ('change', 'delete')
 
     def can_send(self, turn):
         if self.notification_sended(turn):

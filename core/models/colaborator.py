@@ -32,3 +32,10 @@ class Colaborator(models.Model):
 
     def __str__(self):
         return "%s" % self.user
+
+    def get_absolute_url(self):
+        return self.parent.get_absolute_url()
+
+    @property
+    def parent(self):
+        return self.user

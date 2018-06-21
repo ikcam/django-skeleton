@@ -2,6 +2,13 @@
 
 {% load i18n %}
 
+{% block page_actions %}
+  <a class="btn btn-size-default btn-success" href="{% url 'public:company_change' %}">
+    <span class="glyphicon glyphicon-pencil"></span>
+    {% trans "Change" %}
+  </a>
+{% endblock page_actions %}
+
 {% block content_inner %}
   <div class="table-responsive">
     <table class="table table-striped">

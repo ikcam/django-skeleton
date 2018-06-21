@@ -1,11 +1,19 @@
 {% extends "layout.html" %}
 
-{% load boilerplate core_tags i18n %}
+{% load boilerplate core_tags djaneiro i18n %}
 
 {% block title %}{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}{% endblock title %}
 
 {% block breadcrumb %}
-  {% include "common/breadcrumbs/form.html" %}
+  {% if action %}
+    {% breadcrumb action=action %}
+  {% elif object and form %}
+    {% breadcrumb action='change' %}
+  {% elif form %}
+    {% breadcrumb action='add' %}
+  {% elif object %}
+    {% breadcrumb action='delete' %}
+  {% endif %}
 {% endblock breadcrumb %}
 
 {% block page_header %}

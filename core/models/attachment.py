@@ -41,17 +41,8 @@ class Attachment(AuditableMixin):
         return self.parent.get_absolute_url()
 
     @property
-    def actions(self):
-        return (
-            (
-                _("Change"), 'change', 'success', 'pencil',
-                'core:change_attachment'
-            ),
-            (
-                _("Delete"), 'delete', 'danger', 'trash',
-                'core:delete_attachment'
-            ),
-        )
+    def action_list(self):
+        return ('change', 'delete')
 
     @property
     def mime_type(self):

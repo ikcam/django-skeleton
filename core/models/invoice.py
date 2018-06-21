@@ -40,10 +40,8 @@ class Invoice(AuditableMixin, models.Model):
     def get_absolute_url(self):
         return reverse_lazy('core:invoice_detail', args=[self.pk, ])
 
-    def actions(self):
-        return (
-            (_("View"), 'detail', 'primary', 'eye-open', 'core:view_invoice'),
-        )
+    def action_list(self):
+        return ('view', )
 
     def create_payment_from_culqi(self, token, email):
         dir_charge = {

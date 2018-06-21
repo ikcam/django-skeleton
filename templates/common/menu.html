@@ -59,7 +59,7 @@
             <span class="nav-label">{% trans "Messages" %}</span>
           </a>
         </li>
-        <li {% if 'core' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
+        <li {% if 'public' in resolver_match.namespace and resolver_match.url_name != 'dashboard' %}class="active"{% endif %}>
           <a href="{% url 'public:company_detail' %}">
             <i class="fa fa-briefcase"></i>
             <span class="nav-label">{% trans "Company" %}</span>

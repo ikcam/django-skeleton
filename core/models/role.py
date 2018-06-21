@@ -29,5 +29,5 @@ class Role(AuditableMixin, models.Model):
     def get_absolute_url(self):
         return reverse_lazy('public:role_list')
 
-    def actions(self):
+    def action_list(self):
         return ('change', 'delete')

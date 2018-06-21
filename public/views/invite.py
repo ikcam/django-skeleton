@@ -1,5 +1,4 @@
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, DeleteView, DetailView, ListView
 
 from boilerplate.mixins import (
@@ -58,4 +57,3 @@ class InviteSendView(
     model = Invite
     permission_required = 'core:send_invite'
     task_module = tasks
-    success_url = reverse_lazy('core:invite_list')

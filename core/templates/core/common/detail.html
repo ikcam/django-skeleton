@@ -1,26 +1,6 @@
-{% extends "layout.html" %}
+{% extends "common/template_detail.html" %}
 
 {% load boilerplate core_tags i18n %}
-
-{% block title %}{{ object }}{% endblock title %}
-
-{% block breadcrumb %}
-  <ol class="breadcrumb">
-    <li><a href="{% settings "SITE_URL" %}">{% trans "Home" %}</a></li>
-    <li class="active"><strong>{{ object }}</strong></li>
-  </ol>
-{% endblock breadcrumb %}
-
-{% block page_header %}
-  <h2>{{ object }}</h2>
-{% endblock %}
-
-{% block page_actions %}
-  <a role="button" class="btn btn-success" href="{% url 'public:company_change' %}">
-    <span class="glyphicon glyphicon-pencil"></span>
-    {% trans "Change" %}
-  </a>
-{% endblock %}
 
 {% block content %}
   <div class="tabs-container">

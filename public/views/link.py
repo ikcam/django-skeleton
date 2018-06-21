@@ -23,11 +23,19 @@ class LinkListView(CompanyQuerySetMixin, ActionListMixin, ListView):
     permission_required = 'core:view_link'
     template_name = 'public/link_list.html'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(message__isnull=True)
+
 
 class LinkDetailView(CompanyQuerySetMixin, DetailView):
     model = Link
     permission_required = 'core:view_link'
     template_name = 'public/link_detail.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(message__isnull=True)
 
 
 class LinkCreateView(
@@ -49,7 +57,7 @@ class LinkUpdateView(CompanyQuerySetMixin, UpdateMessageMixin, UpdateView):
 class LinkDeleteView(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
     model = Link
     permission_required = 'core:delete_link'
-    success_url = reverse_lazy('common:link_list')
+    success_url = reverse_lazy('public:link_list')
     template_name = 'public/link_form.html'
 
 
