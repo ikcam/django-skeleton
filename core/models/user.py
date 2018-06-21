@@ -321,6 +321,11 @@ def post_save_user(sender, instance, created, **kwargs):
     if created:
         Token.objects.get_or_create(user=instance)
 
+        if instance.company:
+            instance.colaborator_set.get_or_create(
+                company=instance.company
+            )
+
         if not instance.is_active:
             instance.key_generate()
 

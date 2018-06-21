@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'month,agendaWeek,agendaDay,listWeek'
         },
         editable: false,
         locale: site_language,

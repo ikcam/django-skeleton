@@ -60,7 +60,7 @@ class EventDeleteView(CompanyQuerySetMixin, DeleteMessageMixin, DeleteView):
 
 class EventPublicView(DetailView):
     model = Event
-    template_name_suffix = '_public'
+    template_name = 'public/event_public.html'
 
     def get_company(self):
         try:

@@ -50,11 +50,14 @@ class CompanyAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
-class EventModelAdmin(admin.ModelAdmin):
+class EventAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         'share_with',
     )
     model = Event
+    list_display = (
+        '__str__', 'company', 'user', 'date_start', 'date_finish'
+    )
     list_filter = ('company', )
 
 
@@ -156,7 +159,7 @@ class UserAdmin(UserAdmin):
 
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Colaborator, ColaboratorAdmin)
-admin.site.register(Event, EventModelAdmin)
+admin.site.register(Event, EventAdmin)
 admin.site.register(Invite, InviteAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Link, LinkModelAdmin)

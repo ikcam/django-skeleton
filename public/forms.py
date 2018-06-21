@@ -261,6 +261,13 @@ class UserCreateForm(UserCreationForm):
         required=True
     )
 
+    class Meta:
+        fields = (
+            'username', 'password1', 'password2', 'first_name', 'last_name',
+            'email',
+        )
+        model = User
+
     def clean_email(self):
         data = self.cleaned_data['email']
 
