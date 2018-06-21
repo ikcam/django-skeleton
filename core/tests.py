@@ -4,10 +4,10 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.test import override_settings, RequestFactory, TestCase
 
-from account.models import User
+from core.models import User
 from core.constants import LEVEL_ERROR, LEVEL_SUCCESS
 from core.models import Company
-from . import views
+from public import views
 
 
 @override_settings(DEBUG=True)
@@ -44,33 +44,33 @@ class CoreViewTestCase(CoreTestCase):
         factory = RequestFactory()
         request = factory.get('/fake-path')
         request.user = AnonymousUser()
-        response = views.Index.as_view()(request)
+        response = views.IndexView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 
     def test_views_dashboard_redirect(self):
         factory = RequestFactory()
         request = factory.get('/fake-path')
         request.user = AnonymousUser()
-        response = views.Dashboard.as_view()(request)
+        response = views.DashboardView.as_view()(request)
         self.assertEqual(response.status_code, 302)
 
     def test_company_detail_success(self):
         request = self.factory.get('/fake-path')
         request.user = self.user
-        response = views.CompanyDetail.as_view()(request)
+        response = views.CompanyDetailView.as_view()(request)
         self.assertEqual(response.status_code, 200)
 
     def test_company_detail_denied(self):
         request = self.factory.get('/fake-path')
         request.user = self.colaborator
         with self.assertRaises(PermissionDenied):
-            views.CompanyDetail.as_view()(request)
+            views.CompanyDetailView.as_view()(request)
 
 
 class InviteTestCase(CoreTestCase):
     def setUp(self):
         super().setUp()
-        self.invite = self.company.invites.create(
+        self.invite = self.company.invite_set.create(
             name='gclooney', email="gclooney@test.com"
         )
 
@@ -88,21 +88,15 @@ class InviteTestCase(CoreTestCase):
 class InviteViewTestCase(CoreTestCase):
     def setUp(self):
         super().setUp()
-        self.invite = self.company.invites.create(
+        self.invite = self.company.invite_set.create(
             name='gclooney', email="gclooney@test.com"
         )
-
-    def test_invite_change(self):
-        request = self.factory.get('/fake-path')
-        request.user = self.user
-        response = views.InviteUpdate.as_view()(request, pk=self.invite.pk)
-        self.assertEqual(response.status_code, 200)
 
     def test_invite_send(self):
         request = self.factory.get('/fake-path')
         request._messages = default_storage(request)
         request.user = self.user
-        response = views.InviteSend.as_view()(request, pk=self.invite.pk)
+        response = views.InviteSendView.as_view()(request, pk=self.invite.pk)
         self.assertEqual(response.status_code, 302)
         for message in request._messages:
             self.assertEqual(message.level, SUCCESS)

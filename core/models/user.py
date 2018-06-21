@@ -226,7 +226,7 @@ class User(AbstractUser):
         try:
             role_perms = self.colaborator_set \
                 .get(company=self.company, is_active=True) \
-                .role_set.all() \
+                .roles.all() \
                 .select_related('permissions__content_type') \
                 .values(
                     'permissions__content_type__app_label',
@@ -235,7 +235,7 @@ class User(AbstractUser):
 
             user_perms = self.colaborator_set \
                 .get(company=self.company, is_active=True) \
-                .permission_set.all() \
+                .permissions.all() \
                 .select_related('content_type') \
                 .values('content_type__app_label', 'codename')
 

@@ -9,6 +9,7 @@ from django.utils.text import slugify
 from django.utils.translation import activate, ugettext_lazy as _
 
 from dateutil.relativedelta import relativedelta
+from django_countries.fields import CountryField
 
 from core.constants import RECURRING_CICLE, RECURRING_FEE
 from core.mixins import AuditableMixin
@@ -34,6 +35,27 @@ class Company(AuditableMixin, models.Model):
     language = models.CharField(
         max_length=10, choices=settings.LANGUAGES,
         default=settings.LANGUAGE_CODE, verbose_name=_("Language")
+    )
+    phone = models.CharField(
+        blank=True, null=True, max_length=20, verbose_name=_("Phone")
+    )
+    mobile = models.CharField(
+        blank=True, null=True, max_length=20, verbose_name=_("Mobile")
+    )
+    address = models.TextField(
+        blank=True, null=True, verbose_name=_("Address")
+    )
+    address_2 = models.TextField(
+        blank=True, null=True, verbose_name=_("Address 2")
+    )
+    city = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name=_("City")
+    )
+    state = models.CharField(
+        max_length=100, blank=True, null=True, verbose_name=_("State")
+    )
+    country = CountryField(
+        blank=True, null=True, verbose_name=_("Country")
     )
     custom_domain = models.URLField(
         blank=True, null=True, verbose_name=_("Custom domain")
