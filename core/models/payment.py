@@ -3,12 +3,11 @@ from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 
 from core.mixins import AuditableMixin
-from .invoice import Invoice
 
 
 class Payment(AuditableMixin, models.Model):
     invoice = models.ForeignKey(
-        Invoice, editable=False, on_delete=models.CASCADE,
+        'core.Invoice', editable=False, on_delete=models.CASCADE,
         verbose_name=_("Invoice")
     )
     description = models.TextField(
@@ -39,7 +38,7 @@ class Payment(AuditableMixin, models.Model):
 
 
 def post_save_payment(instance, sender, created, **kwargs):
-    if instance.invoice.is_payed and not instance.company.is_active:
+    if instance.invoice.is_paid and not instance.company.is_active:
         instance.company.activate()
 
 
