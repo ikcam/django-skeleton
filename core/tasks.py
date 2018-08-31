@@ -7,17 +7,26 @@ from myapp.celery import app
 logger = get_task_logger(__name__)
 
 
-def model_task(model, company_id, task, user_id=None, pk=None, data=None):
+def model_task(
+    model, company_id, task, user_request_id=None, pk=None, data=None
+):
     from core.models import Company, User
 
     if company_id:
         company = Company.objects.get(id=company_id)
+    else:
+        company = None
     data = data or {}
-    user = None
 
-    if user_id:
-        user = User.objects.get(id=user_id)
-        data['user'] = user
+    if not isinstance(data, dict):
+        raise Exception("Data is not a dict {}".format(data))
+
+    data['company'] = company
+    user_request = None
+
+    if user_request_id:
+        user_request = User.objects.get(id=user_request_id)
+        data['user_request'] = user_request
 
     if pk:
         obj = model.objects.get(pk=pk)
@@ -32,8 +41,8 @@ def model_task(model, company_id, task, user_id=None, pk=None, data=None):
     else:
         raise Exception("{}: task not callable.".format(task))
 
-    if user:
-        user.add_notification(
+    if user_request:
+        user_request.add_notification(
             company=company,
             model=model,
             obj=obj,
