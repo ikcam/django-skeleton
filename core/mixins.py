@@ -8,6 +8,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormMixin
 
 
+from core.constants import ACTIONS, LEVEL_ERROR, LEVEL_SUCCESS
+
+
 class AuditableMixin(models.Model):
     date_creation = models.DateTimeField(
         auto_now_add=True, verbose_name=_("Creation date")
@@ -24,17 +27,34 @@ class AuditableMixin(models.Model):
 
     def activate(self):
         if self.is_active:
-            raise Exception(_("Instance is active."))
+            return (
+                LEVEL_ERROR,
+                _("Object is active already.")
+            )
 
         self.is_active = True
-        self.save()
+        self.save(update_fields=['is_active'])
+        return (
+            LEVEL_SUCCESS,
+            _("Object has been activated successfully.")
+        )
 
     def deactivate(self):
         if not self.is_active:
-            raise Exception(_("Instance is inactive."))
+            return (
+                LEVEL_ERROR,
+                _("Object is inactive already.")
+            )
 
         self.is_active = False
-        self.save()
+        self.save(update_fields=['is_active'])
+        return (
+            LEVEL_SUCCESS,
+            _("Object has been deactivated successfully.")
+        )
+
+    def toggle_active(self, **kwargs):
+        return self.deactivate() if self.is_active else self.activate()
 
 
 class CompanyRequiredMixin:
@@ -200,8 +220,18 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
     def get_action_kwargs(self, **kwargs):
         data = {}
         if 'form' in kwargs and hasattr(kwargs['form'], 'cleaned_data'):
-            data.update(kwargs['form'].cleaned_data)
+            if isinstance(kwargs['form'].cleaned_data, dict):
+                data.update(kwargs['form'].cleaned_data)
+            else:
+                data.update({'formset': kwargs['form'].cleaned_data})
         return data
+
+    def get_context_data(self, **kwargs):
+        if 'action' not in kwargs:
+            kwargs['action'] = self.get_model_action()
+        if 'action_details' not in kwargs:
+            kwargs['action_details'] = ACTIONS[self.get_model_action()]
+        return super().get_context_data(**kwargs)
 
     def get_failure_message(self):
         return self.failure_message % dict(
@@ -236,7 +266,9 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             if settings.DEBUG:
                 raise
 
-        if self.success_url:
+        if self.request.GET.get('next', None):
+            return self.request.GET.get('next')
+        elif self.success_url:
             return self.success_url
 
         return self.object.get_absolute_url()
@@ -258,6 +290,23 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         response = self.run_action(form=form)
 
         return HttpResponseRedirect(self.get_success_url(response))
+
+    def kwargs_to_json(self, kwargs):
+        def to_json(item):
+            response = {}
+
+            for k in item:
+                value = item[k]
+                if isinstance(value, models.Model):
+                    value = value.id
+                elif isinstance(value, models.query.QuerySet):
+                    value = [obj.id for obj in value]
+                elif isinstance(value, list):
+                    value = [to_json(item) for item in value]
+                response[k] = value
+            return response
+
+        return to_json(kwargs)
 
     def run_action(self, form=None):
         model_action = self.get_model_action()
@@ -285,10 +334,15 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
                 task = getattr(self.object, model_action)
             else:
                 task = getattr(self.model, model_action)
-            return task(**kwargs)
+            return task(
+                company=self.company,
+                user_request=self.request.user,
+                **kwargs
+            )
 
         task_name = '{}_task'.format(self.model.__name__.lower())
         task = getattr(task_module, task_name)
+        kwargs = self.kwargs_to_json(kwargs)
 
         if not settings.DEBUG:
             task = getattr(task, 'delay')
@@ -297,7 +351,7 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             if kwargs:
                 return task(
                     company_id=self.company.id,
-                    user_id=self.request.user.id,
+                    user_request_id=self.request.user.id,
                     task=model_action,
                     pk=self.object.pk,
                     data=kwargs,
@@ -305,7 +359,7 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             else:
                 return task(
                     company_id=self.company.id,
-                    user_id=self.request.user.id,
+                    user_request_id=self.request.user.id,
                     task=model_action,
                     pk=self.object.pk,
                 )
@@ -313,24 +367,32 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             if kwargs:
                 return task(
                     company_id=self.company.id,
-                    user_id=self.request.user.id,
+                    user_request_id=self.request.user.id,
                     task=model_action,
                     data=kwargs,
                 )
             else:
                 return task(
                     company_id=self.company.id,
-                    user_id=self.request.user.id,
+                    user_request_id=self.request.user.id,
                     task=model_action,
                 )
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):
-    allow_by_permission = False
     user_field = 'user'
+    user_permission_required = None
 
     def get_queryset(self):
         qs = super().get_queryset()
+        permission_name = self.get_user_permission_required()
+
+        if not permission_name:
+            permission_name = self.get_permission_required()
+            permission_name = permission_name.replace('view_', 'view_all_')
+
+        if self.request.user.has_company_perm(permission_name):
+            return qs
 
         return qs.filter(**{
             self.get_user_field(): self.request.user
@@ -338,3 +400,6 @@ class UserQuerySetMixin(CompanyQuerySetMixin):
 
     def get_user_field(self):
         return self.user_field
+
+    def get_user_permission_required(self):
+        return self.user_permission_required
