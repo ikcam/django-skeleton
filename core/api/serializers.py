@@ -1,36 +1,56 @@
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from boilerplate.templatetags.boilerplate import (
-    model_action, model_child_action
-)
 from rest_framework import serializers
+
+from core.constants import ACTIONS
 
 
 class ActionSerializer(serializers.ModelSerializer):
-    actions = serializers.SerializerMethodField()
+    action_list = serializers.SerializerMethodField()
     model = serializers.StringRelatedField()
 
-    def get_actions(self, obj):
-        actions = {'view': dict(
+    def get_action_list(self, object):
+        action_list = {'view': dict(
             title=_("View"),
-            url=obj.get_absolute_url(),
+            url=object.get_absolute_url(),
             btn_class='info',
             btn_icon='eye-open',
+            visible=False,
         )}
 
-        if not hasattr(obj, 'actions') or not obj.actions:
-            return actions
+        if not hasattr(object, 'action_list') or not object.action_list:
+            return action_list
 
-        for title, act, class_, icon, permission in obj.actions:
-            if hasattr(obj, 'parent') and obj.parent:
-                url = model_child_action(obj, obj.parent, act)
+        for action in object.action_list:
+            action_details = ACTIONS[action]
+            app_name = object._meta.app_label
+            app_name = app_name if app_name != 'core' else 'public'
+            args = []
+            model = object.__class__.__name__.lower()
+            parent = None
+
+            if hasattr(object, 'parent') and object.parent:
+                parent = object.parent.__class__.__name__.lower()
+                args += [object.parent.pk]
+                url_name = '{app_name}:{parent}_{model}_{action}'
             else:
-                url = model_action(obj, act)
+                url_name = '{app_name}:{model}_{action}'
+            args += [object.pk]
 
-            actions[act] = dict(
-                title=title,
-                url=url,
-                btn_class=class_,
-                btn_icon=icon,
+            url_name = url_name.format(
+                app_name=app_name,
+                model=model,
+                parent=parent,
+                action=action,
             )
-        return actions
+            url = reverse_lazy(url_name, args=args)
+
+            action_list[action] = dict(
+                title=action_details['title'],
+                url=url,
+                btn_class=action_details['level'],
+                btn_icon=action_details['icon'],
+                visible=True,
+            )
+        return action_list

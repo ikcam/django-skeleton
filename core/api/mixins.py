@@ -1,52 +1,11 @@
-from django.core.exceptions import (
-    ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
-)
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
-from rest_framework import status
-from rest_framework.response import Response
-
-
-class CompanyRequiredMixin:
-    company = None
-    company_field = 'company'
-    permission_required = None
-
-    def get_company_field(self):
-        return self.company_field
-
-    def get_permission_required(self):
-        return self.permission_required
-
-    def handle_no_permission(self, msg=None):
-        raise PermissionDenied(msg)
-
-    def initial(self, request, *args, **kwargs):
-        super().initial(request, *args, **kwargs)
-        self.company = request.user.company
-
-        if not self.company.is_active:
-            return self.handle_no_permission()
-
-        permission_required = self.get_permission_required()
-
-        if permission_required and isinstance(permission_required, tuple):
-            if not request.user.has_company_perms(permission_required):
-                return self.handle_no_permission()
-        elif permission_required:
-            if not request.user.has_company_perm(permission_required):
-                return self.handle_no_permission()
+from rest_framework import mixins, viewsets
 
 
-class CompanyQuerySetMixin(CompanyRequiredMixin):
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(**{
-            self.get_company_field(): self.company
-        })
-
-
-class CompanyCreateMixin(CompanyRequiredMixin):
+class CompanyCreateMixin:
     def get_perform_create_kwargs(self):
         try:
             kwargs = super().get_perform_create_kwargs()
@@ -60,101 +19,210 @@ class CompanyCreateMixin(CompanyRequiredMixin):
         return kwargs
 
     def perform_create(self, serializer):
-        serializer.perform_create(**self.get_perform_create_kwargs())
+        serializer.save(**self.get_perform_create_kwargs())
 
 
-class NestedReadOnlyViewset(CompanyRequiredMixin):
-    parent_relation_field = None
+class CompanyReadOnlyViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    company = None
+    company_field = 'company'
+    bypass_permissions = False
+    related_properties = None
+    prefetch_properties = None
 
-    def get_parent(self, parent_pk):
-        queryset = self.get_parent_model().objects.filter(
-            **self.get_parent_kwargs()
+    def get_bypass_permissions(self):
+        return self.bypass_permissions
+
+    def get_company_field(self):
+        return self.company_field
+
+    def get_permission_name(self, action):
+        return '{app_name}:{action}_{model_name}'.format(
+            action=action,
+            app_name=self.model._meta.app_label,
+            model_name=self.model.__name__.lower(),
         )
-        try:
-            return queryset.get(pk=parent_pk)
-        except ObjectDoesNotExist:
+
+    def get_prefetch_properties(self):
+        return self.related_properties
+
+    def get_related_properties(self):
+        return self.related_properties
+
+    def get_queryset(self):
+        if not self.company:
+            raise Exception(_("Company must be set."))
+
+        qs = super().get_queryset()
+        qs = qs.filter(**{
+            self.get_company_field(): self.company
+        })
+
+        related_properties = self.get_related_properties()
+        if related_properties:
+            if not isinstance(related_properties, tuple):
+                raise Exception("`related_properties` must be a tuple")
+            qs = qs.select_related(*related_properties)
+
+        prefetch_properties = self.get_prefetch_properties()
+        if prefetch_properties:
+            if not isinstance(prefetch_properties, tuple):
+                raise Exception("`prefetch_properties` must be a tuple")
+            qs = qs.prefetch_related(*prefetch_properties)
+
+        return qs
+
+    def handle_no_permission(self, msg=None):
+        raise PermissionDenied(msg)
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        self.company = request.user.company
+
+        if not self.company.is_active:
             return self.handle_no_permission()
 
+    def list(self, request, *args, **kwargs):
+        permission_name = self.get_permission_name('view')
+
+        if (
+            not self.get_bypass_permissions() and
+            not request.user.has_company_perm(permission_name)
+        ):
+            return self.handle_no_permission()
+
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        permission_name = self.get_permission_name('view')
+
+        if not request.user.has_company_perm(permission_name):
+            return self.handle_no_permission()
+
+        return super().retrieve(request, *args, **kwargs)
+
+
+class CompanyViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    CompanyReadOnlyViewSet
+):
+    def create(self, request, *args, **kwargs):
+        permission_name = self.get_permission_name('add')
+
+        if not request.user.has_company_perm(permission_name):
+            return self.handle_no_permission()
+
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        permission_name = self.get_permission_name('change')
+
+        if not request.user.has_company_perm(permission_name):
+            return self.handle_no_permission()
+
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        permission_name = self.get_permission_name('delete')
+
+        if not request.user.has_company_perm(permission_name):
+            return self.handle_no_permission()
+
+        return super().destroy(request, *args, **kwargs)
+
+
+class NestedReadOnlyViewset(CompanyReadOnlyViewSet):
+    parent = None
+    parent_company_field = 'company'
+    parent_model = None
+    parent_relation_field = None
+    parent_lookup_arg = 'parent_pk'
+    parent_lookup_field = 'pk'
+
+    def get_parent(self):
+        kwargs = self.get_parent_kwargs()
+
+        if kwargs:
+            return get_object_or_404(
+                self.get_parent_model(), **kwargs
+            )
+        return None
+
     def get_parent_kwargs(self):
-        kwargs = {
-            self.get_company_field(): self.company,
-        }
-        return kwargs
+        try:
+            kwargs = {
+                self.get_parent_lookup_field(): self.kwargs[
+                    self.get_parent_lookup_arg()
+                ],
+            }
+            return kwargs
+        except KeyError:
+            return None
+
+    def get_parent_lookup_arg(self):
+        return self.parent_lookup_arg
+
+    def get_parent_lookup_field(self):
+        return self.parent_lookup_field
 
     def get_parent_model(self):
-        if not self.parent_model:
-            raise ImproperlyConfigured("You must set the `parent_model`")
         return self.parent_model
 
     def get_parent_relation_field(self):
         if self.parent_relation_field:
             return self.parent_relation_field
 
-        return self.request.resolver_match.url_name.split('_')[0]
+        url_name = self.request.resolver_match.url_name
 
-    def list(self, request, parent_pk=None):
-        queryset = self.filter_queryset(self.get_queryset())
+        if '_' in url_name:
+            return url_name.split('_')[0]
+        return None
 
-        if parent_pk:
-            queryset = queryset.filter(**{
-                self.get_parent_relation_field(): parent_pk
-            })
+    def get_queryset(self):
+        qs = super().get_queryset()
 
-        page = self.paginate_queryset(queryset)
+        if not self.parent:
+            return qs
 
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None, parent_pk=None):
-        queryset = self.get_queryset()
-
-        if parent_pk:
-            queryset = queryset.filter(**{
-                self.get_parent_relation_field(): parent_pk,
-            })
-
-        instance = get_object_or_404(queryset, pk=pk)
-
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-
-class NestedViewset(NestedReadOnlyViewset):
-    parent_relation_field = None
-    parent_company_field = 'company'
-
-    def create(self, request, parent_pk=None, *args, **kwargs):
-        parent = self.get_parent(parent_pk=parent_pk)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer, parent)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        return qs.filter(
+            **{self.get_parent_relation_field(): self.parent}
         )
 
-    def get_perform_create_kwargs(self, parent):
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        self.parent = self.get_parent()
+
+
+class NestedViewset(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    NestedReadOnlyViewset
+):
+
+    def get_perform_create_kwargs(self):
         try:
             kwargs = super().get_perform_create_kwargs()
         except Exception:
             kwargs = {}
 
         kwargs = {
-            self.get_parent_relation_field(): parent
+            self.get_parent_relation_field(): self.parent,
         }
 
         return kwargs
 
-    def perform_create(self, serializer, parent):
-        kwargs = self.get_perform_create_kwargs(parent)
+    def perform_create(self, serializer):
+        kwargs = self.get_perform_create_kwargs()
         serializer.save(**kwargs)
 
 
-class UserCreateMixin(CompanyRequiredMixin):
+class UserCreateMixin:
     user_field = 'user'
 
     def get_perform_create_kwargs(self):
@@ -176,11 +244,16 @@ class UserCreateMixin(CompanyRequiredMixin):
         serializer.perform_create(**self.get_perform_create_kwargs())
 
 
-class UserQuerySetMixin(CompanyQuerySetMixin):
+class UserQuerySetMixin:
     user_field = 'user'
 
     def get_queryset(self):
         qs = super().get_queryset()
+        permission_name = self.get_permission_name('view_all')
+
+        if self.request.user.has_company_perm(permission_name):
+            return qs
+
         return qs.filter(**{
             self.get_user_field(): self.request.user
         })

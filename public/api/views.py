@@ -3,11 +3,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from core.models import Event, Link, Message, Notification, User, Visit
-from core.api.mixins import CompanyQuerySetMixin, NestedReadOnlyViewset
+from core.api.mixins import (
+    CompanyReadOnlyViewSet, CompanyViewSet, NestedReadOnlyViewset
+)
 from . import filters, serializers
 
 
-class EventViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+class EventViewSet(CompanyViewSet):
     filter_class = filters.EventFilterSet
     model = Event
     permissions_required = 'common:view_event'
@@ -15,21 +17,21 @@ class EventViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.EventModelSerializer
 
 
-class LinkViewSet(NestedReadOnlyViewset, viewsets.ReadOnlyModelViewSet):
+class LinkViewSet(NestedReadOnlyViewset):
     model = Link
     permissions_required = 'common:view_link'
     queryset = Link.objects.all()
     serializer_class = serializers.LinkModelSerializer
 
 
-class MessageViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+class MessageViewSet(CompanyReadOnlyViewSet):
     model = Message
     permissions_required = 'common:view_message'
     queryset = Message.objects.all()
     serializer_class = serializers.MessageModelSerializer
 
 
-class NotificationViewSet(CompanyQuerySetMixin, viewsets.ReadOnlyModelViewSet):
+class NotificationViewSet(CompanyReadOnlyViewSet):
     filter_class = filters.NotificationFilterSet
     model = Notification
     queryset = Notification.objects.all()
@@ -79,7 +81,7 @@ class UserViewSet(
             )
 
 
-class VisitViewSet(NestedReadOnlyViewset, viewsets.ReadOnlyModelViewSet):
+class VisitViewSet(NestedReadOnlyViewset):
     company_fields = 'link__company'
     model = Visit
     permissions_required = 'common:view_visit'
