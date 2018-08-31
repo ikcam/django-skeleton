@@ -23,10 +23,14 @@ class TimezoneMiddleware(MiddlewareMixin):
                 language in [k for k, v in settings.LANGUAGES]
             ):
                 url_parts = resolve(request.path)
+
+                if url_parts.view_name == 'django.views.static.serve':
+                    return
+
                 url = reverse(url_parts.view_name, kwargs=url_parts.kwargs)
                 url = translate_url(url, language)
                 translation.activate(language)
-                return redirect(url)
+                return redirect(url, permanent=False)
 
 
 class SiteURLMiddleware(MiddlewareMixin):
@@ -48,4 +52,4 @@ class SiteURLMiddleware(MiddlewareMixin):
 
             if domain_company != domain_current:
                 url = '{0}{1}'.format(domain, request.path)
-                return redirect(url)
+                return redirect(url, permanent=False)
