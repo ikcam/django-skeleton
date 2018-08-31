@@ -1,11 +1,13 @@
 from django import template
 from django.conf import settings
 from django.core.validators import EMPTY_VALUES
+from django.contrib.contenttypes.models import ContentType
 from django.urls import resolve, reverse_lazy
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from core.constants import ACTIONS
+from core.models import Company
 
 
 register = template.Library()
@@ -246,3 +248,17 @@ def breadcrumb(context, **kwargs):
     return mark_safe(
         render('ol', ''.join(response), **{'class': 'breadcrumb'})
     )
+
+
+@register.filter(name='has_module')
+def has_module(company, module):
+    if not isinstance(company, Company):
+        return False
+    return company.has_module(module)
+
+
+@register.filter(name='event_url')
+def event_url(object):
+    ct = ContentType.objects.get_for_model(object)
+    slug = '{}-{}'.format(ct.id, object.id)
+    return reverse_lazy('public:event_add_object', args=[slug])
