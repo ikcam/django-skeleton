@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from core.constants import GRACE_DAYS
 from core.mixins import AuditableMixin
-from . import culqipy
+from core.models import culqipy
 
 
 class Invoice(AuditableMixin, models.Model):
