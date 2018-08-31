@@ -25,21 +25,25 @@ class ColaboratorSerializer(serializers.ModelSerializer):
 
 class EventModelSerializer(ActionSerializer):
     user = serializers.StringRelatedField()
+    type_color = serializers.SerializerMethodField()
 
     class Meta:
         fields = (
             'id', 'user', 'share_with', 'date', 'date_creation',
             'date_start', 'date_finish', 'subject', 'content', 'type',
-            'is_public', 'actions'
+            'type_color', 'is_public', 'action_list'
         )
         model = Event
+
+    def get_type_color(self, obj):
+        return obj.get_type_color()
 
 
 class LinkModelSerializer(ActionSerializer):
     class Meta:
         fields = (
             'id', 'date_creation', 'message', 'user', 'token', 'destination',
-            'is_open', 'total_visits', 'actions'
+            'is_open', 'total_visits', 'action_list'
         )
         model = Link
 
@@ -50,7 +54,7 @@ class MessageModelSerializer(ActionSerializer):
             'id', 'contenttype', 'model', 'status', 'direction',
             'date_creation', 'date_modification', 'from_email', 'from_name',
             'to_email', 'to_email_cc', 'reply_to_email', 'subject', 'content',
-            'actions'
+            'action_list'
         )
         model = Message
 
@@ -89,10 +93,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return data
 
     def validate_password2(self, data):
-        try:
-            password_validation.validate_password(data)
-        except serializers.ValidationError as error:
-            raise serializers.ValidationError(error)
+        password_validation.validate_password(data)
         return data
 
     def validate_email(self, data):
@@ -134,6 +135,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class VisitModelSerializer(ActionSerializer):
     class Meta:
         fields = (
-            'id', 'date_creation', 'link', 'ip_address', 'actions'
+            'id', 'date_creation', 'link', 'ip_address', 'action_list'
         )
         model = Visit

@@ -10,8 +10,9 @@ from django.utils.translation import activate, ugettext_lazy as _
 
 from core.constants import (
     DIRECTION_OUTBOUND, EVENT_APPOINTMENT, EVENT_CALL, EVENT_JOB_START,
-    EVENT_PRIVATE, EVENT_TASK, NOTIFY_0, NOTIFY_10, NOTIFY_30, NOTIFY_60,
-    NOTIFY_1440
+    EVENT_PRIVATE, EVENT_TASK, EVENT_APPOINTMENT_COLOR, EVENT_CALL_COLOR,
+    EVENT_JOB_START_COLOR, EVENT_PRIVATE_COLOR, EVENT_TASK_COLOR, NOTIFY_0,
+    NOTIFY_10, NOTIFY_30, NOTIFY_60, NOTIFY_1440
 )
 from core.mixins import AuditableMixin
 
@@ -30,6 +31,13 @@ class Event(AuditableMixin):
         (EVENT_JOB_START, _("Job start")),
         (EVENT_PRIVATE, _("Private")),
         (EVENT_TASK, _("Task")),
+    )
+    TYPE_COLORS = (
+        (EVENT_APPOINTMENT, EVENT_APPOINTMENT_COLOR),
+        (EVENT_CALL, EVENT_CALL_COLOR),
+        (EVENT_JOB_START, EVENT_JOB_START_COLOR),
+        (EVENT_PRIVATE, EVENT_PRIVATE_COLOR),
+        (EVENT_TASK, EVENT_TASK_COLOR),
     )
 
     company = models.ForeignKey(
@@ -115,6 +123,9 @@ class Event(AuditableMixin):
 
     def get_notified_display(self, turn):
         return dict(self.NOTIFICATION_OPTIONS).get(int(turn))
+
+    def get_type_color(self):
+        return dict(self.TYPE_COLORS)[self.type]
 
     @property
     def google_calendar_url(self):
