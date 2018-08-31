@@ -33,12 +33,13 @@ class PaymentInline(admin.TabularInline):
 
 
 # ModelAdmin
-
+@admin.register(Colaborator)
 class ColaboratorAdmin(admin.ModelAdmin):
     list_display = ('user', 'company', 'date_joined', 'is_active', )
     list_filter = ('company', )
 
 
+@admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         'user',
@@ -50,6 +51,7 @@ class CompanyAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
+@admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         'share_with',
@@ -61,6 +63,7 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = ('company', )
 
 
+@admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     autocomplete_fields = (
         'company',
@@ -71,18 +74,21 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('id', )
 
 
+@admin.register(Invite)
 class InviteAdmin(admin.ModelAdmin):
     list_display = ('name', 'company', 'email', 'user')
     list_filter = ('company', )
     search_fields = ('name', 'email')
 
 
+@admin.register(Link)
 class LinkModelAdmin(admin.ModelAdmin):
     list_display = ('destination', 'message', 'user')
     list_filter = ('company', )
     model = Link
 
 
+@admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     inlines = (
         LinkInline,
@@ -97,6 +103,7 @@ class MessageAdmin(admin.ModelAdmin):
         return False
 
 
+@admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = (
         'user', 'company', 'date_creation', 'content',
@@ -110,6 +117,7 @@ class NotificationAdmin(admin.ModelAdmin):
         return False
 
 
+@admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     filter_horizontal = ('permissions',)
     list_display = ('name', 'company')
@@ -117,6 +125,7 @@ class RoleAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
+@admin.register(User)
 class UserAdmin(UserAdmin):
     autocomplete_fields = (
         'company',
@@ -155,15 +164,3 @@ class UserAdmin(UserAdmin):
     list_filter = (
         'is_staff', 'is_superuser', 'is_active', 'company'
     )
-
-
-admin.site.register(Company, CompanyAdmin)
-admin.site.register(Colaborator, ColaboratorAdmin)
-admin.site.register(Event, EventAdmin)
-admin.site.register(Invite, InviteAdmin)
-admin.site.register(Invoice, InvoiceAdmin)
-admin.site.register(Link, LinkModelAdmin)
-admin.site.register(Message, MessageAdmin)
-admin.site.register(Notification, NotificationAdmin)
-admin.site.register(Role, RoleAdmin)
-admin.site.register(User, UserAdmin)
