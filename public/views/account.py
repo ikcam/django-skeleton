@@ -16,7 +16,7 @@ from django.views.generic import (
 from boilerplate.mixins import (
     CreateMessageMixin, NoLoginRequiredMixin, UpdateMessageMixin
 )
-from facebook import auth_url, GraphAPI, parse_signed_request
+from facebook import GraphAPI, parse_signed_request
 
 from core.models import Invite, User
 from public import forms
@@ -71,9 +71,10 @@ class AccountLoginFacebookView(View):
 
     def get(self, request, *args, **kwargs):
         code = request.GET.get('code', None)
+        graph = GraphAPI()
 
         if not code:
-            url = auth_url(
+            url = graph.get_auth_url(
                 app_id=settings.FB_APP_ID,
                 canvas_url='{}{}'.format(
                     settings.SITE_URL,
@@ -86,7 +87,6 @@ class AccountLoginFacebookView(View):
             )
             return redirect(url)
 
-        graph = GraphAPI()
         result = graph.get_access_token_from_code(
             code=code,
             redirect_uri='{}{}'.format(
