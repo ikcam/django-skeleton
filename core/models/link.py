@@ -12,28 +12,28 @@ from core.mixins import AuditableMixin
 class Link(AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     message = models.ForeignKey(
         'core.Message', editable=False, blank=True, null=True,
-        on_delete=models.SET_NULL, verbose_name=_("Message")
+        db_index=True, on_delete=models.SET_NULL, verbose_name=_("message")
     )
     user = models.ForeignKey(
         'core.User', editable=False, blank=True, null=True,
-        on_delete=models.SET_NULL, verbose_name=_("User")
+        db_index=True, on_delete=models.SET_NULL, verbose_name=_("user")
     )
     token = models.CharField(
         max_length=150, blank=True, null=True, editable=False,
-        verbose_name=_("Token")
+        verbose_name=_("token")
     )
     destination = models.URLField(
-        verbose_name=_("Destination")
+        verbose_name=_("destination")
     )
 
     class Meta:
         ordering = ['-date_creation', ]
-        verbose_name = _("Link")
-        verbose_name_plural = _("Links")
+        verbose_name = _("link")
+        verbose_name_plural = _("links")
 
     def __str__(self):
         if len(self.destination) > 30:

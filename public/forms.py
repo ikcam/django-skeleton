@@ -44,7 +44,7 @@ def get_colaborator_form(company):
 
 class CompanyCreateForm(forms.ModelForm):
     class Meta:
-        exclude = ('user', 'date_next_invoice', 'custom_domain', )
+        fields = ('name', 'email', 'language', )
         model = Company
 
 
@@ -165,6 +165,19 @@ def get_invite_form(company):
 
     return ModelForm
 
+
+def get_object_event_form(company):
+    class ModelForm(get_event_form(company)):
+        model = None
+
+        class Meta:
+            fields = (
+                'share_with', 'date_start', 'date_finish', 'notify',
+                'is_public', 'type', 'content'
+            )
+            model = Event
+
+    return ModelForm
 
 class LinkForm(forms.ModelForm):
     class Meta:

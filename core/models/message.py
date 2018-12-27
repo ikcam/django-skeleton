@@ -27,63 +27,64 @@ class Message(AuditableMixin):
 
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("User")
+        on_delete=models.SET_NULL,db_index=True,  verbose_name=_("user")
     )
     # Related model
     contenttype = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("Content type")
+        on_delete=models.SET_NULL, db_index=True,
+        verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
-        blank=True, null=True, editable=False, verbose_name=_("Object ID")
+        blank=True, null=True, editable=False, verbose_name=_("object ID")
     )
     model = GenericForeignKey('contenttype', 'object_id')
     # Hidden fields
     date_fail = models.DateTimeField(
-        blank=True, null=True, editable=False, verbose_name=_("Fail date")
+        blank=True, null=True, editable=False, verbose_name=_("fail date")
     )
     date_read = models.DateTimeField(
-        blank=True, null=True, editable=False, verbose_name=_("Read date")
+        blank=True, null=True, editable=False, verbose_name=_("read date")
     )
     date_send = models.DateTimeField(
-        blank=True, null=True, editable=False, verbose_name=_("Send date")
+        blank=True, null=True, editable=False, verbose_name=_("send date")
     )
     direction = models.SlugField(
         choices=DIRECTION_CHOICES, default=DIRECTION_OUTBOUND, editable=False,
-        verbose_name=_("Direction")
+        verbose_name=_("direction")
     )
     token = models.CharField(
-        max_length=150, blank=True, null=True, verbose_name=_("Token")
+        max_length=150, blank=True, null=True, verbose_name=_("token")
     )
     # Email information
     from_email = models.EmailField(
-        blank=True, verbose_name=_("From email")
+        blank=True, verbose_name=_("from email")
     )
     from_name = models.CharField(
-        max_length=50, blank=True, verbose_name=_("From name")
+        max_length=50, blank=True, verbose_name=_("from name")
     )
     to_email = models.TextField(
-        blank=True, verbose_name=_("To email")
+        blank=True, verbose_name=_("to email")
     )
     to_email_cc = models.TextField(
-        blank=True, verbose_name=_("To email CC")
+        blank=True, verbose_name=_("to email cc")
     )
     to_email_bcc = models.TextField(
-        blank=True, verbose_name=_("To email BCC")
+        blank=True, verbose_name=_("to email bcc")
     )
     reply_to_email = models.TextField(
-        blank=True, verbose_name=_("Reply to email")
+        blank=True, verbose_name=_("reply to email")
     )
     subject = models.CharField(
-        max_length=150, verbose_name=_("Subject")
+        max_length=150, verbose_name=_("subject")
     )
     # Common
     content = models.TextField(
-        verbose_name=_("Content")
+        verbose_name=_("content")
     )
 
     class Meta:
@@ -91,8 +92,8 @@ class Message(AuditableMixin):
         permissions = (
             ('send_message', 'Can send message'),
         )
-        verbose_name = _("Message")
-        verbose_name_plural = _("Messages")
+        verbose_name = _("message")
+        verbose_name_plural = _("messages")
 
     def __str__(self):
         if self.direction == DIRECTION_INBOUND:
@@ -323,13 +324,13 @@ class Message(AuditableMixin):
     @property
     def status(self):
         if self.is_fail:
-            return _("Failed")
+            return _("failed")
         elif self.is_read:
-            return _("Read")
+            return _("read")
         elif self.is_send:
-            return _("Send")
+            return _("send")
         else:
-            return _("Unsend")
+            return _("unsend")
 
     @property
     def to(self):

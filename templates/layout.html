@@ -10,13 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     {% block meta_header %}{% endblock meta_header %}
 
-    <title>{% block title %}{% endblock title %} | {% settings "SITE_NAME" %}</title>
+    <title>{% block title %}{% endblock title %} | {{ settings.SITE_NAME }}</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}" >
-    <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" >
-    <link rel="stylesheet" href="{% static "bower_components/clockpicker/dist/bootstrap-clockpicker.min.css" %}">
-    <link rel="stylesheet" href="{% static "bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "node_modules/bootstrap/dist/css/bootstrap.min.css" %}" >
+    <link rel="stylesheet" href="{% static "node_modules/font-awesome/css/font-awesome.min.css" %}" >
+    <link rel="stylesheet" href="{% static "node_modules/clockpicker/dist/bootstrap-clockpicker.min.css" %}">
+    <link rel="stylesheet" href="{% static "node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}">
     <link rel="stylesheet" href="{% static "css/animate.css" %}" >
     <link rel="stylesheet" href="{% static "css/style.css" %}" >
     <link rel="stylesheet" href="{% static "css/custom.css" %}">
@@ -32,25 +32,27 @@
     {% block scripts_header %}{% endblock scripts_header %}
   </head>
   <body {% if not request.user.nav_expanded %}class="mini-navbar"{% endif %}>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '{% settings "FB_APP_ID" %}',
-          cookie     : true,
-          xfbml      : true,
-          version    : 'v2.11'
-        });
-        FB.AppEvents.logPageView();
-      };
+    {% if settings.FB_APP_ID %}
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '{{ settings.FB_APP_ID }}',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v3.2'
+          });
+          FB.AppEvents.logPageView();
+        };
 
-      (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "https://connect.facebook.net/{{ LANGUAGE_CODE|lower }}_{{ LANGUAGE_CODE|upper }}/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-    </script>
+        (function(d, s, id){
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) {return;}
+          js = d.createElement(s); js.id = id;
+          js.src = "https://connect.facebook.net/{{ LANGUAGE_CODE|lower }}_{{ LANGUAGE_CODE|upper }}/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+      </script>
+    {% endif %}
 
     <div id="wrapper">
       {% if not view.is_popup %}
@@ -96,21 +98,21 @@
       var site_timezone = '{{ TIME_ZONE }}';
     </script>
     <script src="{% url 'javascript-catalog' %}"></script>
-    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-    <script src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'node_modules/angular/angular.min.js' %}"></script>
+    <script src="{% static 'node_modules/moment/min/moment.min.js' %}"></script>
     {% if LANGUAGE_CODE != 'en' %}
-      <script src="{% static 'bower_components/moment/locale/'|add:LANGUAGE_CODE|add:'.js' %}"></script>
-      <script src="{% static 'bower_components/angular-i18n/angular-locale_'|add:LANGUAGE_CODE|add:'-'|add:LANGUAGE_CODE|add:'.js' %}"></script>
+      <script src="{% static 'node_modules/moment/locale/'|add:LANGUAGE_CODE|add:'.js' %}"></script>
+      <script src="{% static 'node_modules/angular-i18n/angular-locale_'|add:LANGUAGE_CODE|add:'-'|add:LANGUAGE_CODE|add:'.js' %}"></script>
     {% endif %}
-    <script src="{% static 'bower_components/angular-moment/angular-moment.min.js' %}"></script>
-    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'bower_components/metisMenu/dist/metisMenu.min.js' %}"></script>
-    <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
-    <script src="{% static 'bower_components/PACE/pace.min.js' %}"></script>
-    <script src="{% static 'bower_components/clipboard/dist/clipboard.min.js' %}"></script>
-    <script src="{% static 'bower_components/clockpicker/dist/bootstrap-clockpicker.min.js' %}"></script>
-    <script src="{% static 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'node_modules/angular-moment/angular-moment.min.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'node_modules/metisMenu/dist/metisMenu.min.js' %}"></script>
+    <script src="{% static 'node_modules/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'node_modules/PACE/pace.min.js' %}"></script>
+    <script src="{% static 'node_modules/clipboard/dist/clipboard.min.js' %}"></script>
+    <script src="{% static 'node_modules/clockpicker/dist/bootstrap-clockpicker.min.js' %}"></script>
+    <script src="{% static 'node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'js/plugins/inlines.js' %}"></script>
     <script src="{% static 'js/plugins/livelist.js' %}"></script>
     <script src="{% static 'js/plugins/remote-table.js' %}"></script>

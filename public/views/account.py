@@ -2,8 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -78,7 +77,7 @@ class AccountLoginFacebookView(View):
                 app_id=settings.FB_APP_ID,
                 canvas_url='{}{}'.format(
                     settings.SITE_URL,
-                    reverse_lazy('public:login_facebook'),
+                    reverse_lazy('public:account_login_facebook'),
                 ),
                 perms=[
                     'public_profile',
@@ -91,7 +90,7 @@ class AccountLoginFacebookView(View):
             code=code,
             redirect_uri='{}{}'.format(
                 settings.SITE_URL,
-                reverse_lazy('public:login_facebook'),
+                reverse_lazy('public:account_login_facebook'),
             ),
             app_id=settings.FB_APP_ID,
             app_secret=settings.FB_APP_SECRET
@@ -119,7 +118,7 @@ class AccountLoginFacebookView(View):
                         "Facebook account already."
                     )
                 )
-                return redirect('public:user_detail')
+                return redirect('public:account_detail')
             elif (
                 user.facebook_id and
                 user.facebook_id == fb_user.get('id')
@@ -143,7 +142,6 @@ class AccountLoginFacebookView(View):
                     first_name=fb_user.get('first_name'),
                     last_name=fb_user.get('last_name'),
                     email=fb_user.get('email'),
-                    password='temp',
                     username=fb_user.get('id'),
                 )
                 password = User.objects.make_random_password()
@@ -168,7 +166,7 @@ class AccountLogoutFacebookView(View):
         try:
             user = User.objects.get(facebook_id=data['user_id'])
         except User.DoesNotExist:
-            raise PermissionDenied
+            raise Http404
 
         user.facebook_id = None
         user.facebook_access_token = None
@@ -250,8 +248,8 @@ class AccountSignUpInviteView(
                 pk=self.kwargs['pk'],
                 user__isnull=True,
             )
-        except Exception as e:
-            raise PermissionDenied
+        except Invite.DoesNotExist:
+            raise Http404
 
     def get_company(self):
         invite = self.get_invite()

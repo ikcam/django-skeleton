@@ -7,16 +7,16 @@ from core.mixins import AuditableMixin
 class Visit(AuditableMixin):
     link = models.ForeignKey(
         'core.Link', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Link")
+        db_index=True, verbose_name=_("link")
     )
     ip_address = models.GenericIPAddressField(
-        protocol='both', verbose_name=_("IP address")
+        protocol='both', verbose_name=_("ip address")
     )
 
     class Meta:
         ordering = ['date_creation', ]
-        verbose_name = _("Visit")
-        verbose_name_plural = _("Visits")
+        verbose_name = _("visit")
+        verbose_name_plural = _("visits")
 
     def __str__(self):
         return "%s" % self.ip_address

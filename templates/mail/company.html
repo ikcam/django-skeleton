@@ -1,0 +1,37 @@
+{% extends "layout-email.html" %}
+
+{% load core_tags djaneiro i18n %}
+
+
+{% block content %}
+  <tr>
+    <td class="content-block">
+      <p><strong>{% trans "Name" %}:</strong></p>
+      <p>{{ object.name }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <p><strong>{% trans "Email" %}:</strong></p>
+      <p>{{ object.email }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <p><strong>{% trans "User" %}:</strong></p>
+      <p>{{ object.user }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <p><strong>{% trans "Language" %}:</strong></p>
+      <p>{{ object.email }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td class="content-block">
+      <p><strong>{% trans "URL" %}:</strong></p>
+      <p><a href="{{ settings.SITE_URL }}{{ object.switch_url }}">{{ settings.SITE_URL }}{{ object.switch_url }}</a></p>
+    </td>
+  </tr>
+{% endblock content %}

@@ -58,6 +58,7 @@ class AuditableMixin(models.Model):
 
 
 class CompanyRequiredMixin:
+    bypass_inactive = False
     company = None
     company_field = 'company'
     permission_required = None
@@ -77,6 +78,12 @@ class CompanyRequiredMixin:
             return redirect('core:company_choose')
 
         self.company = user.company
+        bypass_inactive = self.get_bypass_inactive()
+
+        if not bypass_inactive and not user.company_profile.is_active:
+            user.company = None
+            user.save(update_fields=['company'])
+            return redirect('core:company_choose')
 
         if not self.company:
             return redirect('core:company_choose')
@@ -93,6 +100,9 @@ class CompanyRequiredMixin:
                 return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
+
+    def get_bypass_inactive(self):
+        return self.bypass_inactive
 
     def get_context_data(self, **kwargs):
         kwargs['company'] = self.company
@@ -163,9 +173,10 @@ class FillFromRequest:
 
         values = self.request.GET.dict()
 
-        for value in values:
-            if value in context['form'].fields.keys():
-                context['form'].fields[value].initial = values[value]
+        for key in values:
+            if key in context['form'].fields.keys():
+                value = values[key]
+                context['form'].fields[key].initial = value
 
         return context
 
@@ -177,16 +188,18 @@ class FilterMixin(CompanyQuerySetMixin):
         return self.filter_class
 
     def get_filter(self):
-        if self.get_filter_class():
-            qs = super().get_queryset()
-            qs = self.get_filter_class()(self.request.GET, qs)
-
-            return qs
+        filter_class = self.get_filter_class()
+        if filter_class:
+            qs = qs if hasattr(qs, 'count') else self.get_queryset()
+            filter_ = filter_class(self.request.GET, qs)
+            return filter_
 
     def get_queryset(self):
-        if self.get_filter_class():
-            return self.get_filter().qs
-        return super().get_queryset()
+        filter_class = self.get_filter_class()
+        qs = super().get_queryset()
+        if filter_class:
+            return self.get_filter(qs).qs
+        return qs
 
     def get_context_data(self, **kwargs):
         if 'form' not in kwargs:
@@ -231,6 +244,8 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             kwargs['action'] = self.get_model_action()
         if 'action_details' not in kwargs:
             kwargs['action_details'] = ACTIONS[self.get_model_action()]
+        if 'entity' not in kwargs:
+            kwargs['entity'] = self.object or self.model
         return super().get_context_data(**kwargs)
 
     def get_failure_message(self):
@@ -263,8 +278,7 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
             level, content = response
             getattr(messages, level)(self.request, content)
         except Exception:
-            if settings.DEBUG:
-                raise
+            pass
 
         if self.request.GET.get('next', None):
             return self.request.GET.get('next')
@@ -379,17 +393,41 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
                 )
 
 
+class DeleteAllMixin(ModelActionMixin):
+    model_action = 'delete_all'
+    require_confirmation = True
+    template_name_suffix = '_action'
+
+    def post(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        count, details = queryset.delete()
+        messages.success(
+            request,
+            _(
+                "A total of %(count)d %(model_name)s "
+                "has been deleted successfully."
+            ) % dict(
+                count=count,
+                model_name=self.model._meta.verbose_name_plural.lower()
+            )
+        )
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        assert hasattr(self, 'success_url'), _("Invalid `success_url`")
+        return self.success_url
+
+
 class UserQuerySetMixin(CompanyQuerySetMixin):
     user_field = 'user'
-    user_permission_required = None
 
     def get_queryset(self):
         qs = super().get_queryset()
-        permission_name = self.get_user_permission_required()
 
-        if not permission_name:
-            permission_name = self.get_permission_required()
-            permission_name = permission_name.replace('view_', 'view_all_')
+        permission_name = self.get_permission_required()
+        permission_name = 'view_all_{}'.format(
+            permission_name.split('_')[-1]
+        )
 
         if self.request.user.has_company_perm(permission_name):
             return qs
@@ -400,6 +438,3 @@ class UserQuerySetMixin(CompanyQuerySetMixin):
 
     def get_user_field(self):
         return self.user_field
-
-    def get_user_permission_required(self):
-        return self.user_permission_required

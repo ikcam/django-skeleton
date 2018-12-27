@@ -1,11 +1,13 @@
 beautifulsoup4
+braintree
 celery
 channels
 channels_redis
 culqipy
 daphne
 dateutils
-django>=2.0
+dj-database-url
+django
 django-addanother
 -e git+https://github.com/ikcam/django-autocomplete-light.git#egg=django-autocomplete-light
 django-boilerplate
@@ -13,6 +15,7 @@ django-bootstrap3
 django-ckeditor
 django-countries
 django-cors-headers
+django-dotenv
 django-filter
 django-querysetsequence
 django-redis
@@ -20,5 +23,8 @@ djangorestframework
 drf-nested-routers
 facebook-sdk
 Pillow
+python-dotenv
+psycopg2-binary
 requests
 six
+stripe

@@ -11,28 +11,29 @@ class Attachment(AuditableMixin):
     # Related model
     contenttype = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("Content type")
+        on_delete=models.SET_NULL, db_index=True,
+        verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
-        blank=True, null=True, editable=False, verbose_name=_("Object ID")
+        blank=True, null=True, editable=False, verbose_name=_("object ID")
     )
     model = GenericForeignKey('contenttype', 'object_id')
     # Model fields
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("User")
+        on_delete=models.SET_NULL, db_index=True, verbose_name=_("user")
     )
     file = models.FileField(
-        upload_to='core/attachments/', verbose_name=_("File")
+        upload_to='core/attachments/', verbose_name=_("file")
     )
     detail = models.TextField(
-        blank=True, null=True, verbose_name=_("Detail")
+        blank=True, null=True, verbose_name=_("detail")
     )
 
     class Meta:
         ordering = ['-date_creation', ]
-        verbose_name = _("Attachment")
-        verbose_name_plural = _("Attachments")
+        verbose_name = _("attachment")
+        verbose_name_plural = _("attachments")
 
     def __str__(self):
         return "%s" % self.file.name

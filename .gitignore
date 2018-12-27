@@ -11,6 +11,7 @@ static/*
 celerybeat-schedule
 *.db
 .DS_Store
+yarn.lock
 dump.rdb
 
 
@@ -77,3 +78,4 @@ target/
 # Bower
 node_modules/
 bower_components/
+.vscode

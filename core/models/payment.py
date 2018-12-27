@@ -5,22 +5,22 @@ from django.utils.translation import ugettext_lazy as _
 from core.mixins import AuditableMixin
 
 
-class Payment(AuditableMixin, models.Model):
+class Payment(AuditableMixin):
     invoice = models.ForeignKey(
         'core.Invoice', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Invoice")
+        db_index=True, verbose_name=_("invoice")
     )
     description = models.TextField(
-        blank=True, null=True, verbose_name=_("Description")
+        blank=True, null=True, verbose_name=_("description")
     )
     total = models.DecimalField(
-        max_digits=12, decimal_places=2, verbose_name=_("Total")
+        max_digits=12, decimal_places=2, verbose_name=_("total")
     )
 
     class Meta:
         ordering = ['-date_creation', ]
-        verbose_name = _("Payment")
-        verbose_name_plural = _("Payments")
+        verbose_name = _("payment")
+        verbose_name_plural = _("payments")
 
     def __str__(self):
         return "%.2f" % self.total

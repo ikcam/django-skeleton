@@ -42,54 +42,55 @@ class Event(AuditableMixin):
 
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, verbose_name=_("User")
+        db_index=True, on_delete=models.SET_NULL, verbose_name=_("user")
     )
     contenttype = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
-        on_delete=models.CASCADE, verbose_name=_("Content type")
+        db_index=True, on_delete=models.CASCADE,
+        verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
-        editable=False, blank=True, null=True, verbose_name=_("Object ID")
+        editable=False, blank=True, null=True, verbose_name=_("object ID")
     )
     model = GenericForeignKey('contenttype', 'object_id')
     share_with = models.ManyToManyField(
         'core.User', blank=True, related_name='shared_events',
-        verbose_name=_("Share with")
+        verbose_name=_("share with")
     )
     date_start = models.DateTimeField(
-        blank=True, null=True, verbose_name=_("Start date")
+        blank=True, null=True, verbose_name=_("start date")
     )
     date_finish = models.DateTimeField(
-        blank=True, null=True, verbose_name=_("Finish date")
+        blank=True, null=True, verbose_name=_("finish date")
     )
     notify = models.CharField(
         max_length=50, default=NOTIFY_0,
         validators=[validate_comma_separated_integer_list],
-        verbose_name=_("Notify")
+        verbose_name=_("notify")
     )
     notified = models.CharField(
         max_length=50, blank=True, null=True, editable=False,
         validators=[validate_comma_separated_integer_list],
-        verbose_name=_("Notified")
+        verbose_name=_("notified")
     )
     is_public = models.BooleanField(
-        default=False, verbose_name=_("Public")
+        default=False, verbose_name=_("public")
     )
     type = models.SlugField(
-        choices=TYPE_CHOICES, verbose_name=_("Type")
+        choices=TYPE_CHOICES, verbose_name=_("type")
     )
     content = models.TextField(
-        verbose_name=_("Content")
+        verbose_name=_("content")
     )
 
     class Meta:
         ordering = ['-date_creation']
-        verbose_name = _("Event")
-        verbose_name_plural = _("Events")
+        verbose_name = _("event")
+        verbose_name_plural = _("events")
 
     def __str__(self):
         return "%s" % self.subject

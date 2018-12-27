@@ -32,42 +32,42 @@ class User(AbstractUser):
 
     activation_key = models.CharField(
         blank=True, null=True, max_length=255,
-        editable=False, verbose_name=_("Activation key")
+        editable=False, verbose_name=_("activation key")
     )
     company = models.ForeignKey(
         'core.Company', blank=True, null=True, related_name='+',
-        on_delete=models.SET_NULL, verbose_name=_("Company")
+        on_delete=models.SET_NULL, db_index=True, verbose_name=_("company")
     )
     companies = models.ManyToManyField(
         'core.Company', blank=True, through='Colaborator', related_name='+',
-        verbose_name=_("Companies")
+        verbose_name=_("companies")
     )
     date_key_expiration = models.DateTimeField(
         blank=True, null=True, editable=False,
-        verbose_name=_("Date key expiration")
+        verbose_name=_("date key expiration")
     )
     facebook_id = models.CharField(
         max_length=100, editable=False, blank=True, null=True,
-        verbose_name=_("Facebook ID")
+        verbose_name=_("facebook ID")
     )
     facebook_access_token = models.CharField(
         max_length=255, editable=False, blank=True, null=True,
-        verbose_name=_("Facebook access token")
+        verbose_name=_("facebook access token")
     )
     language = models.SlugField(
         default=settings.LANGUAGE_CODE, choices=settings.LANGUAGES,
-        verbose_name=_("Language")
+        verbose_name=_("language")
     )
     nav_expanded = models.BooleanField(
-        default=True, verbose_name=_("Nav expanded")
+        default=True, verbose_name=_("nav expanded")
     )
     photo = models.ImageField(
         upload_to='core/users/', blank=True, null=True,
-        verbose_name=_("Photo")
+        verbose_name=_("photo")
     )
     timezone = models.CharField(
         max_length=100, default=settings.TIME_ZONE,
-        choices=TIMEZONES, verbose_name=_("Timezone")
+        choices=TIMEZONES, verbose_name=_("timezone")
     )
     objects = UserManager()
 
@@ -76,8 +76,8 @@ class User(AbstractUser):
         permissions = (
             ('remove_user', 'Can remove user'),
         )
-        verbose_name = _('User')
-        verbose_name_plural = _('User')
+        verbose_name = _('user')
+        verbose_name_plural = _('user')
 
     def __str__(self):
         if self.first_name and self.last_name:

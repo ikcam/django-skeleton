@@ -370,6 +370,11 @@ urlpatterns = [
         name='user_autocomplete'
     ),
     path(
+        _('users/all/autocomplete/'),
+        autocomplete.UserAllAutocomplete.as_view(),
+        name='user_all_autocomplete'
+    ),
+    path(
         _('users/other/autocomplete/'),
         autocomplete.UserOtherAutocomplete.as_view(),
         name='user_other_autocomplete'

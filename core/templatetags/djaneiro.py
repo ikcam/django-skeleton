@@ -1,10 +1,15 @@
 from django import template
+from django.apps import apps
+from django.db.models.query import QuerySet
+from django.db.models.base import ModelBase
 from django.conf import settings
-from django.core.validators import EMPTY_VALUES
 from django.contrib.contenttypes.models import ContentType
-from django.urls import resolve, reverse_lazy
+from django.core.validators import EMPTY_VALUES
+from django.urls import reverse_lazy
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
+
+from boilerplate.templatetags.boilerplate import url_replace
 
 from core.constants import ACTIONS
 from core.models import Company
@@ -42,18 +47,62 @@ def build_button(**kwargs):
     action_details = ACTIONS[kwargs['action']]
     href = build_url(**kwargs)
     icon = build_icon(action_details['icon'])
+    if kwargs['object']:
+        model_app = kwargs['object']._meta.app_label.lower()
+        model = kwargs['object'].__class__.__name__.lower()
+    elif kwargs['object_list'] is not None:
+        model_app = kwargs['object_list'].model._meta.app_label.lower()
+        model = kwargs['object_list'].model.__name__.lower()
     title = action_details['title']
     class_ = 'btn btn-%(size)s btn-%(level)s' % dict(
         size=kwargs['size'],
         level=action_details['level'],
     )
     content = '{} {}'.format(icon, title)
-
-    return render(
-        'a',
-        content=content,
-        **{'class': class_, 'href': href}
+    inline = kwargs.get('inline', False)
+    index = kwargs.get('index')
+    total = kwargs.get('total')
+    permission_name = '{model_app}:{prefix}_{model}'.format(
+        model_app=model_app,
+        model=model,
+        prefix=action_details['permission_prefix'],
     )
+
+    if not kwargs['user'].has_company_perm(permission_name):
+        return ''
+
+    if inline:
+        return render(
+            'a',
+            content=content,
+            **{'class': class_, 'href': href}
+        )
+    else:
+        if index == 0:
+            button_first = render(
+                'a',
+                content=content,
+                **{
+                    'class': class_,
+                    'href': href,
+                }
+            )
+            button_second = render(
+                'button',
+                content=render('span', '', **{'class': 'caret'}),
+                **{
+                    'class': class_ + ' dropdown-toggle',
+                    'data-toggle': 'dropdown',
+                }
+            )
+            if total > 1:
+                return button_first + button_second
+            else:
+                return button_first
+        else:
+            return render(
+                'li', content=render('a', content=content, href=href)
+            )
 
 
 def build_url(
@@ -102,32 +151,57 @@ def action_buttons(context, **kwargs):
     else:
         action_list = None
 
-    if action_list in EMPTY_VALUES:
-        return ''
-
     if callable(action_list):
         action_list = action_list()
 
+    if action_list in EMPTY_VALUES:
+        return ''
+
     app_name = (
         kwargs.get('app_name', None) or
-        resolve(context['request'].path).app_name
+        context['request'].resolver_match.app_name
     )
-    grouped = True if kwargs.get('grouped') else False
+    inline = True if kwargs.get('inline') else False
+    index = 0
     size = kwargs.get('size', 'size-default')
     response = ''
+    response_items = []
 
     for action in action_list:
-        response += build_button(
+        button = build_button(
             action=action,
             app_name=app_name,
-            grouped=grouped,
+            inline=inline,
+            index=index,
             object=object,
             object_list=object_list,
             parent_object=parent_object,
             size=size,
+            total=len(action_list),
+            user=context['request'].user,
         )
 
-    return mark_safe(response)
+        if inline or index == 0:
+            response += button + ' '
+        else:
+            response_items.append(button)
+        index += 1
+
+    if inline:
+        return mark_safe(response)
+
+    response_items = render(
+        'ul',
+        content=''.join(response_items),
+        **{'class': 'dropdown-menu dropdown-menu-right'}
+    )
+    return mark_safe(
+        render(
+            'div',
+            content=(response + response_items),
+            **{'class': 'btn-group'}
+        )
+    )
 
 
 @register.simple_tag(takes_context=True)
@@ -136,6 +210,7 @@ def breadcrumb(context, **kwargs):
         kwargs.get('action', None) or
         context.get('action', None)
     )
+    action_details = ACTIONS[action] if action else None
     object = (
         kwargs.get('object', None) or
         context.get('object', None)
@@ -165,7 +240,7 @@ def breadcrumb(context, **kwargs):
     # Current app
     app_name = (
         kwargs.get('app_name', None) or
-        resolve(context['request'].path).app_name
+        context['request'].resolver_match.app_name
     )
 
     if app_name != 'public':
@@ -177,8 +252,10 @@ def breadcrumb(context, **kwargs):
             content = object._meta.app_config.verbose_name
         elif object_list is not None:
             content = object_list.model._meta.app_config.verbose_name
-        elif form:
+        elif form and hasattr(form, '_meta'):
             content = form._meta.model._meta.app_config.verbose_name
+        else:
+            content = apps.get_app_config(app_name).verbose_name
 
         response.append(
             build_breadcrumb_item(content=content, href=href)
@@ -188,7 +265,7 @@ def breadcrumb(context, **kwargs):
         # Add list
         model_name = parent_object.__class__.__name__.lower()
         href = reverse_lazy('{}:{}_list'.format(app_name, model_name))
-        content = parent_object._model.verbose_name_plural
+        content = parent_object._meta.verbose_name_plural
         response.append(
             build_breadcrumb_item(content=content, href=href)
         )
@@ -208,11 +285,16 @@ def breadcrumb(context, **kwargs):
     elif object:
         # Add list
         model_name = object.__class__.__name__.lower()
-        href = reverse_lazy('{}:{}_list'.format(app_name, model_name))
         content = object._meta.verbose_name_plural
-        response.append(
-            build_breadcrumb_item(content=content, href=href)
-        )
+        if not parent_object:
+            href = reverse_lazy('{}:{}_list'.format(app_name, model_name))
+            response.append(
+                build_breadcrumb_item(content=content, href=href)
+            )
+        else:
+            response.append(
+                build_breadcrumb_item(content=content)
+            )
         if form:
             # Add detail
             response.append(
@@ -226,18 +308,33 @@ def breadcrumb(context, **kwargs):
                 response.append(
                     build_breadcrumb_item(content=content)
                 )
+        elif action:
+            response.append(
+                build_breadcrumb_item(
+                    content=object, href=object.get_absolute_url()
+                )
+            )
+            response.append(
+                build_breadcrumb_item(content=action_details['title'])
+            )
         else:
             response.append(
                 build_breadcrumb_item(content=object)
             )
     elif form:
-        # Add list
-        model_name = form._meta.model.__name__.lower()
-        href = reverse_lazy('{}:{}_list'.format(app_name, model_name))
-        content = form._meta.model._meta.verbose_name_plural
-        response.append(
-            build_breadcrumb_item(content=content, href=href)
-        )
+        if hasattr(form, '_meta'):
+            # Add list
+            model_name = form._meta.model.__name__.lower()
+            content = form._meta.model._meta.verbose_name_plural
+            if parent_object:
+                response.append(
+                    build_breadcrumb_item(content=content)
+                )
+            else:
+                href = reverse_lazy('{}:{}_list'.format(app_name, model_name))
+                response.append(
+                    build_breadcrumb_item(content=content, href=href)
+                )
 
         if action:
             content = ACTIONS[action]['title']
@@ -250,11 +347,42 @@ def breadcrumb(context, **kwargs):
     )
 
 
+@register.simple_tag(takes_context=True)
+def sortable_column(context, **kwargs):
+    request = context['request']
+    field = kwargs.get('field')
+    title = kwargs.get('title')
+
+    if 'o' in request.GET and request.GET['o'] == field:
+        href = url_replace(request, 'o', '-{}'.format(field))
+        icon = render('i', '', **{'class': 'fa fa-sort-asc'})
+    elif 'o' in request.GET and request.GET['o'] == '-{}'.format(field):
+        href = url_replace(request, 'o', '{}'.format(field))
+        icon = render('i', '', **{'class': 'fa fa-sort-desc'})
+    else:
+        href = url_replace(request, 'o', '{}'.format(field))
+        icon = render('i', '', **{'class': 'fa fa-sort'})
+
+    return mark_safe(
+        render(
+            'a',
+            '{} {}'.format(_(title), icon),
+            href='?{}'.format(href)
+        )
+    )
+
 @register.filter(name='has_module')
 def has_module(company, module):
     if not isinstance(company, Company):
         return False
     return company.has_module(module)
+
+
+@register.filter(name='module_price')
+def module_price(company, module):
+    if not isinstance(company, Company):
+        return False
+    return company.module_price(module)
 
 
 @register.filter(name='event_url')

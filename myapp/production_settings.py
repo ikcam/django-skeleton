@@ -1,5 +1,12 @@
 import os
-from .settings import BASE_DIR, INSTALLED_APPS, TIME_ZONE
+
+from django.urls import reverse
+
+from myapp.settings import BASE_DIR, TIME_ZONE
+
+
+DEBUG = False
+
 
 ALLOWED_HOSTS = [
     'myapp.com',
@@ -19,24 +26,6 @@ INTERNAL_IPS = [
 ]
 
 
-INSTALLED_APPS += [
-    'django_ses',
-]
-
-
-# Database
-# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("APP_DB_NAME"),
-        'USER': os.getenv("APP_DB_USER"),
-        'PASSWORD': os.getenv("APP_DB_PASS"),
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -50,23 +39,18 @@ CHANNEL_LAYERS = {
 
 
 # Email
-EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-AWS_ACCESS_KEY_ID = os.getenv('APP_AWS_KEY')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
 
-AWS_SECRET_ACCESS_KEY = os.getenv('APP_AWS_SECRET')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 
-AWS_SES_REGION_NAME = os.getenv('APP_AWS_REGION')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 
-AWS_SES_REGION_ENDPOINT = 'email.{}.amazonaws.com'.format(
-    AWS_SES_REGION_NAME
-)
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-AWS_SES_CONFIGURATION_SET = 'myapp-set'
+EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
 
-SERVER_EMAIL = os.getenv('APP_SEVER_EMAIL')
-
-DEFAULT_FROM_EMAIL = os.getenv('APP_DEFAULT_EMAIL')
 
 
 LOGGING = {
@@ -120,10 +104,37 @@ CACHES = {
 }
 
 
+# Security
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+SECURE_SSL_REDIRECT = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+SECURE_BROWSER_XSS_FILTER = True
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SECURE = True
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+SECURE_REDIRECT_EXEMPT = [
+    '/',
+    '/en/',
+    '/en/status/',
+    '/es/',
+    '/es/status/',
+]
+
+
 # Celery
 # http://docs.celeryproject.org/en/latest/django/index.html
 
-CELERY_BROKER_URL = 'amqp://myapp:guest@localhost:5672/myapp'
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 
@@ -132,13 +143,8 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # Site info
 
-SITE_URL = 'https://{}'.format(ALLOWED_HOSTS[0])
+SITE_URL = 'https://myapp.com'
 
 SITE_NAME = 'My App'
 
 SITE_SHORT_NAME = 'MA+'
-
-
-CULQI_PUBLIC_KEY = None
-
-CULQI_PRIVATE_KEY = None

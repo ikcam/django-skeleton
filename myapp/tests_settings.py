@@ -24,8 +24,3 @@ SITE_URL = 'http://tests.myapp.com'
 SITE_NAME = 'My App (Tests)'
 
 SITE_SHORT_NAME = 'MA+'
-
-
-CULQI_PUBLIC_KEY = None
-
-CULQI_PRIVATE_KEY = None

@@ -28,7 +28,11 @@ if settings.DEBUG:
     )
 
 urlpatterns += i18n_patterns(
-    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path(
+        'jsi18n/',
+        JavaScriptCatalog.as_view(),
+        name='javascript-catalog'
+    ),
     path(
         _('admin/'),
         admin.site.urls

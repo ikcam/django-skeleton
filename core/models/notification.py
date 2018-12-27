@@ -11,39 +11,40 @@ from core.mixins import AuditableMixin
 class Notification(AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
         'core.User', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("User")
+        db_index=True, verbose_name=_("user")
     )
     # Related model
     contenttype = models.ForeignKey(
         'contenttypes.ContentType', editable=False,
-        on_delete=models.CASCADE, verbose_name=_("Content type")
+        on_delete=models.CASCADE, db_index=True,
+        verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
-        blank=True, null=True, editable=False, verbose_name=_("Object ID")
+        blank=True, null=True, editable=False, verbose_name=_("object ID")
     )
     model = GenericForeignKey('contenttype', 'object_id')
     # Hidden fields
     date_read = models.DateTimeField(
-        blank=True, null=True, editable=False, verbose_name=_("Read date")
+        blank=True, null=True, editable=False, verbose_name=_("read date")
     )
     level = models.SlugField(
-        blank=True, null=True, editable=False, verbose_name=_("Level")
+        blank=True, null=True, editable=False, verbose_name=_("level")
     )
     content = models.CharField(
-        editable=False, max_length=250, verbose_name=_("Content")
+        editable=False, max_length=250, verbose_name=_("content")
     )
     destination = models.URLField(
-        editable=False, verbose_name=_("Destination")
+        editable=False, verbose_name=_("destination")
     )
 
     class Meta:
         ordering = ["-date_creation", ]
-        verbose_name = _("Notification")
-        verbose_name_plural = _("Notifications")
+        verbose_name = _("notification")
+        verbose_name_plural = _("notifications")
 
     def __str__(self):
         return "%s %s" % (self.model or self.contenttype, self.content)

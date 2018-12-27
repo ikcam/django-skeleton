@@ -12,7 +12,7 @@
 		<div class="error-desc">
 			<p>{% blocktrans %}We are sorry. Your request didn't pass our security check.{% endblocktrans %}</p>
 
-			<a role="button" class="btn btn-primary"  href="{% settings "SITE_URL" %}">{% trans "Go home" %}</a>
+			<a role="button" class="btn btn-primary"  href="{{ settings.SITE_URL }}">{% trans "Go home" %}</a>
 		</div>
 	</div>
 {% endblock %}

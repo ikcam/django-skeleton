@@ -12,8 +12,8 @@
     <title>{% block title %}{% endblock title %}</title>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css" %}" >
-    <link rel="stylesheet" href="{% static "bower_components/font-awesome/css/font-awesome.min.css" %}" >
+    <link rel="stylesheet" href="{% static "node_modules/bootstrap/dist/css/bootstrap.min.css" %}" >
+    <link rel="stylesheet" href="{% static "node_modules/font-awesome/css/font-awesome.min.css" %}" >
     <link rel="stylesheet" href="{% static "css/animate.css" %}" >
     <link rel="stylesheet" href="{% static "css/style.css" %}" >
     <link rel="stylesheet" href="{% static "css/custom.css" %}">
@@ -35,8 +35,8 @@
 
     {% block css_footer %}{% endblock css_footer %}
 
-    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     {% block scripts_footer %}{% endblock %}
   </body>
 </html>

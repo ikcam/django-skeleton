@@ -11,31 +11,31 @@ from core.constants import LEVEL_ERROR
 from core.mixins import AuditableMixin
 
 
-class Invite(AuditableMixin, models.Model):
+class Invite(AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     name = models.CharField(
-        max_length=50, verbose_name=_("Name")
+        max_length=50, verbose_name=_("name")
     )
     email = models.EmailField(
-        verbose_name=_("Email")
+        verbose_name=_("email")
     )
     date_send = models.DateTimeField(
-        blank=True, null=True, editable=False, verbose_name=_("Sent date")
+        blank=True, null=True, editable=False, verbose_name=_("sent date")
     )
     roles = models.ManyToManyField(
-        'core.Role', blank=True, verbose_name=_("Roles")
+        'core.Role', blank=True, verbose_name=_("roles")
     )
     activation_key = models.CharField(
         max_length=255, blank=True, null=True, editable=False,
-        verbose_name=_("Activation key")
+        verbose_name=_("activation key")
     )
     user = models.OneToOneField(
         'core.User', blank=True, null=True, editable=False,
         related_name='invite', on_delete=models.CASCADE,
-        verbose_name=_("User")
+        verbose_name=_("user")
     )
 
     class Meta:
@@ -44,8 +44,8 @@ class Invite(AuditableMixin, models.Model):
             ('send_invite', 'Can send invite'),
         )
         unique_together = ("company", "email")
-        verbose_name = _("Invite")
-        verbose_name_plural = _("Invites")
+        verbose_name = _("invite")
+        verbose_name_plural = _("invites")
 
     def __str__(self):
         return self.email

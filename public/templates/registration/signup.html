@@ -8,9 +8,9 @@
   <div class="middle-box text-center loginscreen animated fadeInDown">
     <div>
       <div>
-        <h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
+        <h1 class="logo-name">{{ settings.SITE_SHORT_NAME }}</h1>
       </div>
-      <h3>{% trans "Sign up" %} {% trans "in" %} {% settings "SITE_SHORT_NAME" %}</h3>
+      <h3>{% trans "Sign up" %} {% trans "in" %} {{ settings.SITE_SHORT_NAME }}</h3>
       <p>{% trans "Create account to see it in action." %}</p>
       {% bootstrap_messages %}
       <form class="m-t" method="post" role="form" action="" novalidate>

@@ -3,7 +3,7 @@
 {% load staticfiles i18n tz %}
 
 {% block css_header %}
-  <link href="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.css' %}" rel="stylesheet">
+  <link href="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -46,7 +46,7 @@
   <script>
     var eventSource = '{% url "api:public:event-list" %}';
   </script>
-  <script src="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.js' %}"></script>
-  <script src="{% static 'bower_components/fullcalendar/dist/locale-all.js' %}"></script>
+  <script src="{% static 'node_modules/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+  <script src="{% static 'node_modules/fullcalendar/dist/locale-all.js' %}"></script>
   <script src="{% static 'js/common/event_list.js' %}"></script>
 {% endblock %}

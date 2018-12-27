@@ -3,7 +3,7 @@
 {% load bootstrap3 core_tags i18n staticfiles %}
 
 {% block css_header %}
-  <link rel="stylesheet" href="{% static 'bower_components/bootstrap-social/bootstrap-social.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap-social/bootstrap-social.css' %}">
 {% endblock css_header %}
 
 {% block title %}{% trans "Log in" %}{% endblock title %}
@@ -12,9 +12,9 @@
   <div class="middle-box text-center loginscreen animated fadeInDown">
     <div>
       <div>
-        <h1 class="logo-name">{% settings "SITE_SHORT_NAME" %}</h1>
+        <h1 class="logo-name">{{ settings.SITE_SHORT_NAME }}</h1>
       </div>
-      <h3>{% trans "Welcome to" %} {% settings "SITE_SHORT_NAME" %}</h3>
+      <h3>{% trans "Welcome to" %} {{ settings.SITE_SHORT_NAME }}</h3>
       <p>
         {% blocktrans %}
             This is a small but powerfull tool to send invoices and messages to

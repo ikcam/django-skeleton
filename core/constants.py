@@ -64,6 +64,15 @@ LEVEL_INFO = 'info'
 LEVEL_SUCCESS = 'success'
 LEVEL_WARNING = 'warning'
 
+# MODULE_CRM = 'crm'
+
+MODULE_LIST = (
+    # (MODULE_CRM, _("CRM")),
+)
+MODULE_PRICE_LIST = (
+    # (MODULE_CRM, 19),
+)
+
 NOTIFY_0 = 0
 NOTIFY_10 = 10
 NOTIFY_30 = 30

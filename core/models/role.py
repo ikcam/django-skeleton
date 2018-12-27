@@ -6,22 +6,22 @@ from django.utils.translation import ugettext_lazy as _
 from core.mixins import AuditableMixin
 
 
-class Role(AuditableMixin, models.Model):
+class Role(AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
-        verbose_name=_("Company")
+        db_index=True, verbose_name=_("company")
     )
     name = models.CharField(
-        max_length=50, verbose_name=_("Name")
+        max_length=50, verbose_name=_("name")
     )
     permissions = models.ManyToManyField(
-        'auth.Permission', blank=True, verbose_name=_("Permissions")
+        'auth.Permission', blank=True, verbose_name=_("permissions")
     )
 
     class Meta:
         ordering = ['name', ]
-        verbose_name = _("Role")
-        verbose_name_plural = _("Roles")
+        verbose_name = _("role")
+        verbose_name_plural = _("roles")
 
     def __str__(self):
         return "%s" % self.name

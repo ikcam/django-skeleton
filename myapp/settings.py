@@ -4,6 +4,8 @@ import re
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
+import dj_database_url
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -12,8 +14,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
+DEBUG = True if os.getenv('DEBUG', 'False') == 'True' else False
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'YOUSECRETKEY'
+SECRET_KEY = os.getenv('SECRET_KEY', 'ASuperSecretKey')
+
+
+# Database
+# https://docs.djangoproject.com/en/dev/ref/settings/#databases
+DATABASES = {
+    'default': dj_database_url.parse(
+        os.getenv('DATABASE_URL', 'postgres:///myapp')
+    )
+}
 
 
 IGNORABLE_404_URLS = [
@@ -83,6 +97,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.settings',
             ],
         },
     },
@@ -150,6 +165,13 @@ LANGUAGES = [
 ]
 
 
+# Email
+
+SERVER_EMAIL = 'no-reply@myapp.com'
+
+DEFAULT_FROM_EMAIL = 'My App <no-reply@myapp.com>'
+
+
 # Login
 
 LOGIN_URL = reverse_lazy('public:account_login')
@@ -157,6 +179,7 @@ LOGIN_URL = reverse_lazy('public:account_login')
 LOGIN_REDIRECT_URL = reverse_lazy('public:dashboard')
 
 LOGOUT_REDIRECT_URL = reverse_lazy('public:index')
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -191,6 +214,7 @@ CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_URL, 'uploads/')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -206,14 +230,49 @@ REST_FRAMEWORK = {
 
 # Facebook APP credentials
 
-FB_APP_ID = ''
+FB_APP_ID = os.getenv('FB_APP_ID')
 
-FB_APP_SECRET = ''
+FB_APP_SECRET = os.getenv('FB_APP_SECRET')
 
 
 # Google Analytics
 
-GA_ID = ''
+GA_ID = os.getenv('GA_ID')
+
+
+# Authy
+
+AUTHY_API_KEY = os.getenv('AUTHY_API_KEY')
+
+
+# Braintree
+
+BRAINTREE_MERCHANT_ID = os.getenv('BRAINTREE_MERCHANT_ID')
+
+BRAINTREE_PUBLIC_KEY = os.getenv('BRAINTREE_PUBLIC_KEY')
+
+BRAINTREE_PRIVATE_KEY = os.getenv('BRAINTREE_PRIVATE_KEY')
+
+
+# Culqi
+
+CULQI_PUBLIC_KEY = os.getenv('CULQI_PUBLIC_KEY')
+
+CULQI_PRIVATE_KEY = os.getenv('CULQI_PRIVATE_KEY')
+
+
+# Stripe
+
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
+
+STRIPE_PRIVATE_KEY = os.getenv('STRIPE_PRIVATE_KEY')
+
+
+# OneSignal (for notifications)
+
+ONESIGNAL_APP_ID = os.getenv('ONESIGNAL_APP_ID')
+
+ONESIGNAL_KEY = os.getenv('ONESIGNAL_KEY')
 
 
 # Enviroment variables

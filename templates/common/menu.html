@@ -31,7 +31,7 @@
             <li><a href="{% url 'public:account_logout' %}">{% trans 'Logout' %}</a></li>
           </ul>
         </div>
-        <div class="logo-element">{% settings "SITE_SHORT_NAME" %}</div>
+        <div class="logo-element">{{ settings.SITE_SHORT_NAME }}</div>
       </li>
 
       {% with request.resolver_match as resolver_match %}

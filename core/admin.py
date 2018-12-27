@@ -1,8 +1,11 @@
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from rest_framework.authtoken.admin import TokenAdmin
 
 from .models import (
     Colaborator, Company, Event, Invite, Invoice, Link, Message, Payment,
@@ -10,12 +13,19 @@ from .models import (
 )
 
 
+# Mixin
+class CompanyAdminMixin(admin.ModelAdmin):
+    list_filter = ('company', )
+    def has_add_permission(self, request):
+        return False
+
+
 # TabularInline
 
 class ColaboratorInline(admin.TabularInline):
     autocomplete_fields = ('user', 'company', )
     extra = 0
-    fields = ('user', 'company', 'is_active', 'roles', 'permissions')
+    fields = ('user', 'company', 'is_active', )
     model = Colaborator
 
 
@@ -33,6 +43,9 @@ class PaymentInline(admin.TabularInline):
 
 
 # ModelAdmin
+admin.site.unregister(Group)
+
+
 @admin.register(Colaborator)
 class ColaboratorAdmin(admin.ModelAdmin):
     list_display = ('user', 'company', 'date_joined', 'is_active', )
@@ -52,44 +65,45 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 @admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
+class EventAdmin(CompanyAdminMixin):
     autocomplete_fields = (
-        'share_with',
+        'user', 'share_with',
     )
-    model = Event
     list_display = (
         '__str__', 'company', 'user', 'date_start', 'date_finish'
     )
-    list_filter = ('company', )
 
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
+    def is_paid(self, instance):
+        return instance.is_paid
+    is_paid.boolean = True
+
     autocomplete_fields = (
         'company',
     )
     inlines = (PaymentInline, )
-    list_display = ('__str__', 'company', 'total')
+    list_display = ('__str__', 'company', 'is_paid', 'total')
     list_filter = ('company', )
     search_fields = ('id', )
 
 
 @admin.register(Invite)
-class InviteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'company', 'email', 'user')
-    list_filter = ('company', )
-    search_fields = ('name', 'email')
+class InviteAdmin(CompanyAdminMixin):
+    list_display = (
+        '__str__', 'company', 'date_creation', 'name', 'email'
+    )
+    search_fields = ('id', )
 
 
 @admin.register(Link)
-class LinkModelAdmin(admin.ModelAdmin):
+class LinkModelAdmin(CompanyAdminMixin):
     list_display = ('destination', 'message', 'user')
-    list_filter = ('company', )
-    model = Link
 
 
 @admin.register(Message)
-class MessageAdmin(admin.ModelAdmin):
+class MessageAdmin(CompanyAdminMixin):
     inlines = (
         LinkInline,
     )
@@ -97,31 +111,19 @@ class MessageAdmin(admin.ModelAdmin):
         'from_', 'to', 'company', 'date_creation', 'direction'
     )
     list_filter = ('company', 'direction')
-    model = Message
-
-    def has_add_permission(self, request):
-        return False
 
 
 @admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationAdmin(CompanyAdminMixin):
     list_display = (
         'user', 'company', 'date_creation', 'content',
     )
-    list_filter = (
-        'company',
-    )
-    model = Notification
-
-    def has_add_permission(self, request):
-        return False
 
 
 @admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
+class RoleAdmin(CompanyAdminMixin):
     filter_horizontal = ('permissions',)
     list_display = ('name', 'company')
-    list_filter = ('company', )
     search_fields = ('name', )
 
 
@@ -164,3 +166,6 @@ class UserAdmin(UserAdmin):
     list_filter = (
         'is_staff', 'is_superuser', 'is_active', 'company'
     )
+
+
+TokenAdmin.raw_id_fields = ('user',)

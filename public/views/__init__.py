@@ -1,5 +1,5 @@
-from .base import IndexView, DashboardView  # NOQA
-from .account import (  # NOQA
+from public.views.base import IndexView, DashboardView
+from public.views.account import (
     AccountActivateView,
     AccountDetailView,
     AccountLoginFacebookView,
@@ -9,7 +9,7 @@ from .account import (  # NOQA
     AccountSignUpInviteView,
     AccountUpdateView
 )
-from .company import (  # NOQA
+from public.views.company import (
     CompanyDetailView,
     CompanyCreateView,
     CompanyUpdateView,
@@ -17,7 +17,7 @@ from .company import (  # NOQA
     CompanyChooseView,
     CompanySwitchView
 )
-from .event import (  # NOQA
+from public.views.event import (
     EventListView,
     EventDetailView,
     EventCreateView,
@@ -25,11 +25,11 @@ from .event import (  # NOQA
     EventDeleteView,
     EventPublicView
 )
-from .invoice import (  # NOQA
+from public.views.invoice import (
     InvoiceListView,
     InvoiceDetailView
 )
-from .link import (  # NOQA
+from public.views.link import (
     LinkListView,
     LinkDetailView,
     LinkCreateView,
@@ -38,29 +38,29 @@ from .link import (  # NOQA
     LinkPublicDirectView,
     LinkPublicTokenView
 )
-from .message import (  # NOQA
+from public.views.message import (
     MessageListView,
     MessageDetailView,
     MessageFrameView,
     MessagePixelView
 )
-from .notification import (  # NOQA
+from public.views.notification import (
     NotificationDetailView,
     NotificationReadAllView
 )
-from .invite import (  # NOQA
+from public.views.invite import (
     InviteListView,
     InviteCreateView,
     InviteDeleteView,
     InviteSendView
 )
-from .role import (  # NOQA
+from public.views.role import (
     RoleListView,
     RoleCreateView,
     RoleUpdateView,
     RoleDeleteView
 )
-from .user import (  # NOQA
+from public.views.user import (
     UserListView,
     UserCreateView,
     UserUpdateView,
@@ -68,3 +68,47 @@ from .user import (  # NOQA
     UserPermissionsView,
     UserRemoveView
 )
+
+
+__all__ = [
+    'IndexView',
+    'AccountActivateView',
+    'AccountDetailView',
+    'AccountLoginFacebookView',
+    'AccountLogoutFacebookView',
+    'AccountPasswordView',
+    'AccountSignUpView',
+    'AccountSignUpInviteView',
+    'CompanyDetailView',
+    'CompanyCreateView',
+    'CompanyUpdateView',
+    'CompanyActivateView',
+    'CompanyChooseView',
+    'EventListView',
+    'EventDetailView',
+    'EventCreateView',
+    'EventUpdateView',
+    'EventDeleteView',
+    'InvoiceListView',
+    'LinkListView',
+    'LinkDetailView',
+    'LinkCreateView',
+    'LinkUpdateView',
+    'LinkDeleteView',
+    'LinkPublicDirectView',
+    'MessageListView',
+    'MessageDetailView',
+    'MessageFrameView',
+    'NotificationDetailView',
+    'InviteListView',
+    'InviteCreateView',
+    'InviteDeleteView',
+    'RoleListView',
+    'RoleCreateView',
+    'RoleUpdateView',
+    'UserListView',
+    'UserCreateView',
+    'UserUpdateView',
+    'UserPasswordView',
+    'UserPermissionsView',
+]

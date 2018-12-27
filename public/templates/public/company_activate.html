@@ -44,10 +44,10 @@
     <script src="https://checkout.culqi.com/v2"></script>
     <!-- Configurando el checkout-->
     <script>
-        Culqi.publicKey = '{% settings.CULQI_PUBLIC_KEY %}';
+        Culqi.publicKey = '{{ settings.CULQI_PUBLIC_KEY }}';
         Culqi.init();
         Culqi.settings({
-            title: '{% settings "SITE_NAME" %}',
+            title: '{{ settings.SITE_NAME }}',
             currency: 'USD',
             description: '{{ object.description }}',
             amount: {{ object.culqi_amount }}

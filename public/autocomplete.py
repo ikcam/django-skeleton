@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from dal import autocomplete
 from django_countries import countries
 from queryset_sequence import QuerySetSequence
+from dal_select2_queryset_sequence.views import Select2QuerySetSequenceView
 
 from core.mixins import CompanyRequiredMixin
 from core.models import User
@@ -56,8 +57,10 @@ class LanguageAutocomplete(
 
 
 class ModelAutocomplete(
-    CompanyRequiredMixin, autocomplete.Select2QuerySetSequenceView
+    CompanyRequiredMixin, Select2QuerySetSequenceView
 ):
+    paginate_by = 30
+
     def get_queryset(self):
         """Reconfigure."""
         messages = self.company.message_set.all()
@@ -68,6 +71,11 @@ class ModelAutocomplete(
         qs = QuerySetSequence(messages)
         qs = self.mixup_querysets(qs)
 
+        return qs
+
+    def mixup_querysets(self, qs):
+        if not self.q:
+            return super().mixup_querysets(qs)
         return qs
 
 
@@ -113,6 +121,30 @@ class UserAutocomplete(
             companies=self.company
         )
 
+        if not self.request.user.is_staff:
+            qs = qs.exclude(
+                is_staff=False,
+            )
+
+        if self.q:
+            qs = qs.filter(
+                Q(username__istartswith=self.q) |
+                Q(first_name__icontains=self.q) |
+                Q(last_name__icontains=self.q)
+            )
+
+        return qs
+
+
+class UserAllAutocomplete(
+    CompanyRequiredMixin, autocomplete.Select2QuerySetView
+):
+    def get_queryset(self):
+        qs = User.objects.all()
+
+        if not self.request.user.is_staff:
+            qs = qs.none()
+
         if self.q:
             qs = qs.filter(
                 Q(username__istartswith=self.q) |
@@ -130,6 +162,11 @@ class UserOtherAutocomplete(
         qs = User.objects.filter(
             companies=self.company
         ).exclude(pk=self.request.user.pk)
+
+        if not self.request.user.is_staff:
+            qs = qs.exclude(
+                is_staff=False,
+            )
 
         if self.q:
             qs = qs.filter(

@@ -41,13 +41,22 @@ def model_task(
     else:
         raise Exception("{}: task not callable.".format(task))
 
-    if user_request:
-        user_request.add_notification(
-            company=company,
-            model=model,
-            obj=obj,
-            response=response,
-        )
+    if isinstance(response, list):
+        for item in response:
+            user_request.add_notification(
+                company=company,
+                model=model,
+                obj=obj,
+                response=item,
+            )
+    else:
+        if user_request:
+            user_request.add_notification(
+                company=company,
+                model=model,
+                obj=obj,
+                response=response,
+            )
 
     return response
 
@@ -82,10 +91,17 @@ def user_task(**kwargs):
     return model_task(model=Model, **kwargs)
 
 
-@app.task(name='companies_check')
-def companies_check():
+@app.task(name='check_company')
+def check_company():
     from core.models import Company
     Company.check_all()
 
 
-app.add_periodic_task(crontab(minute=0, hour=3), companies_check)
+@app.task(name='check_event')
+def check_event():
+    from core.models import Event
+    Event.check_all()
+
+
+app.add_periodic_task(crontab(day_of_week='*', hour='3', minute='0'), check_company)
+app.add_periodic_task(crontab(minute='*/5'), check_event)

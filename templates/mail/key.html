@@ -5,7 +5,7 @@
 {% block content %}
     <tr>
       <td class="content-block">
-        {% blocktrans %}Thank you for joining{% endblocktrans %} {% settings "SITE_NAME" %}!
+        {% blocktrans %}Thank you for joining{% endblocktrans %} {{ settings.SITE_NAME }}!
       </td>
     </tr>
     <tr>
@@ -15,7 +15,7 @@
     </tr>
     <tr>
       <td class="aligncenter">
-        <a href="{% settings "SITE_URL" %}{% url 'public:account_activate' object.activation_key %}" class="btn-primary">
+        <a href="{{ settings.SITE_URL }}{% url 'public:account_activate' object.activation_key %}" class="btn-primary">
           {% trans "Activate now" %}
         </a>
       </td>
@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <td class="content-block">
-        <a href="{% settings "SITE_URL" %}{% url 'public:account_activate' object.activation_key %}">{% settings "SITE_URL" %}{% url 'public:account_activate' object.activation_key %}</a>
+        <a href="{{ settings.SITE_URL }}{% url 'public:account_activate' object.activation_key %}">{{ settings.SITE_URL }}{% url 'public:account_activate' object.activation_key %}</a>
       </td>
     </tr>
 

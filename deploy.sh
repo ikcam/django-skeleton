@@ -16,11 +16,11 @@ cd $DJANGODIR
 
 # Creating virtualenv
 if [ ! -d ~/.pyenv/version/$NAME ]; then
-  pyenv virtualenv 3.6.1 $NAME
+  pyenv virtualenv 3.6.5 $NAME
   pyenv local $NAME
 fi
 
-if [ ! -f env ]; then
+if [ ! -f env && -d env ]; then
   ln -s ~/.pyenv/versions/$NAME $DJANGODIR/env
 fi
 
@@ -45,13 +45,13 @@ chown -hR www-data:www-data *
 
 source env/bin/activate
 
+yarn
+
 pip install -U -r requirements.txt
 
 python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py compilemessages --locale=es
-
-bower install --allow-root
 
 supervisorctl reread
 supervisorctl update
