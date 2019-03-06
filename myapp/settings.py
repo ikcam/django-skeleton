@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     # Modules
     'boilerplate',
     'bootstrap3',
-    'channels',
     'ckeditor',
     'ckeditor_uploader',
     'corsheaders',
