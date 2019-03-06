@@ -1,10 +1,7 @@
 beautifulsoup4
 braintree
 celery
-channels
-channels_redis
 culqipy
-daphne
 dateutils
 dj-database-url
 django
