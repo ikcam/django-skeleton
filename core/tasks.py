@@ -1,3 +1,7 @@
+import traceback
+
+from django.core.mail import mail_admins
+
 from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 
@@ -30,16 +34,48 @@ def model_task(
 
     if pk:
         obj = model.objects.get(pk=pk)
+        entity = obj
         task_func = getattr(obj, task)
     else:
         obj = '%s' % model.__name__
-        task_func = getattr(model, task)
+        entity = model
 
-    if callable(task_func):
-        logger.info("{0}: running task {1}".format(obj, task))
-        response = task_func(**data) if data else task_func()
-    else:
+    for mod in task.split('.'):
+        entity = getattr(entity, mod)
+
+    if not callable(entity):
         raise Exception("{}: task not callable.".format(task))
+
+    try:
+        logger.info("{0}: running task {1}".format(obj, task))
+        response = entity(**data) if data else entity()
+    except Exception as err:
+        mail_admins(
+            'Celery Error',
+            '''
+Information:
+- Model: {model}
+- Company: {company}
+- Task: {task}
+- User request: {user_request}
+- PK: {pk}
+- Data: {data}
+- Exception message:{err}
+
+Traceback:
+{traceback}
+            '''.format(
+                model=model.__name__,
+                company=company,
+                task=task,
+                user_request=user_request,
+                pk=pk,
+                data=data,
+                err=err,
+                traceback=traceback.format_exc(),
+            )
+        )
+        raise
 
     if isinstance(response, list):
         for item in response:
@@ -103,5 +139,8 @@ def check_event():
     Event.check_all()
 
 
-app.add_periodic_task(crontab(day_of_week='*', hour='3', minute='0'), check_company)
+app.add_periodic_task(
+    crontab(day_of_week='*', hour='7', minute='0'),
+    check_company
+)
 app.add_periodic_task(crontab(minute='*/5'), check_event)
