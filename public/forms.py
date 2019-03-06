@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from dal import autocomplete
 
+from core.constants import MODULE_LIST
 from core.fields import MultipleChoiceField
 from core.models import Colaborator, Company, Event, Invite, Link, Role, User
 from core.widgets import CheckboxSelectMultiple
@@ -50,6 +51,36 @@ class CompanyCreateForm(forms.ModelForm):
 
 class CompanyForm(CompanyCreateForm):
     pass
+
+
+class CompanyAdminForm(CompanyCreateForm):
+    modules = MultipleChoiceField(
+        label=_("Modules"), choices=MODULE_LIST,
+        required=False, widget=CheckboxSelectMultiple
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Company
+        widgets = {
+            'user': autocomplete.ModelSelect2(
+                url='public:user_all_autocomplete',
+                attrs={
+                    'data-placeholder': _("User")
+                }
+            ),
+            'country': autocomplete.ListSelect2(
+                url='public:country_autocomplete',
+                attrs={
+                    'data-placeholder': _("Country")
+                }
+            ),
+            'address': forms.TextInput,
+            'address_2': forms.TextInput,
+            'date_next_invoice': forms.DateTimeInput(
+                attrs={'type': 'datetime'}
+            )
+        }
 
 
 class CulqiTokenForm(forms.Form):

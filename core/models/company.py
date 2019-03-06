@@ -14,6 +14,7 @@ from django_countries.fields import CountryField
 from core.constants import (
     MODULE_LIST, MODULE_PRICE_LIST, RECURRING_CICLE, RECURRING_FEE
 )
+from core.context_processors import settings as secure_settings
 from core.mixins import AuditableMixin
 from core.validators import validate_comma_separated_str_list
 

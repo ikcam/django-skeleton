@@ -111,11 +111,10 @@ class User(AbstractUser):
         )
         return obj
 
-    def company_remove(self, company, user):
+    def company_remove(self, company, **kwargs):
         if company.user == self:
-            return (
-                LEVEL_ERROR,
-                _("Can't remove from your own company.")
+            return LEVEL_ERROR, _(
+                "Can't remove from your own company."
             )
 
         # Remove from company list
@@ -126,15 +125,11 @@ class User(AbstractUser):
             self.company = self.colaborator_set.all().first()
         self.save(update_fields=['company'])
 
-        # Change created objects
-        self.invite.delete()
-
-        return (
-            LEVEL_SUCCESS,
-            _("User: %(user)s. has been removed from %(company)s") % dict(
-                user=self,
-                company=company,
-            )
+        return LEVEL_SUCCESS, _(
+            'User: "%(user)s" has been removed from %(company)s.'
+        ) % dict(
+            user=self,
+            company=company,
         )
 
     def company_switch(self, company):
@@ -144,13 +139,14 @@ class User(AbstractUser):
                 company=company, is_active=True
             ).exists()
         ):
-            return (LEVEL_ERROR, _("Invalid company."))
+            return LEVEL_ERROR, _("Invalid company.")
 
         self.company = company
         self.save(update_fields=['company'])
-        return (
-            LEVEL_SUCCESS,
-            _("Bienvenido a %(company)s.") % dict(company=company)
+        return LEVEL_SUCCESS, _(
+            "Welcome to %(company)s."
+        ) % dict(
+            company=company
         )
 
     def key_deactivate(self):

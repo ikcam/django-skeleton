@@ -14,7 +14,8 @@ from django.utils.translation import activate, ugettext_lazy as _
 from bs4 import BeautifulSoup
 
 from core.constants import (
-    DIRECTION_INBOUND, DIRECTION_OUTBOUND, HREF_REGEX, URL_REGEX
+    DIRECTION_INBOUND, DIRECTION_OUTBOUND, HREF_REGEX, LEVEL_ERROR,
+    LEVEL_SUCCESS, URL_REGEX
 )
 from core.mixins import AuditableMixin
 
@@ -101,9 +102,6 @@ class Message(AuditableMixin):
         if self.direction == DIRECTION_OUTBOUND:
             return "%s" % self.to
 
-    def get_absolute_url(self):
-        return reverse_lazy('public:message_detail', args=[self.pk, ])
-
     @property
     def content_html(self):
         if self.is_html:
@@ -133,6 +131,23 @@ class Message(AuditableMixin):
     @property
     def from_(self):
         return self.from_email
+
+    def get_absolute_url(self):
+        return reverse_lazy('public:message_detail', args=[self.pk, ])
+
+    def get_email_connection(self, fail_silently=False):
+        if hasattr(self, '_email_connection'):
+            return self._email_connection
+
+        if self.company.mailgun_available:
+            self._email_connection = get_connection(
+                fail_silently=fail_silently,
+                username=self.company.mailgun_email,
+                password=self.company.mailgun_password,
+            )
+        else:
+            self._email_connection = get_connection()
+        return self._email_connection
 
     @cached_property
     def is_fail(self):
@@ -206,12 +221,15 @@ class Message(AuditableMixin):
         }
 
         email = EmailMultiAlternatives(
-            bcc=self.to_email_bcc.split(','),
+            bcc=self.to_email_bcc.split(',') if self.to_email_bcc else None,
             body=content_raw,
-            cc=self.to_email_cc.split(','),
+            cc=self.to_email_cc.split(',') if self.to_email_cc else None,
+            connection=self.get_email_connection(),
             from_email=from_email,
             headers=headers,
-            reply_to=self.reply_to_email.split(','),
+            reply_to=(
+                self.reply_to_email.split(',') if self.reply_to_email else None
+            ),
             subject=self.subject,
             to=self.to_email.split(','),
         )
@@ -222,9 +240,9 @@ class Message(AuditableMixin):
         if email.send() > 0:
             self.date_send = timezone.now()
             self.save()
-            return ('success', _("Email sent successfully."))
+            return (LEVEL_SUCCESS, _("Email sent successfully."))
         else:
-            return ('error', _("An error has ocurred."))
+            return (LEVEL_ERROR, _("An error has ocurred."))
 
     def set_links(self):
         if self.is_html:

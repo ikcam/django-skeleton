@@ -1,6 +1,9 @@
 from django import template
 from django.urls import resolve, reverse_lazy
 
+from core.models import Colaborator
+
+
 register = template.Library()
 
 
@@ -21,5 +24,23 @@ def api_list_view(context, model, parent_obj=None):
         )
     else:
         return reverse_lazy(
-            'api:{}-list'.format(model.app_label, model)
+            'api:{}:{}-list'.format(model.app_label, model)
         )
+
+
+@register.simple_tag()
+def user_permissions_url(user_id, company_id):
+    try:
+        company_profile = Colaborator.objects.get(company_id=company_id, user_id=user_id)
+    except Colaborator.DoesNotExist:
+        return ''
+    return reverse_lazy('public:user_permissions', args=[company_profile.pk])
+
+
+@register.simple_tag()
+def user_remove_url(user_id, company_id):
+    try:
+        company_profile = Colaborator.objects.get(company_id=company_id, user_id=user_id)
+    except Colaborator.DoesNotExist:
+        return ''
+    return reverse_lazy('public:user_remove', args=[company_profile.pk])

@@ -20,10 +20,24 @@ class UserListView(
     ActionListMixin, CompanyQuerySetMixin, ListView
 ):
     action_list = ('add', )
-    model = Colaborator
+    model = User
     paginate_by = 30
     template_name = 'public/user_list.html'
-    permission_required = 'core:view_colaborator'
+    permission_required = 'core:view_user'
+
+    def get_queryset(self):
+        qs = super().get_queryset().filter(
+            colaborator__company=self.company
+        )
+        if not self.request.user.is_superuser:
+            qs = qs.filter(
+                is_superuser=False
+            )
+        if not self.request.user.is_staff:
+            qs = qs.filter(
+                is_staff=False
+            )
+        return qs
 
 
 class UserCreateView(
@@ -33,7 +47,7 @@ class UserCreateView(
     model = User
     template_name = 'public/user_form.html'
     success_url = reverse_lazy("public:user_list")
-    permission_required = 'core:add_colaborator'
+    permission_required = 'core:add_user'
 
     def form_valid(self, form):
         form.instance.first_name = form.cleaned_data.get('first_name')
@@ -50,9 +64,23 @@ class UserUpdateView(
 ):
     form_class = forms.UserUpdateForm
     model = User
-    permission_required = 'auth:change_colaborator'
+    permission_required = 'core:change_user'
     template_name = 'public/user_form.html'
     success_url = reverse_lazy("public:user_list")
+
+    def get_queryset(self):
+        qs = super().get_queryset().filter(
+            colaborator__company=self.company
+        )
+        if not self.request.user.is_superuser:
+            qs = qs.filter(
+                is_superuser=False
+            )
+        if not self.request.user.is_staff:
+            qs = qs.filter(
+                is_staff=False
+            )
+        return qs
 
 
 class UserPasswordView(
@@ -60,7 +88,7 @@ class UserPasswordView(
 ):
     form_class = SetPasswordForm
     model = User
-    permission_required = 'core:change_colaborator'
+    permission_required = 'core:change_user'
     template_name = 'public/user_form.html'
 
     def get_form(self):
@@ -87,29 +115,21 @@ class UserPermissionsView(
 class UserRemoveView(
     ModelActionMixin, DetailView
 ):
+    model_action = 'user.company_remove'
     model = Colaborator
-    permission_required = 'core:delete_colaborator'
+    permission_required = 'core:remove_colaborator'
     require_confirmation = True
+    success_url = reverse_lazy('public:user_list')
     template_name = 'public/user_form.html'
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.all().exclude(pk=self.request.user.pk)
-
-    def post(self, request, *args, **kwargs):
-        obj = self.get_object()
-        company = self.request.user.company
-
-        obj.company_remove(company, request.user)
-
-        messages.success(
-            request,
-            _(
-                "%(object)s has been removed "
-                "from your company %(company)s."
-            ) % dict(
-                object=obj,
-                company=company
+        if not self.request.user.is_superuser:
+            qs = qs.filter(
+                user__is_superuser=False
             )
-        )
-        return redirect(reverse_lazy('core:user_list'))
+        if not self.request.user.is_staff:
+            qs = qs.filter(
+                user__is_staff=False
+            )
+        return qs.exclude(pk=self.request.user.pk)

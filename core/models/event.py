@@ -11,9 +11,10 @@ from django.utils.translation import activate, ugettext_lazy as _
 from core.constants import (
     DIRECTION_OUTBOUND, EVENT_APPOINTMENT, EVENT_CALL, EVENT_JOB_START,
     EVENT_PRIVATE, EVENT_TASK, EVENT_APPOINTMENT_COLOR, EVENT_CALL_COLOR,
-    EVENT_JOB_START_COLOR, EVENT_PRIVATE_COLOR, EVENT_TASK_COLOR, NOTIFY_0,
+    EVENT_JOB_START_COLOR, EVENT_PRIVATE_COLOR, EVENT_TASK_COLOR,  NOTIFY_0,
     NOTIFY_10, NOTIFY_30, NOTIFY_60, NOTIFY_1440
 )
+from core.context_processors import settings as secure_settings
 from core.mixins import AuditableMixin
 
 
@@ -45,13 +46,12 @@ class Event(AuditableMixin):
         db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
-        'core.User', blank=True, null=True, editable=False,
-        db_index=True, on_delete=models.SET_NULL, verbose_name=_("user")
+        'core.User', blank=True, null=True, on_delete=models.SET_NULL,
+        db_index=True, verbose_name=_("user")
     )
     contenttype = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
-        db_index=True, on_delete=models.CASCADE,
-        verbose_name=_("content type")
+        db_index=True, on_delete=models.CASCADE, verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
         editable=False, blank=True, null=True, verbose_name=_("object ID")
@@ -89,8 +89,11 @@ class Event(AuditableMixin):
 
     class Meta:
         ordering = ['-date_creation']
-        verbose_name = _("event")
-        verbose_name_plural = _("events")
+        permissions = (
+            ('view_all_event', 'Can view all Event'),
+        )
+        verbose_name = _("Event")
+        verbose_name_plural = _("Events")
 
     def __str__(self):
         return "%s" % self.subject
@@ -168,7 +171,7 @@ class Event(AuditableMixin):
         return str(turn) in self.notified_list
 
     @classmethod
-    def send_schedule(cls):
+    def check_all(cls):
         date_start = timezone.now() - timedelta(minutes=NOTIFY_30)
 
         qs = cls.objects.filter(
@@ -192,27 +195,27 @@ class Event(AuditableMixin):
             failed=failed
         )
 
-    def send(self, turn=None):
+    def send(self, turn=None, **kwargs):
         if not self.user:
             raise Exception(_("Event has no user."))
 
         cc = ''
 
-        if self.share_with.all().count() > 0:
+        if self.share_with.all().exists():
             cc = [user.email for user in self.share_with.all()]
 
         activate(self.company.language)
 
-        html_template = get_template('core/event_email.html')
-        content = html_template.render({
-            'object': self,
-            'turn': self.get_notify_display(turn),
-        })
+        html_template = get_template('public/event_email.html')
+        context = secure_settings()
+        context['object'] = self
+        context['turn'] = self.get_notify_display(turn)
+        content = html_template.render(context)
         subject = _("[%(company)s] Event reminder") % dict(
             company=self.company
         )
 
-        message = self.company.messages.create(
+        message = self.company.message_set.create(
             content=content,
             direction=DIRECTION_OUTBOUND,
             from_name=self.company.name,
@@ -221,10 +224,8 @@ class Event(AuditableMixin):
             to_email=self.user.email,
             to_email_cc=','.join(cc),
             subject=subject,
-            user=self.user,
         )
-        message.send()
-        return True
+        return message.send()
 
     @property
     def subject(self):

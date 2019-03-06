@@ -30,14 +30,14 @@
             <div class="text-center link-block">
               <a href="{% url 'public:notification_readall' %}?next={{ request.path }}">
                 <i class="fa fa-bell"></i>
-                <strong>{% trans "Read all notifications" %}</strong>
+                <strong>{% trans "read all notifications" %}</strong>
               </a>
             </div>
           </li>
           <li ng-if="data.length == 0">
             <div class="dropdown-messages-box">
               <div class="media-body text-center">
-                <span class="text-muted">{% trans "All your notifications are read." %}</span>
+                <span class="text-muted">{% trans "all your notifications are read." %}</span>
               </div>
             </div>
           </li>
@@ -60,7 +60,7 @@
         </ul>
       </li>
       <li>
-        <a href="{% url 'public:account_logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
+        <a href="{% url 'public:account_logout' %}"><i class="fa fa-sign-out"></i> {% trans "logout" %}</a>
       </li>
     </ul>
   </nav>

@@ -124,5 +124,14 @@ class CompanyUpdateView(
     permission_required = 'core:change_company'
     template_name = 'public/company_form.html'
 
+    def get_form_class(self):
+        user = self.request.user
+        if (
+            (user.is_superuser or user.is_staff) and
+            user.has_perm('core:change_company')
+        ):
+            return forms.CompanyAdminForm
+        return self.form_class
+
     def get_object(self):
         return self.request.user.company

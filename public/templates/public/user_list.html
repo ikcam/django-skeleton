@@ -1,6 +1,6 @@
 {% extends "public/company/list.html" %}
 
-{% load i18n %}
+{% load core_tags i18n %}
 
 
 {% block content_inner %}
@@ -16,24 +16,24 @@
       </tr>
     </thead>
     <tbody>
-      {% for item in object_list %}
+      {% for object in object_list %}
         <tr>
-          <td>{{ item.user.username }}</td>
-          <td>{{ item.user.first_name }}</td>
-          <td>{{ item.user.last_name }}</td>
-          <td>{{ item.user.email }}</td>
-          <td class="text-center"><span class="glyphicon glyphicon-{{ item.is_active|yesno:'ok,remove' }} text-{{ item.is_active|yesno:'success,danger' }}"></span></td>
+          <td>{{ object.username }}</td>
+          <td>{{ object.first_name }}</td>
+          <td>{{ object.last_name }}</td>
+          <td>{{ object.email }}</td>
+          <td class="text-center"><span class="glyphicon glyphicon-{{ object.is_active|yesno:'ok,remove' }} text-{{ object.is_active|yesno:'success,danger' }}"></span></td>
           <td class="text-right">
-            <a role="button" class="btn btn-xs btn-info" href="{% url 'public:user_permissions' item.pk %}">
+            <a role="button" class="btn btn-xs btn-info" href="{% user_permissions_url object.pk company.pk %}">
               <span class="glyphicon glyphicon-pencil"></span>
               {% trans "Permissions" %}
             </a>
-            {% if item.user != request.user %}
-              <a role="button" class="btn btn-xs btn-success" href="{% url 'public:user_change' item.user.pk %}">
+            {% if object != request.user %}
+              <a role="button" class="btn btn-xs btn-success" href="{% url 'public:user_change' object.pk %}">
                 <span class="glyphicon glyphicon-pencil"></span>
                 {% trans "Change" %}
               </a>
-              <a role="button" class="btn btn-xs btn-danger" href="{% url 'public:user_remove' item.user.pk %}">
+              <a role="button" class="btn btn-xs btn-danger" href="{% user_remove_url object.pk company.pk %}">
                 <span class="glyphicon glyphicon-remove"></span>
                 {% trans "Remove" %}
               </a>

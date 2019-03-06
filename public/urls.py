@@ -321,7 +321,7 @@ urlpatterns = [
     path(
         _('company/users/add/'),
         views.UserCreateView.as_view(),
-        name='colaborator_add'
+        name='user_add'
     ),
     path(
         _('company/users/<int:pk>/change/'),
