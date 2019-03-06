@@ -11,7 +11,6 @@ static/*
 celerybeat-schedule
 *.db
 .DS_Store
-yarn.lock
 dump.rdb
 
 
@@ -27,6 +26,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 .python-version
+.env
 env
 env/
 build/
@@ -79,3 +79,5 @@ target/
 node_modules/
 bower_components/
 .vscode
+package-lock.json
+yarn.lock
