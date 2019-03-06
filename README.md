@@ -9,7 +9,7 @@ It contains the polls app from the official Django tutorial and uses a simple Bo
 Featuring:
 * Django 2.0
 * User registration and authentication in the frontend
-* Bootstrap 3.3.7
+* Bootstrap 3.4.1
 
 
 ## Build Status
