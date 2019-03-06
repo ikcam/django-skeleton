@@ -58,10 +58,11 @@ jQuery(document).ready(function($) {
                         start: item.date_start || item.date_creation,
                         finish: item.date_finish,
                         content: item.content,
+                        color: item.type_color,
                         is_public: item.is_public,
                         user: item.user,
                         creation: item.date_creation,
-                        url: item.actions.view.url,
+                        url: item.action_list.view.url,
                     }
                     events.push(data);
                 })
