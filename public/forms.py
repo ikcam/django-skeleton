@@ -210,6 +210,7 @@ def get_object_event_form(company):
 
     return ModelForm
 
+
 class LinkForm(forms.ModelForm):
     class Meta:
         fields = '__all__'

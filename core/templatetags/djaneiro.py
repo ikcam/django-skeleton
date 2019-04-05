@@ -1,7 +1,5 @@
 from django import template
 from django.apps import apps
-from django.db.models.query import QuerySet
-from django.db.models.base import ModelBase
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import EMPTY_VALUES
@@ -370,6 +368,7 @@ def sortable_column(context, **kwargs):
             href='?{}'.format(href)
         )
     )
+
 
 @register.filter(name='has_module')
 def has_module(company, module):

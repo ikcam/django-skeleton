@@ -1,5 +1,7 @@
 from datetime import timedelta
+import uuid
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
@@ -11,11 +13,11 @@ from django.utils.translation import activate, ugettext_lazy as _
 from core.constants import (
     DIRECTION_OUTBOUND, EVENT_APPOINTMENT, EVENT_CALL, EVENT_JOB_START,
     EVENT_PRIVATE, EVENT_TASK, EVENT_APPOINTMENT_COLOR, EVENT_CALL_COLOR,
-    EVENT_JOB_START_COLOR, EVENT_PRIVATE_COLOR, EVENT_TASK_COLOR,  NOTIFY_0,
-    NOTIFY_10, NOTIFY_30, NOTIFY_60, NOTIFY_1440
+    EVENT_JOB_START_COLOR, EVENT_PRIVATE_COLOR, EVENT_TASK_COLOR, LEVEL_ERROR,
+    NOTIFY_0, NOTIFY_10, NOTIFY_30, NOTIFY_60, NOTIFY_1440
 )
 from core.context_processors import settings as secure_settings
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin
 
 
 class Event(AuditableMixin):
@@ -41,22 +43,26 @@ class Event(AuditableMixin):
         (EVENT_TASK, EVENT_TASK_COLOR),
     )
 
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
-        'core.User', blank=True, null=True, on_delete=models.SET_NULL,
+        'core.User', blank=True, null=True, on_delete=models.PROTECT,
         db_index=True, verbose_name=_("user")
     )
-    contenttype = models.ForeignKey(
+    content_type = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
         db_index=True, on_delete=models.CASCADE, verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
         editable=False, blank=True, null=True, verbose_name=_("object ID")
     )
-    model = GenericForeignKey('contenttype', 'object_id')
+    model = GenericForeignKey('content_type', 'object_id')
     share_with = models.ManyToManyField(
         'core.User', blank=True, related_name='shared_events',
         verbose_name=_("share with")
@@ -92,20 +98,25 @@ class Event(AuditableMixin):
         permissions = (
             ('view_all_event', 'Can view all Event'),
         )
-        verbose_name = _("Event")
-        verbose_name_plural = _("Events")
+        verbose_name = _("event")
+        verbose_name_plural = _("events")
 
     def __str__(self):
         return "%s" % self.subject
 
     def get_absolute_url(self):
-        if self.is_public:
-            return reverse_lazy(
-                'public:event_public', args=[self.company.slug, self.pk]
-            )
-        if self.model:
-            return self.model.get_absolute_url()
         return reverse_lazy('public:event_change', args=[self.pk])
+
+    def get_public_url(self):
+        if not self.is_public:
+            return
+        return '{scheme}://{domain}{path}'.format(
+            scheme='http' if settings.DEBUG else 'https',
+            domain=self.company.domain,
+            path=reverse_lazy(
+                'public:event_public', args=[self.pk]
+            )
+        )
 
     @property
     def action_list(self):
@@ -197,7 +208,7 @@ class Event(AuditableMixin):
 
     def send(self, turn=None, **kwargs):
         if not self.user:
-            raise Exception(_("Event has no user."))
+            return LEVEL_ERROR, _("Event has no user.")
 
         cc = ''
 

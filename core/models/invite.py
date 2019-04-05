@@ -8,10 +8,10 @@ from django.utils import timezone
 from django.utils.translation import activate, ugettext_lazy as _
 
 from core.constants import LEVEL_ERROR
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin, get_active_mixin
 
 
-class Invite(AuditableMixin):
+class Invite(get_active_mixin(editable=True), AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")

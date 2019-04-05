@@ -1,14 +1,13 @@
-import hashlib
-import random
 import re
+import uuid
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import get_connection, EmailMultiAlternatives
 from django.db import models
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.utils.translation import activate, ugettext_lazy as _
 
 from bs4 import BeautifulSoup
@@ -17,7 +16,15 @@ from core.constants import (
     DIRECTION_INBOUND, DIRECTION_OUTBOUND, HREF_REGEX, LEVEL_ERROR,
     LEVEL_SUCCESS, URL_REGEX
 )
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin
+
+
+class MessageManager(models.Manager):
+    def read_all(self):
+        return self.filter(
+            direction=DIRECTION_INBOUND,
+            date_read__isnull=True
+        ).update(date_read=timezone.now())
 
 
 class Message(AuditableMixin):
@@ -26,16 +33,20 @@ class Message(AuditableMixin):
         (DIRECTION_OUTBOUND, _("Outbound")),
     )
 
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")
     )
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL,db_index=True,  verbose_name=_("user")
+        on_delete=models.SET_NULL, db_index=True,  verbose_name=_("user")
     )
     # Related model
-    contenttype = models.ForeignKey(
+    content_type = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
         on_delete=models.SET_NULL, db_index=True,
         verbose_name=_("content type")
@@ -43,7 +54,7 @@ class Message(AuditableMixin):
     object_id = models.PositiveIntegerField(
         blank=True, null=True, editable=False, verbose_name=_("object ID")
     )
-    model = GenericForeignKey('contenttype', 'object_id')
+    model = GenericForeignKey('content_type', 'object_id')
     # Hidden fields
     date_fail = models.DateTimeField(
         blank=True, null=True, editable=False, verbose_name=_("fail date")
@@ -87,6 +98,7 @@ class Message(AuditableMixin):
     content = models.TextField(
         verbose_name=_("content")
     )
+    objects = MessageManager()
 
     class Meta:
         ordering = ["-date_creation", ]
@@ -104,12 +116,11 @@ class Message(AuditableMixin):
 
     @property
     def content_html(self):
-        if self.is_html:
-            return self.content
+        return self.content if self.is_html() else ''
 
     @property
     def content_raw(self):
-        if not self.is_html:
+        if not self.is_html():
             return self.content
 
         content_html = BeautifulSoup(self.content, "html.parser")
@@ -133,7 +144,7 @@ class Message(AuditableMixin):
         return self.from_email
 
     def get_absolute_url(self):
-        return reverse_lazy('public:message_detail', args=[self.pk, ])
+        return reverse_lazy('public:message_detail', args=[self.pk])
 
     def get_email_connection(self, fail_silently=False):
         if hasattr(self, '_email_connection'):
@@ -149,25 +160,25 @@ class Message(AuditableMixin):
             self._email_connection = get_connection()
         return self._email_connection
 
-    @cached_property
     def is_fail(self):
         return True if self.date_fail else False
+    is_fail.boolean = True
 
-    @cached_property
     def is_html(self):
         return bool(BeautifulSoup(self.content, "html.parser").find())
+    is_html.boolean = True
 
-    @cached_property
     def is_read(self):
         return True if self.date_read else False
+    is_read.boolean = True
 
-    @cached_property
     def is_send(self):
         return True if self.date_send else False
+    is_send.boolean = True
 
     def report_bounce(self, data):
         self.date_fail = timezone.now()
-        self.save()
+        self.save(update_fields=['date_fail'])
 
         to_ = list()
 
@@ -206,8 +217,8 @@ class Message(AuditableMixin):
         return self._send_email()
 
     def _send_email(self):
-        if self.date_send:
-            return ('error', _("Email was sent already."))
+        if self.is_send():
+            return LEVEL_ERROR, _("Message was sent already.")
 
         activate(self.company.language)
         content_raw, content_html = self.set_links()
@@ -217,7 +228,7 @@ class Message(AuditableMixin):
 
         from_email = "%s <%s>" % (self.from_name, self.from_email)
         headers = {
-            'MyApp-ID': '{}-{}'.format(self.company.pk, self.pk)
+            'MyApp-ID': '{}'.format(self.pk)
         }
 
         email = EmailMultiAlternatives(
@@ -239,13 +250,13 @@ class Message(AuditableMixin):
 
         if email.send() > 0:
             self.date_send = timezone.now()
-            self.save()
-            return (LEVEL_SUCCESS, _("Email sent successfully."))
+            self.save(update_fields=['date_send'])
+            return LEVEL_SUCCESS, _("Message sent successfully.")
         else:
-            return (LEVEL_ERROR, _("An error has ocurred."))
+            return LEVEL_ERROR, _("An error has ocurred.")
 
     def set_links(self):
-        if self.is_html:
+        if self.is_html():
             content_html = self.content
             regex = re.compile(HREF_REGEX, re.IGNORECASE)
             founded = re.finditer(regex, content_html or '')
@@ -258,7 +269,6 @@ class Message(AuditableMixin):
                     company=self.company,
                     destination=destination,
                 )
-                link.token_generate()
                 replace = href.replace(destination, link.get_public_url())
                 content_html = content_html.replace(href, replace)
         else:
@@ -275,7 +285,6 @@ class Message(AuditableMixin):
                 company=self.company,
                 destination=destination,
             )
-            link.token_generate()
             replace = href.replace(destination, link.get_public_url())
             content_raw = content_raw.replace(href, replace)
 
@@ -287,10 +296,11 @@ class Message(AuditableMixin):
             'img',
             alt='x',
             height='1px',
-            src='{}{}'.format(
-                self.company.domain,
-                reverse_lazy(
-                    'public:message_pixel', args=[self.set_token()]
+            src='{scheme}://{domain}{path}'.format(
+                scheme='http' if settings.DEBUG else 'https',
+                domain=self.company.domain,
+                path=reverse_lazy(
+                    'public:message_pixel', args=[self.pk]
                 )
             ),
             width='1px',
@@ -303,49 +313,27 @@ class Message(AuditableMixin):
 
         return bs_content.prettify()
 
-    @classmethod
-    def set_read_all(cls, company):
-        return company.message_set.filter(
-            direction=DIRECTION_INBOUND,
-            date_read__isnull=True
-        ).update(date_read=timezone.now())
-
     def set_read(self):
-        if self.is_read:
-            return ('info', _("Message was read already."))
+        if self.is_read():
+            return LEVEL_ERROR, _("Message was read already.")
         self.date_read = timezone.now()
-        self.save()
-        return ('success', _("Message has been marked as read."))
-
-    def set_token(self):
-        if self.token:
-            return self.token
-
-        salt = hashlib.sha1(
-            str(random.random()).encode("utf-8")
-        ).hexdigest()[:5]
-
-        self.token = hashlib.sha1(
-            salt.encode("utf-8") + 'message-{}'.format(self.pk).encode("utf-8")
-        ).hexdigest()
-        self.save()
-
-        return self.token
+        self.save(update_fields=['date_read'])
+        return LEVEL_SUCCESS, _("Message has been marked as read.")
 
     def set_unread(self):
-        if not self.is_read:
-            return ('info', _("Message is unread already."))
+        if not self.is_read():
+            return LEVEL_ERROR, _("Message is unread already.")
         self.date_read = None
-        self.save()
-        return ('success', _("Message has been marked as unread."))
+        self.save(update_fields=['date_read'])
+        return LEVEL_SUCCESS, _("Message has been marked as unread.")
 
     @property
     def status(self):
-        if self.is_fail:
+        if self.is_fail():
             return _("failed")
-        elif self.is_read:
+        elif self.is_read():
             return _("read")
-        elif self.is_send:
+        elif self.is_send():
             return _("send")
         else:
             return _("unsend")

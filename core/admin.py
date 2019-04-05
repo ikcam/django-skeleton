@@ -1,21 +1,20 @@
-from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
-from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.authtoken.admin import TokenAdmin
 
 from .models import (
-    Colaborator, Company, Event, Invite, Invoice, Link, Message, Payment,
-    Notification, Role, User
+    Colaborator, Company, Event, Invite, Link, Message, Notification, Role,
+    User
 )
 
 
 # Mixin
 class CompanyAdminMixin(admin.ModelAdmin):
     list_filter = ('company', )
+
     def has_add_permission(self, request):
         return False
 
@@ -34,21 +33,13 @@ class LinkInline(admin.TabularInline):
     model = Link
 
 
-class PaymentInline(admin.TabularInline):
-    extra = 1
-    formfield_overrides = {
-        models.TextField: {'widget': forms.TextInput},
-    }
-    model = Payment
-
-
 # ModelAdmin
 admin.site.unregister(Group)
 
 
 @admin.register(Colaborator)
 class ColaboratorAdmin(admin.ModelAdmin):
-    list_display = ('user', 'company', 'date_joined', 'is_active', )
+    list_display = ('user', 'company', 'date_creation', 'is_active', )
     list_filter = ('company', )
 
 
@@ -72,21 +63,6 @@ class EventAdmin(CompanyAdminMixin):
     list_display = (
         '__str__', 'company', 'user', 'date_start', 'date_finish'
     )
-
-
-@admin.register(Invoice)
-class InvoiceAdmin(admin.ModelAdmin):
-    def is_paid(self, instance):
-        return instance.is_paid
-    is_paid.boolean = True
-
-    autocomplete_fields = (
-        'company',
-    )
-    inlines = (PaymentInline, )
-    list_display = ('__str__', 'company', 'is_paid', 'total')
-    list_filter = ('company', )
-    search_fields = ('id', )
 
 
 @admin.register(Invite)
@@ -129,9 +105,6 @@ class RoleAdmin(CompanyAdminMixin):
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    autocomplete_fields = (
-        'company',
-    )
     fieldsets = (
         (
             None, {
@@ -141,8 +114,8 @@ class UserAdmin(UserAdmin):
         (
             _("Personal info"), {
                 'fields': (
-                    'first_name', 'last_name', 'email', 'company', 'timezone',
-                    'language', 'photo',
+                    'first_name', 'last_name', 'email', 'timezone', 'language',
+                    'photo',
                 )
             },
         ),

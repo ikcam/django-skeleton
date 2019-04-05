@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.urls import reverse_lazy
@@ -5,10 +7,14 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from core.constants import LEVEL_INFO, LEVEL_SUCCESS
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin
 
 
 class Notification(AuditableMixin):
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")

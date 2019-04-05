@@ -1,15 +1,19 @@
-import hashlib
-import random
+import uuid
 
+from django.conf import settings
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin, get_active_mixin
 
 
-class Link(AuditableMixin):
+class Link(get_active_mixin(editable=True), AuditableMixin):
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")
@@ -44,16 +48,11 @@ class Link(AuditableMixin):
         return reverse_lazy('public:link_detail', args=[self.pk, ])
 
     def get_public_url(self):
-        if self.token:
-            path = reverse_lazy(
-                'public:link_public_token', args=[self.token, ]
-            )
-        else:
-            path = reverse_lazy(
-                'public:link_public_direct', args=[self.pk, ]
-            )
-
-        return '{0}{1}'.format(self.company.domain, path)
+        return '{scheme}://{domain}{path}'.format(
+            scheme='http' if settings.DEBUG else 'https',
+            domain=self.company.domain,
+            path=reverse_lazy('public:link_public', args=[self.pk])
+        )
 
     @property
     def action_list(self):
@@ -62,24 +61,9 @@ class Link(AuditableMixin):
 
         return ('change', 'delete')
 
-    @cached_property
     def is_open(self):
         return self.total_visits > 0
-
-    def token_generate(self):
-        if self.token:
-            return False
-
-        salt = hashlib.sha1(
-            str(random.random()).encode("utf-8")
-        ).hexdigest()[:5]
-
-        self.token = hashlib.sha1(
-            salt.encode("utf-8") + 'link-{}'.format(self.pk).encode("utf-8")
-        ).hexdigest()
-        self.save()
-
-        return True
+    is_open.boolean = True
 
     @cached_property
     def total_visits(self):

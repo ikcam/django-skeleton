@@ -3,10 +3,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path(
-        '',
+        'panel/',
         include(
-            ('public.api.urls', 'public'),
-            namespace='public'
+            ('panel.api.urls', 'panel'),
+            namespace='panel'
         )
     ),
 ]

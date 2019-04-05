@@ -50,8 +50,6 @@ INSTALLED_APPS = [
     # Modules
     'boilerplate',
     'bootstrap3',
-    'ckeditor',
-    'ckeditor_uploader',
     'corsheaders',
     'dal',
     'dal_select2',
@@ -63,7 +61,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # Apps
     'core',
-    'public',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.TimezoneMiddleware',
-    'core.middleware.SiteURLMiddleware',
+    'core.middleware.CurrentCompanyMiddleware',
 ]
 
 ROOT_URLCONF = 'myapp.urls'
@@ -105,9 +101,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myapp.wsgi.application'
 
 ASGI_APPLICATION = 'myapp.routing.application'
-
-
-AUTHENTICATION_BACKENDS = ('core.backends.AuthenticationBackend',)
 
 
 # Password validation
@@ -237,34 +230,6 @@ FB_APP_SECRET = os.getenv('FB_APP_SECRET')
 # Google Analytics
 
 GA_ID = os.getenv('GA_ID')
-
-
-# Authy
-
-AUTHY_API_KEY = os.getenv('AUTHY_API_KEY')
-
-
-# Braintree
-
-BRAINTREE_MERCHANT_ID = os.getenv('BRAINTREE_MERCHANT_ID')
-
-BRAINTREE_PUBLIC_KEY = os.getenv('BRAINTREE_PUBLIC_KEY')
-
-BRAINTREE_PRIVATE_KEY = os.getenv('BRAINTREE_PRIVATE_KEY')
-
-
-# Culqi
-
-CULQI_PUBLIC_KEY = os.getenv('CULQI_PUBLIC_KEY')
-
-CULQI_PRIVATE_KEY = os.getenv('CULQI_PRIVATE_KEY')
-
-
-# Stripe
-
-STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
-
-STRIPE_PRIVATE_KEY = os.getenv('STRIPE_PRIVATE_KEY')
 
 
 # OneSignal (for notifications)

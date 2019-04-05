@@ -47,10 +47,12 @@ class Command(BaseCommand):
             try:
                 company.module_remove(module)
                 self.stdout.write(
-                    self.style.SUCCESS('Module "%s" removed for company "%s"' % (
-                        module,
-                        company.name,
-                    ))
+                    self.style.SUCCESS(
+                        'Module "%s" removed for company "%s"' % (
+                            module,
+                            company.name,
+                        )
+                    )
                 )
             except AssertionError as e:
                 raise CommandError(

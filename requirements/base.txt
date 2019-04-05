@@ -20,8 +20,8 @@ djangorestframework
 drf-nested-routers
 facebook-sdk
 Pillow
-python-dotenv
 psycopg2-binary
 requests
 six
 stripe
+tldextract

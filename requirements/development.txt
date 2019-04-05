@@ -1,4 +1,5 @@
 -r base.txt
+autopep8
 coverage
 django-debug-toolbar
 flake8

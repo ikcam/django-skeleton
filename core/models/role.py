@@ -3,10 +3,10 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin, get_active_mixin
 
 
-class Role(AuditableMixin):
+class Role(get_active_mixin(editable=True), AuditableMixin):
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")

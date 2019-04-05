@@ -1,15 +1,10 @@
-import os
-
-from .settings import BASE_DIR, INSTALLED_APPS, MIDDLEWARE
+from .settings import INSTALLED_APPS, MIDDLEWARE
 
 
 DEBUG = False
 
 
-ALLOWED_HOSTS = [
-    'stg.myapp.com',
-    'www.stg.myapp.com',
-]
+ALLOWED_HOSTS = ['*']
 
 
 INTERNAL_IPS = [
@@ -25,12 +20,3 @@ INSTALLED_APPS += [
 MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-
-
-# Site info
-
-SITE_URL = 'http://stg.myapp.com'
-
-SITE_NAME = 'My App (Staging)'
-
-SITE_SHORT_NAME = 'MA+'

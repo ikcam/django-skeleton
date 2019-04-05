@@ -8,53 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormMixin
 
 
-from core.constants import ACTIONS, LEVEL_ERROR, LEVEL_SUCCESS
-
-
-class AuditableMixin(models.Model):
-    date_creation = models.DateTimeField(
-        auto_now_add=True, verbose_name=_("Creation date")
-    )
-    date_modification = models.DateTimeField(
-        auto_now=True, verbose_name=_("Modification date")
-    )
-    is_active = models.BooleanField(
-        default=True, editable=False, verbose_name=_("Active")
-    )
-
-    class Meta:
-        abstract = True
-
-    def activate(self):
-        if self.is_active:
-            return (
-                LEVEL_ERROR,
-                _("Object is active already.")
-            )
-
-        self.is_active = True
-        self.save(update_fields=['is_active'])
-        return (
-            LEVEL_SUCCESS,
-            _("Object has been activated successfully.")
-        )
-
-    def deactivate(self):
-        if not self.is_active:
-            return (
-                LEVEL_ERROR,
-                _("Object is inactive already.")
-            )
-
-        self.is_active = False
-        self.save(update_fields=['is_active'])
-        return (
-            LEVEL_SUCCESS,
-            _("Object has been deactivated successfully.")
-        )
-
-    def toggle_active(self, **kwargs):
-        return self.deactivate() if self.is_active else self.activate()
+from core.constants import ACTIONS, LEVEL_SUCCESS
 
 
 class CompanyRequiredMixin:
@@ -69,26 +23,13 @@ class CompanyRequiredMixin:
 
         if not user.is_authenticated:
             return self.handle_no_permission()
-        elif not user.company:
+        if not user.as_colaborator(request.company):
             return self.handle_no_permission()
 
-        if not user.company_profile.is_active:
-            user.company = None
-            user.save()
-            return redirect('core:company_choose')
-
-        self.company = user.company
         bypass_inactive = self.get_bypass_inactive()
 
-        if not bypass_inactive and not user.company_profile.is_active:
-            user.company = None
-            user.save(update_fields=['company'])
-            return redirect('core:company_choose')
-
-        if not self.company:
-            return redirect('core:company_choose')
-        elif not self.company.is_active:
-            return redirect('core:company_activate')
+        if not bypass_inactive and not request.company.is_active:
+            return redirect('panel:company_activate')
 
         permission_required = self.get_permission_required()
 
@@ -103,10 +44,6 @@ class CompanyRequiredMixin:
 
     def get_bypass_inactive(self):
         return self.bypass_inactive
-
-    def get_context_data(self, **kwargs):
-        kwargs['company'] = self.company
-        return super().get_context_data(**kwargs)
 
     def get_company_field(self):
         return self.company_field
@@ -135,12 +72,9 @@ class CompanyQuerySetMixin(CompanyRequiredMixin):
         return self.related_properties
 
     def get_queryset(self):
-        if not self.company:
-            raise Exception(_("Company must be set."))
-
         qs = super().get_queryset()
         qs = qs.filter(**{
-            self.get_company_field(): self.company
+            self.get_company_field(): self.request.company
         })
 
         related_properties = self.get_related_properties()
@@ -160,10 +94,10 @@ class CompanyQuerySetMixin(CompanyRequiredMixin):
 
 class CompanyCreateMixin(CompanyRequiredMixin):
     def form_valid(self, form):
-        if not self.company:
-            raise Exception(_("Company must be set."))
+        if not self.request.company:
+            raise ImproperlyConfigured(_("Company must be set."))
 
-        setattr(form.instance, 'company', self.company)
+        setattr(form.instance, self.get_company_field(), self.request.company)
         return super().form_valid(form)
 
 
@@ -187,7 +121,7 @@ class FilterMixin(CompanyQuerySetMixin):
     def get_filter_class(self):
         return self.filter_class
 
-    def get_filter(self):
+    def get_filter(self, qs=None):
         filter_class = self.get_filter_class()
         if filter_class:
             qs = qs if hasattr(qs, 'count') else self.get_queryset()
@@ -254,9 +188,7 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         )
 
     def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-
+        form_class = form_class or self.get_form_class()
         if form_class:
             return form_class(**self.get_form_kwargs())
 
@@ -274,18 +206,17 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         )
 
     def get_success_url(self, response=None):
-        try:
+        if response:
             level, content = response
             getattr(messages, level)(self.request, content)
-        except Exception:
-            pass
 
         if self.request.GET.get('next', None):
             return self.request.GET.get('next')
         elif self.success_url:
             return self.success_url
-
-        return self.object.get_absolute_url()
+        if self.object:
+            return self.object.get_absolute_url()
+        raise ImproperlyConfigured('A `success_url` is required.')
 
     def get_task_module(self):
         return self.task_module
@@ -324,32 +255,25 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
 
     def run_action(self, form=None):
         model_action = self.get_model_action()
+        entity = self.object or self.model
 
-        if self.object:
-            if not hasattr(self.object, model_action):
-                raise ImproperlyConfigured(
-                    "Instance has no action %(action)s." % dict(
-                        action=model_action,
-                    )
+        for mod in model_action.split('.'):
+            entity = getattr(entity, mod)
+
+        if not callable(entity):
+            raise ImproperlyConfigured(
+                "%(entity)s has no action %(action)s." % dict(
+                    entity=self.object or self.model,
+                    action=model_action,
                 )
-        else:
-            if not hasattr(self.model, model_action):
-                raise ImproperlyConfigured(
-                    "Model has no action %(action)s." % dict(
-                        action=model_action,
-                    )
-                )
+            )
 
         kwargs = self.get_action_kwargs(form=form)
         task_module = self.get_task_module()
 
         if not task_module:
-            if self.object:
-                task = getattr(self.object, model_action)
-            else:
-                task = getattr(self.model, model_action)
-            return task(
-                company=self.company,
+            return entity(
+                company=self.request.company,
                 user_request=self.request.user,
                 **kwargs
             )
@@ -361,61 +285,27 @@ class ModelActionMixin(CompanyQuerySetMixin, FormMixin):
         if not settings.DEBUG:
             task = getattr(task, 'delay')
 
+        task_kwargs = {
+            'company_id': self.request.company.id,
+            'user_request_id': self.request.user.id,
+            'task': model_action,
+        }
+
         if self.object:
-            if kwargs:
-                return task(
-                    company_id=self.company.id,
-                    user_request_id=self.request.user.id,
-                    task=model_action,
-                    pk=self.object.pk,
-                    data=kwargs,
-                )
-            else:
-                return task(
-                    company_id=self.company.id,
-                    user_request_id=self.request.user.id,
-                    task=model_action,
-                    pk=self.object.pk,
-                )
-        else:
-            if kwargs:
-                return task(
-                    company_id=self.company.id,
-                    user_request_id=self.request.user.id,
-                    task=model_action,
-                    data=kwargs,
-                )
-            else:
-                return task(
-                    company_id=self.company.id,
-                    user_request_id=self.request.user.id,
-                    task=model_action,
-                )
+            task_kwargs.update({'pk': self.object.pk})
+
+        if kwargs:
+            task_kwargs.update({'data': kwargs})
+
+        task(**task_kwargs)
+        return LEVEL_SUCCESS, _("You'll receive a notification soon")
 
 
 class DeleteAllMixin(ModelActionMixin):
     model_action = 'delete_all'
     require_confirmation = True
+    paginate_by = 1
     template_name_suffix = '_action'
-
-    def post(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        count, details = queryset.delete()
-        messages.success(
-            request,
-            _(
-                "A total of %(count)d %(model_name)s "
-                "has been deleted successfully."
-            ) % dict(
-                count=count,
-                model_name=self.model._meta.verbose_name_plural.lower()
-            )
-        )
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        assert hasattr(self, 'success_url'), _("Invalid `success_url`")
-        return self.success_url
 
 
 class UserQuerySetMixin(CompanyQuerySetMixin):
@@ -425,12 +315,14 @@ class UserQuerySetMixin(CompanyQuerySetMixin):
         qs = super().get_queryset()
 
         permission_name = self.get_permission_required()
-        permission_name = 'view_all_{}'.format(
-            permission_name.split('_')[-1]
-        )
 
-        if self.request.user.has_company_perm(permission_name):
-            return qs
+        if permission_name:
+            permission_name = 'view_all_{}'.format(
+                permission_name.split('_')[-1]
+            )
+
+            if self.request.user.has_company_perm(permission_name):
+                return qs
 
         return qs.filter(**{
             self.get_user_field(): self.request.user
