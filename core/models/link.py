@@ -45,13 +45,13 @@ class Link(get_active_mixin(editable=True), AuditableMixin):
         return self.destination
 
     def get_absolute_url(self):
-        return reverse_lazy('public:link_detail', args=[self.pk, ])
+        return reverse_lazy('panel:link_detail', args=[self.pk])
 
     def get_public_url(self):
         return '{scheme}://{domain}{path}'.format(
             scheme='http' if settings.DEBUG else 'https',
             domain=self.company.domain,
-            path=reverse_lazy('public:link_public', args=[self.pk])
+            path=reverse_lazy('panel:link_public', args=[self.pk])
         )
 
     @property

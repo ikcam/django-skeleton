@@ -1,0 +1,51 @@
+{% extends "panel/layout.html" %}
+
+{% load boilerplate core_tags djaneiro i18n %}
+
+{% block css_header %}
+  {{ form.media.css }}
+  {% for extra_form in extra_form_list %}
+    {{ extra_form.media.css }}
+  {% endfor %}
+  {% for formset in formset_list %}
+    {{ formset.media.css }}
+  {% endfor %}
+{% endblock %}
+
+{% block title %}{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}  {{ block.super }}{% endblock title %}
+
+{% block breadcrumb %}
+  {% if action %}
+    {% breadcrumb action=action %}
+  {% elif object and form %}
+    {% breadcrumb action='change' %}
+  {% elif form %}
+    {% breadcrumb action='add' %}
+  {% elif object %}
+    {% breadcrumb action='delete' %}
+  {% endif %}
+{% endblock breadcrumb %}
+
+{% block page_header %}
+  <h2>{% if form and object %}{% trans "Change" %} {{ object }}{% elif form %}{% trans "Add" %} {{ form|form_model_name }}{% else %}{% trans "Delete" %} {{ object }}{% endif %}</h2>
+{% endblock page_header %}
+
+{% block content %}
+  {% block before_form %}{% endblock %}
+
+  {% include "panel/snippets/_form.html" %}
+
+  {% block after_form %}{% endblock %}
+{% endblock content %}
+
+{% block scripts_footer %}
+  {{ form.media.js }}
+
+  {% for extra_form in extra_form_list %}
+    {{ extra_form.media.js }}
+  {% endfor %}
+
+  {% for formset in formset_list %}
+    {{ formset.media.js }}
+  {% endfor %}
+{% endblock %}

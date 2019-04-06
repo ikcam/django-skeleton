@@ -1,0 +1,30 @@
+{% extends 'panel/company/list.html' %}
+
+{% load djaneiro i18n %}
+
+{% block content_inner %}
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">{% trans "user" %}</th>
+        <th scope="col">{% trans "email" %}</th>
+        <th scope="col">{% trans "status" %}</th>
+        <th scope="col" class="text-right">{% trans "options" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for object in object_list %}
+        <tr>
+          <th scope="row">{{ object }}</th>
+          <td>{{ object.email }}</td>
+          <td><span class="badge badge-{{ object.is_active|yesno:'success,danger' }}">{{ object.is_active|yesno:'active,inactive' }}</span></td>
+          <td class="text-right">{% action_buttons size='xs' %}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">{% trans "No records." %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content_inner %}

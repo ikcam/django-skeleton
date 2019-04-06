@@ -144,7 +144,7 @@ class Message(AuditableMixin):
         return self.from_email
 
     def get_absolute_url(self):
-        return reverse_lazy('public:message_detail', args=[self.pk])
+        return reverse_lazy('panel:message_detail', args=[self.pk])
 
     def get_email_connection(self, fail_silently=False):
         if hasattr(self, '_email_connection'):

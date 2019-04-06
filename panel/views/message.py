@@ -1,0 +1,36 @@
+from django.http import HttpResponse
+from django.views.generic import DetailView, ListView
+
+from core.constants import PIXEL_GIF_DATA
+from core.models import Message
+from core.views.mixins import CompanyQuerySetMixin
+
+
+class MessageDetailView(CompanyQuerySetMixin, DetailView):
+    model = Message
+    permission_required = 'core:view_message'
+    template_name = 'panel/message/message_detail.html'
+
+
+class MessageFrameView(CompanyQuerySetMixin, DetailView):
+    model = Message
+    permission_required = 'core:view_message'
+    template_name = 'panel/message/message_frame.html'
+
+
+class MessageListView(CompanyQuerySetMixin, ListView):
+    model = Message
+    paginate_by = 30
+    permission_required = 'core:view_message'
+    template_name = 'panel/message/message_list.html'
+
+
+class MessagePixelView(
+    DetailView
+):
+    model = Message
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.set_read()
+        return HttpResponse(PIXEL_GIF_DATA, content_type='image/gif')

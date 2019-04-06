@@ -1,0 +1,26 @@
+{% extends 'panel/layout.html' %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Change" %} {% trans "company" %} {{ block.super }}{% endblock title %}
+
+{% block breadcrumb %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'panel:index' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'panel:company_detail' %}">{{ object }}</a></li>
+      <li class="breadcrumb-item active"><strong>{% trans "Change" %} {% trans "company" %}</strong></li>
+    </ol>
+  </nav>
+{% endblock breadcrumb %}
+
+{% block page_header %}<h2>{% trans "Change" %} {% trans "company" %}</h2>{% endblock %}
+
+{% block content %}
+  {% include "panel/snippets/_company-nav.html" %}
+  <div class="tab-content">
+    <div class="tab-panel show active">
+      {% include 'panel/snippets/_form.html' %}
+    </div>
+  </div>
+{% endblock content %}

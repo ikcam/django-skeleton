@@ -56,7 +56,7 @@ class Notification(AuditableMixin):
         return "%s %s" % (self.model or self.contenttype, self.content)
 
     def get_absolute_url(self):
-        return reverse_lazy('public:notification_detail', args=[self.pk])
+        return reverse_lazy('panel:notification_detail', args=[self.pk])
 
     @property
     def is_read(self):

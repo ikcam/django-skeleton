@@ -1,0 +1,58 @@
+{% extends 'panel/layout.html' %}
+
+{% load boilerplate i18n %}
+
+{% block title %}
+  {% if object and form %}
+    {% trans "Change" %} {{ object }}
+  {% elif form %}
+    {% trans "Add" %} {{ form|form_model_name }}
+  {% else %}
+    {% trans "Delete" %} {{ object }}
+  {% endif %}
+  {{ block.super }}
+{% endblock title %}
+
+{% block breadcrumb %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'panel:index' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'panel:company_detail' %}">{{ request.company }}</a></li>
+      {% if object and form %}
+        <li class="breadcrumb-item"><a href="">{{ object|model_name_plural }}</a></li>
+        <li class="breadcrumb-item active"><strong>{% trans "Change" %} {{ object }}</strong></li>
+      {% elif object %}
+        <li class="breadcrumb-item"><a href="">{{ object|model_name_plural }}</a></li>
+        <li class="breadcrumb-item active"><strong>{% trans "Delete" %} {{ object }}</strong></li>
+      {% else %}
+        <li class="breadcrumb-item"><a href="">{{ form|form_model_name_plural }}</a></li>
+        <li class="breadcrumb-item active"><strong>{% trans "Add" %} {{ form|form_model_name }}</strong></li>
+      {% endif %}
+    </ol>
+  </nav>
+{% endblock breadcrumb %}
+
+{% block page_header %}
+  <h2>
+    {% if object and form %}
+      {% trans "Change" %} {{ object }}
+    {% elif form %}
+      {% trans "Add" %} {{ form|form_model_name }}
+    {% else %}
+      {% trans "Delete" %} {{ object }}
+    {% endif %}
+  </h2>
+{% endblock %}
+
+{% block content %}
+  {% include "panel/snippets/_company-nav.html" %}
+  <div class="tab-content">
+    <div class="tab-panel show active">
+      {% include 'panel/snippets/_form.html' %}
+    </div>
+  </div>
+{% endblock content %}
+
+{% block scripts_footer %}
+  {{ form.media }}
+{% endblock scripts_footer %}

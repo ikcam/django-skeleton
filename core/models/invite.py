@@ -51,7 +51,7 @@ class Invite(get_active_mixin(editable=True), AuditableMixin):
         return self.email
 
     def get_absolute_url(self):
-        return reverse_lazy('public:invite_list')
+        return reverse_lazy('panel:invite_list')
 
     @property
     def action_list(self):

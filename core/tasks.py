@@ -35,7 +35,6 @@ def model_task(
     if pk:
         obj = model.objects.get(pk=pk)
         entity = obj
-        task_func = getattr(obj, task)
     else:
         obj = '%s' % model.__name__
         entity = model

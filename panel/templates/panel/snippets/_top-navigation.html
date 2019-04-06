@@ -1,0 +1,67 @@
+{% load i18n %}
+
+
+<div class="row border-bottom">
+  <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <div class="navbar-header">
+      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
+    </div>
+    <ul class="nav navbar-top-links navbar-right">
+      <li class="dropdown" id="remoteDropdownNotificacions">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+          <i class="fa fa-bell"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-messages" ng-controller="RemoteController" ng-init="setUrl('?is_read=3&limit=5')">
+          <li ng-repeat="notification in data">
+            {% verbatim %}
+              <a href="{{ notification.actions.view.url }}">
+                <div class="dropdown-messages-box">
+                  <div class="media-body">
+                    <small class="pull-right">{{ notification.date_creation | amTimeAgo }}</small>
+                    <strong>{{ notification.model }}</strong> {{ notification.content }}<br>
+                    <small class="text-muted">{{ notification.date_creation | amDateFormat:'LLL' }}</small>
+                  </div>
+                </div>
+              </a>
+            {% endverbatim %}
+          </li>
+          <li ng-if="data.length > 0" class="divider"></li>
+          <li ng-if="data.length > 0">
+            <div class="text-center link-block">
+              <a href="{% url 'panel:notification_readall' %}?next={{ request.path }}">
+                <i class="fa fa-bell"></i>
+                <strong>{% trans "read all notifications" %}</strong>
+              </a>
+            </div>
+          </li>
+          <li ng-if="data.length == 0">
+            <div class="dropdown-messages-box">
+              <div class="media-body text-center">
+                <span class="text-muted">{% trans "all your notifications are read." %}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown visible-xs-inline-block" id="remoteDropdownTop">
+        <a class="dropdown-toggle" href="{% url 'panel:account_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+        <ul class="dropdown-menu" ng-controller="RemoteController" ng-init="setUrl('')">
+          {% if request.user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+            <li class="divider"></li>
+          {% endif %}
+          {% verbatim %}
+          <li ng-repeat="company in data.colaborator_set">
+            <a href="{{ company.switch_url }}">{{ company.name }}</a>
+          </li>
+          {% endverbatim %}
+          <li class="divider" ng-if="data.colaborator_set.length > 0"></li>
+          <li><a href="{% url 'panel:account_detail' %}">{% trans 'Profile' %}</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="{% url 'panel:account_logout' %}"><i class="fa fa-sign-out"></i> {% trans "logout" %}</a>
+      </li>
+    </ul>
+  </nav>
+</div>

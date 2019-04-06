@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Modules
     'boilerplate',
-    'bootstrap3',
+    'bootstrap4',
     'corsheaders',
     'dal',
     'dal_select2',
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # Apps
     'core',
+    'panel',
 ]
 
 MIDDLEWARE = [
@@ -82,9 +83,7 @@ ROOT_URLCONF = 'myapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,7 +103,7 @@ ASGI_APPLICATION = 'myapp.routing.application'
 
 
 # Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -134,7 +133,7 @@ AUTH_USER_MODEL = 'core.User'
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://docs.djangoproject.com/en/dev/topics/i18n/
 
 LANGUAGE_CODE = 'en'
 
@@ -166,15 +165,15 @@ DEFAULT_FROM_EMAIL = 'My App <no-reply@myapp.com>'
 
 # Login
 
-LOGIN_URL = reverse_lazy('public:account_login')
+LOGIN_URL = reverse_lazy('panel:account_login')
 
-LOGIN_REDIRECT_URL = reverse_lazy('public:dashboard')
+LOGIN_REDIRECT_URL = reverse_lazy('panel:index')
 
-LOGOUT_REDIRECT_URL = reverse_lazy('public:index')
+LOGOUT_REDIRECT_URL = reverse_lazy('panel:index')
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets/'),
@@ -192,6 +191,20 @@ STATIC_URL = '/static/'
 SESSION_COOKIE_NAME = 'myappsessionid'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+
+# Bootstrap4
+
+BOOTSTRAP4 = {
+    'horizontal_label_class': 'col-md-3 text-md-right',
+    'required_css_class': 'font-weight-bold',
+    "field_renderers": {
+        "default": "core.renderers.FieldRenderer",
+    },
+    "form_renderers": {
+        "default": "core.renderers.FormRenderer",
+    },
+}
 
 
 # CKEditor
@@ -251,7 +264,8 @@ elif APP_ENV == 'tests':
     from .tests_settings import *  # NOQA
 else:
     from .development_settings import *  # NOQA
-    try:
-        from .local_settings import *  # NOQA
-    except ImportError:
-        pass
+
+try:
+    from .local_settings import *  # NOQA
+except ImportError:
+    pass

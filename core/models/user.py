@@ -87,10 +87,10 @@ class User(AbstractUser):
             return self.username
 
     def get_absolute_url(self):
-        return reverse_lazy('public:user_list')
+        return reverse_lazy('panel:user_list')
 
     def action_list(self):
-        return ('change', 'remove')
+        return ('change', )
 
     def as_colaborator(self, company):
         if any([self.is_staff, self.is_superuser]):

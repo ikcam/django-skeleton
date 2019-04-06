@@ -105,7 +105,7 @@ class Event(AuditableMixin):
         return "%s" % self.subject
 
     def get_absolute_url(self):
-        return reverse_lazy('public:event_change', args=[self.pk])
+        return reverse_lazy('panel:event_change', args=[self.pk])
 
     def get_public_url(self):
         if not self.is_public:

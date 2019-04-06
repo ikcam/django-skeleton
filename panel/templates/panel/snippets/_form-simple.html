@@ -1,0 +1,10 @@
+{% load bootstrap4 i18n %}
+
+{% csrf_token %}
+{% bootstrap_form form %}
+
+{% if form_submit %}
+  <button type="submit" class="btn btn-primary block full-width m-b" name="_save" value="{{ form_submit }}">{{ form_submit }}</button>
+{% else %}
+  <button type="submit" class="btn btn-primary block full-width m-b" name="_save" value="{% trans 'submit' %}">{% trans 'submit' %}</button>
+{% endif %}

@@ -8,7 +8,7 @@ django
 django-addanother
 -e git+https://github.com/ikcam/django-autocomplete-light.git#egg=django-autocomplete-light
 django-boilerplate
-django-bootstrap3
+django-bootstrap4
 django-ckeditor
 django-countries
 django-cors-headers

@@ -1,120 +1,89 @@
-jQuery(document).ready(function($){
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = jQuery.trim(cookies[i]);
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+/* eslint-disable func-names */
+(function (globals) {
+    const django = globals.django || (globals.django = {});
+
+    // eslint-disable-next-line prettier/prettier
+    django.get_cookie = function (name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            cookies.forEach(function checkCookie(i) {
+                // eslint-disable-next-line no-undef
+                const cookie = jQuery.trim(i);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === `${name}=`) {
+                    cookieValue = decodeURIComponent(
+                        cookie.substring(name.length + 1)
+                    );
+                }
+                return cookieValue !== null;
+            });
         }
-      }
-    }
-    return cookieValue;
-  }
+        return cookieValue;
+    };
 
-  function changeProfileField(field, value){
-    if(value === undefined) return;
-
-    var endpoint = api_url_profile;
-    var data = {};
-    data[field] = value;
-
-    $.ajax({
-      type: 'PATCH',
-      url: endpoint,
-      data: data,
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
-      error: function(response){
-        jsonResponse = jQuery.parseJSON(response.responseText);
-        alert(jsonResponse.detail);
-      },
+    const pythonToJsFormats = Object({
+        "%a": "ddd",
+        "%A": "dddd",
+        "%w": "d",
+        "%d": "DD",
+        "%b": "MMM",
+        "%B": "MMMM",
+        "%m": "MM",
+        "%y": "YY",
+        "%Y": "YYYY",
+        "%H": "HH",
+        "%I": "hh",
+        "%p": "A",
+        "%M": "mm",
+        "%S": "ss",
+        "%f": "SSS",
+        "%z": "ZZ",
+        "%Z": "z",
+        "%j": "DDDD",
+        "%U": "ww",
+        "%W": "ww",
+        "%c": "ddd MMM DD HH:mm:ss YYYY",
+        "%x": "MM/DD/YYYY",
+        "%X": "HH:mm:ss",
+        "%%": "%"
     });
-  }
 
-  $('[data-toggle="tooltip"]').tooltip();
+    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line func-names
+    django.convert_format = function (format) {
+        let converted = format;
 
-  var pythonToJsFormats = Object.freeze({
-    '%a': 'ddd',
-    '%A': 'dddd',
-    '%w': 'd',
-    '%d': 'DD',
-    '%b': 'MMM',
-    '%B': 'MMMM',
-    '%m': 'MM',
-    '%y': 'YY',
-    '%Y': 'YYYY',
-    '%H': 'HH',
-    '%I': 'hh',
-    '%p': 'A',
-    '%M': 'mm',
-    '%S': 'ss',
-    '%f': 'SSS',
-    '%z': 'ZZ',
-    '%Z': 'z',
-    '%j': 'DDDD',
-    '%U': 'ww',		    // Week day of the year, Sunday first - not supported
-    '%W': 'ww',		    // Week day of the year, Monday first
-    '%c': 'ddd MMM DD HH:mm:ss YYYY',
-    '%x': 'MM/DD/YYYY',
-    '%X': 'HH:mm:ss',
-    '%%': '%'
-  });
+        for (name in pythonToJsFormats) {
+            if (Object.prototype.hasOwnProperty.call(pythonToJsFormats, name)) {
+                converted = converted.split(name).join(pythonToJsFormats[name]);
+            }
+        }
 
-  var convertFormat = function(format) {
-    var converted = format;
-    for(var name in pythonToJsFormats) {
-      if (pythonToJsFormats.hasOwnProperty(name)) {
-        converted = converted.split(name).join(pythonToJsFormats[name]);
-      }
+        return converted;
+    };
+
+    if (!django.djaneiro_initialized) {
+        globals.get_cookie = django.get_cookie;
+        globals.convert_format = django.convert_format;
+
+        django.djaneiro_initialized = true;
     }
+}(this));
 
-    return converted;
-  };
 
-  $('.navbar-minimalize').on('click', function(event){
-    changeProfileField('nav_expanded', !$('body').hasClass('mini-navbar'));
-  });
-
-  $('input[type="date-local"]').datetimepicker({
-    calendarWeeks: false,
-    format: convertFormat(get_format('DATE_INPUT_FORMATS')[0]),
-    showClear: true,
-    showClose: true,
-    showTodayButton: true,
-    useCurrent: false,
-  });
-
-  $('input[type="time-local"]').clockpicker({
-    autoclose: true,
-  });
-
-  $('input[type="datetime"]').datetimepicker({
-    calendarWeeks: false,
-    format: convertFormat(get_format('DATETIME_INPUT_FORMATS')[2]),
-    sideBySide: true,
-    showClear: true,
-    showClose: true,
-    showTodayButton: true,
-    useCurrent: false,
-  });
-
-  new ClipboardJS('.btn[data-clipboard-target^="#"]');
-
-  $('*[id^="remoteDropdown"]').on('shown.bs.dropdown', function(){
-    angularInit($(this));
-  });
-
-  var angularInit = function(elm){
-    var element = angular.element(elm);
-    var isInitialized = element.injector();
-
-    if (!isInitialized) {
-      angular.bootstrap(element, ['appAsyncContent']);
-    }
-  }
+// eslint-disable-next-line no-undef
+jQuery(document).ready(function ($) {
+    $('[data-toggle="datetimepicker"]').each(function () {
+        $(this).datetimepicker({
+            calendarWeeks: false,
+            format: django.convert_format(django.formats.DATE_INPUT_FORMATS[0]),
+            locale: $("html").attr("lang"),
+            showClear: true,
+            showClose: true,
+            showTodayButton: true,
+            sideBySide: true,
+            useCurrent: false
+        });
+    });
 });

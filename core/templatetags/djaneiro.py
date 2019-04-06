@@ -28,6 +28,7 @@ def render(tag, content=None, **kwargs):
 
 
 def build_breadcrumb_item(**kwargs):
+    kwargs.update({'class': 'breadcrumb-item'})
     if kwargs.get('href', None):
         content = render('a', kwargs.pop('content'), href=kwargs.pop('href'))
     else:
@@ -87,7 +88,7 @@ def build_button(**kwargs):
             )
             button_second = render(
                 'button',
-                content=render('span', '', **{'class': 'caret'}),
+                content=render('span', ''),
                 **{
                     'class': class_ + ' dropdown-toggle',
                     'data-toggle': 'dropdown',

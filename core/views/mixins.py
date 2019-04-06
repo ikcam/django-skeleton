@@ -21,7 +21,9 @@ class CompanyRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         user = request.user
 
-        if not user.is_authenticated:
+        if not request.company:
+            return self.handle_no_permission()
+        elif not user.is_authenticated:
             return self.handle_no_permission()
         if not user.as_colaborator(request.company):
             return self.handle_no_permission()

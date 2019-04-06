@@ -164,7 +164,7 @@ class Company(get_active_mixin(editable=True), AuditableMixin):
         return address
 
     def get_absolute_url(self):
-        return reverse_lazy('public:company_detail')
+        return reverse_lazy('panel:company_detail')
 
     def get_module_display(self, module):
         return dict(self.MODULE_LIST).get(module)

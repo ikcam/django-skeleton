@@ -27,7 +27,7 @@ class Role(get_active_mixin(editable=True), AuditableMixin):
         return "%s" % self.name
 
     def get_absolute_url(self):
-        return reverse_lazy('public:role_list')
+        return reverse_lazy('panel:role_list')
 
     def action_list(self):
         return ('change', 'delete')
