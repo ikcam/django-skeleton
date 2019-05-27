@@ -1,17 +1,14 @@
-/* eslint-disable func-names */
-(function (globals) {
-    const django = globals.django || (globals.django = {});
+(function(globals) {
+    var django = globals.django || (globals.django = {});
 
-    // eslint-disable-next-line prettier/prettier
-    django.get_cookie = function (name) {
-        let cookieValue = null;
+    django.get_cookie = function(name) {
+        var cookieValue = null;
         if (document.cookie && document.cookie !== "") {
-            const cookies = document.cookie.split(";");
+            var cookies = document.cookie.split(";");
             cookies.forEach(function checkCookie(i) {
-                // eslint-disable-next-line no-undef
-                const cookie = jQuery.trim(i);
+                var cookie = jQuery.trim(i);
                 // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === `${name}=`) {
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(
                         cookie.substring(name.length + 1)
                     );
@@ -22,7 +19,7 @@
         return cookieValue;
     };
 
-    const pythonToJsFormats = Object({
+    var pythonToJsFormats = Object({
         "%a": "ddd",
         "%A": "dddd",
         "%w": "d",
@@ -49,10 +46,8 @@
         "%%": "%"
     });
 
-    // eslint-disable-next-line no-unused-vars
-    // eslint-disable-next-line func-names
-    django.convert_format = function (format) {
-        let converted = format;
+    django.convert_format = function(format) {
+        var converted = format;
 
         for (name in pythonToJsFormats) {
             if (Object.prototype.hasOwnProperty.call(pythonToJsFormats, name)) {
@@ -72,18 +67,11 @@
 }(this));
 
 
-// eslint-disable-next-line no-undef
-jQuery(document).ready(function ($) {
-    $('[data-toggle="datetimepicker"]').each(function () {
-        $(this).datetimepicker({
-            calendarWeeks: false,
-            format: django.convert_format(django.formats.DATE_INPUT_FORMATS[0]),
-            locale: $("html").attr("lang"),
-            showClear: true,
-            showClose: true,
-            showTodayButton: true,
-            sideBySide: true,
-            useCurrent: false
-        });
-    });
+jQuery(document).ready(function($){
+    function angularInit(){
+        var ngApps = $('html').attr('ng-apps').split(',');
+        angular.bootstrap(document, ngApps);
+    }
+
+    angularInit();
 });

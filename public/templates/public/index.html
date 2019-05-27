@@ -1,0 +1,12 @@
+{% load i18n %}
+
+{% trans "Welcome to Django-Skeleton" %}
+<ul>
+  {% if request.user.is_authenticated %}
+  <li><a href="{% url 'panel:index' %}">{% trans "Panel" %}</a></li>
+  <li><a href="{% url 'panel:account_logout' %}">{% trans "Logout" %}</a></li>
+  {% endif %}
+  {% if request.user.is_staff %}
+  <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
+  {% endif %}
+</ul>

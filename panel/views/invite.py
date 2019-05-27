@@ -59,3 +59,11 @@ class InviteSendView(
     permission_required = 'core:send_invite'
     success_url = reverse_lazy('panel:invite_list')
     task_module = tasks
+
+    def get_action_kwargs(self, **kwargs):
+        kwargs = super().get_action_kwargs(**kwargs)
+        kwargs.update({
+            'scheme': self.request.scheme,
+            'host': self.request.get_host()
+        })
+        return kwargs

@@ -4,7 +4,7 @@ from core.api.serializers import ActionSerializer
 from core import models as core
 
 
-class EventModelSerializer(ActionSerializer):
+class EventSerializer(ActionSerializer):
     user = serializers.StringRelatedField()
     type_color = serializers.SerializerMethodField()
 
@@ -18,3 +18,24 @@ class EventModelSerializer(ActionSerializer):
 
     def get_type_color(self, obj):
         return obj.get_type_color()
+
+
+class LinkSerializer(ActionSerializer):
+    class Meta:
+        fields = (
+            'id', 'destination', 'date_creation', 'is_open', 'total_visits',
+            'action_list'
+        )
+        model = core.Link
+
+
+class NotificationSerializer(ActionSerializer):
+    class Meta:
+        fields = '__all__'
+        model = core.Notification
+
+
+class VisitSerializer(ActionSerializer):
+    class Meta:
+        fields = '__all__'
+        model = core.Visit

@@ -64,6 +64,12 @@ urlpatterns += [
         name='account_change'
     ),
     path(
+        _('account/signup/<uidb64>/<token>/'),
+        views.AccountSignupInviteView.as_view(),
+        name='account_signup_invite'
+    ),
+    # Company
+    path(
         _('company/'),
         views.CompanyDetailView.as_view(),
         name='company_detail'
@@ -177,11 +183,6 @@ urlpatterns += [
         views.MessageFrameView.as_view(),
         name='message_frame'
     ),
-    path(
-        _('m/<pk>/'),
-        views.MessagePixelView.as_view(),
-        name='message_pixel'
-    ),
     # Notification
     path(
         _('notifications/read-all/'),
@@ -229,6 +230,11 @@ urlpatterns += [
         _('users/<int:pk>/change/'),
         views.UserUpdateView.as_view(),
         name='user_change'
+    ),
+    path(
+        _('users/<int:pk>/delete/'),
+        views.UserDeleteView.as_view(),
+        name='user_delete'
     ),
     path(
         _('users/<int:pk>/password/'),

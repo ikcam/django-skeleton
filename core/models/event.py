@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import validate_comma_separated_integer_list
 from django.db import models
-from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import activate, ugettext_lazy as _
@@ -96,7 +95,7 @@ class Event(AuditableMixin):
     class Meta:
         ordering = ['-date_creation']
         permissions = (
-            ('view_all_event', 'Can view all Event'),
+            ('view_all_event', 'Can view all event'),
         )
         verbose_name = _("event")
         verbose_name_plural = _("events")
@@ -107,12 +106,14 @@ class Event(AuditableMixin):
     def get_absolute_url(self):
         return reverse_lazy('panel:event_change', args=[self.pk])
 
-    def get_public_url(self):
+    def get_public_url(self, scheme=None, host=None):
         if not self.is_public:
             return
         return '{scheme}://{domain}{path}'.format(
-            scheme='http' if settings.DEBUG else 'https',
-            domain=self.company.domain,
+            scheme=(
+                scheme if scheme else 'http' if settings.DEBUG else 'https'
+            ),
+            domain=host if host else self.company.domain,
             path=reverse_lazy(
                 'public:event_public', args=[self.pk]
             )
@@ -217,17 +218,18 @@ class Event(AuditableMixin):
 
         activate(self.company.language)
 
-        html_template = get_template('public/event_email.html')
+        template_name = 'public/event_email.html'
         context = secure_settings()
         context['object'] = self
         context['turn'] = self.get_notify_display(turn)
-        content = html_template.render(context)
+
         subject = _("[%(company)s] Event reminder") % dict(
             company=self.company
         )
 
-        message = self.company.message_set.create(
-            content=content,
+        message = self.company.message_set.create_html_email(
+            template_name=template_name,
+            context=context,
             direction=DIRECTION_OUTBOUND,
             from_name=self.company.name,
             from_email=self.company.email,

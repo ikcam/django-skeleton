@@ -35,11 +35,17 @@ class CompanyRequiredMixin:
 
         permission_required = self.get_permission_required()
 
-        if permission_required and isinstance(permission_required, tuple):
-            if not user.has_company_perms(permission_required):
+        if permission_required and isinstance(
+            permission_required, (list, tuple)
+        ):
+            if not user.has_company_perms(
+                request.company, permission_required
+            ):
                 return self.handle_no_permission()
         elif permission_required:
-            if not user.has_company_perm(permission_required):
+            if not user.has_company_perm(
+                request.company, permission_required
+            ):
                 return self.handle_no_permission()
 
         return super().dispatch(request, *args, **kwargs)
@@ -323,7 +329,9 @@ class UserQuerySetMixin(CompanyQuerySetMixin):
                 permission_name.split('_')[-1]
             )
 
-            if self.request.user.has_company_perm(permission_name):
+            if self.request.user.has_company_perm(
+                self.request.company, permission_name
+            ):
                 return qs
 
         return qs.filter(**{

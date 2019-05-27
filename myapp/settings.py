@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     # Apps
     'core',
     'panel',
+    'public',
 ]
 
 MIDDLEWARE = [

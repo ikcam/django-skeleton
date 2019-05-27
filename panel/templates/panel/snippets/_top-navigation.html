@@ -7,30 +7,36 @@
       <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
     </div>
     <ul class="nav navbar-top-links navbar-right">
-      <li class="dropdown" id="remoteDropdownNotificacions">
-        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+      <li class="dropdown" ng-controller="NotificationListController">
+        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" ng-click="loadNotifications()">
           <i class="fa fa-bell"></i>
         </a>
-        <ul class="dropdown-menu dropdown-messages" ng-controller="RemoteController" ng-init="setUrl('?is_read=3&limit=5')">
-          <li ng-repeat="notification in data">
+        <ul class="dropdown-menu dropdown-messages">
+          <li class="text-center link-block" ng-if="notificationList.next">
+            <a href="#" ng-click="loadMore()"><i class="fas fa-plus-square"></i> {% trans "load more" %}</a>
+          </li>
+          <li class="text-center link-block" ng-if="loading">
+            <span class="text-muted"><i class="fas fa-spinner"></i> {% trans "loading..." %}</span>
+          </li>
+          <li ng-repeat="notification in notificationList.results">
             {% verbatim %}
-              <a href="{{ notification.actions.view.url }}">
-                <div class="dropdown-messages-box">
-                  <div class="media-body">
-                    <small class="pull-right">{{ notification.date_creation | amTimeAgo }}</small>
-                    <strong>{{ notification.model }}</strong> {{ notification.content }}<br>
-                    <small class="text-muted">{{ notification.date_creation | amDateFormat:'LLL' }}</small>
-                  </div>
+            <a href="{{ notification.actions.view.url }}">
+              <div class="dropdown-messages-box">
+                <div class="media-body">
+                  <small class="pull-right">{{ notification.date_creation | amTimeAgo }}</small>
+                  <strong>{{ notification.model }}</strong> {{ notification.content }}<br>
+                  <small class="text-muted">{{ notification.date_creation | amDateFormat:'LLL' }}</small>
                 </div>
-              </a>
+              </div>
+            </a>
             {% endverbatim %}
           </li>
-          <li ng-if="data.length > 0" class="divider"></li>
-          <li ng-if="data.length > 0">
+          <li class="divider"></li>
+          <li>
             <div class="text-center link-block">
-              <a href="{% url 'panel:notification_readall' %}?next={{ request.path }}">
+              <a href="#" ng-click="setReadAll()">
                 <i class="fa fa-bell"></i>
-                <strong>{% trans "read all notifications" %}</strong>
+                <strong>{% trans "mark all as read" %}</strong>
               </a>
             </div>
           </li>
@@ -44,18 +50,13 @@
         </ul>
       </li>
       <li class="dropdown visible-xs-inline-block" id="remoteDropdownTop">
-        <a class="dropdown-toggle" href="{% url 'panel:account_detail' %}" data-toggle="dropdown"><i class="fa fa-user"></i></a>
-        <ul class="dropdown-menu" ng-controller="RemoteController" ng-init="setUrl('')">
+        <a class="dropdown-toggle" href="{% url 'panel:account_detail' %}" data-toggle="dropdown"><i
+            class="fa fa-user"></i></a>
+        <ul class="dropdown-menu">
           {% if request.user.is_staff %}
-            <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
-            <li class="divider"></li>
+          <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
+          <li class="divider"></li>
           {% endif %}
-          {% verbatim %}
-          <li ng-repeat="company in data.colaborator_set">
-            <a href="{{ company.switch_url }}">{{ company.name }}</a>
-          </li>
-          {% endverbatim %}
-          <li class="divider" ng-if="data.colaborator_set.length > 0"></li>
           <li><a href="{% url 'panel:account_detail' %}">{% trans 'Profile' %}</a></li>
         </ul>
       </li>

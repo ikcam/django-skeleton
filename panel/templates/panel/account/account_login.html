@@ -5,23 +5,23 @@
 {% block title %}{% trans "Log in" %} {{ block.super }}{% endblock title %}
 
 {% block content %}
-  <div class="middle-box text-center loginscreen animated fadeInDown">
+<div class="middle-box text-center loginscreen animated fadeInDown">
+  <div>
     <div>
-      <div>
-        <h1 class="logo-name">{{ request.company.short_name }}</h1>
-      </div>
-      <h3>{% trans "Welcome to" %} {{ request.company.short_name }}</h3>
-      <p>{% trans "Please login." %}</p>
-
-      {% bootstrap_messages %}
-
-      <form class="m-t" method="post" role="form" action="" novalidate>
-        {% trans "Log in" as form_submit %}
-        {% include "panel/snippets/_form-simple.html" %}
-
-        <a href="{% url 'panel:account_password_reset' %}"><small>{% trans "Forgot password?" %}</small></a>
-      </form>
-      <p class="m-t"><small>{% include 'panel/snippets/_footer-text.html' %}</small></p>
+      <h1 class="logo-name">{{ request.company.short_name }}</h1>
     </div>
+    <h3>{% trans "Welcome to" %} {{ request.company.name }}</h3>
+    <p>{% trans "Please login." %}</p>
+
+    {% bootstrap_messages %}
+
+    <form class="m-t" method="post" role="form" action="" novalidate>
+      {% trans "Log in" as form_submit %}
+      {% include "panel/snippets/_form-simple.html" %}
+
+      <a href="{% url 'panel:account_password_reset' %}"><small>{% trans "Forgot password?" %}</small></a>
+    </form>
+    <p class="m-t"><small>{% include 'panel/snippets/_footer-text.html' %}</small></p>
   </div>
+</div>
 {% endblock content %}

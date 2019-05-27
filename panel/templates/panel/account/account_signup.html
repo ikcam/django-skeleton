@@ -1,0 +1,25 @@
+{% extends "panel/layout-blank.html" %}
+
+{% load bootstrap4 core_tags i18n %}
+
+{% block title %}{% trans "Sign up" %} {{ block.super }}{% endblock title %}
+
+{% block content %}
+<div class="middle-box text-center loginscreen animated fadeInDown">
+  <div>
+    <div>
+      <h1 class="logo-name">{{ request.company.short_name }}</h1>
+    </div>
+
+    <h3>{% trans "Welcome to" %} {{ request.company.name }}</h3>
+
+    {% bootstrap_messages %}
+
+    <form class="m-t" method="post" role="form" action="" novalidate>
+      {% trans "Sign up" as form_submit %}
+      {% include "panel/snippets/_form-simple.html" %}
+    </form>
+    <p class="m-t"><small>{% include 'panel/snippets/_footer-text.html' %}</small></p>
+  </div>
+</div>
+{% endblock content %}

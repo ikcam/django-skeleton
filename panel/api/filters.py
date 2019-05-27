@@ -28,3 +28,17 @@ class EventFilterSet(django_filters.FilterSet):
             Q(date_creation__lte=value) |
             Q(date_start__lte=value)
         )
+
+
+class NotificationFilterSet(django_filters.FilterSet):
+    is_read = django_filters.BooleanFilter(
+        field_name='date_read', method='filter_boolean'
+    )
+
+    class Meta:
+        fields = ('is_read', )
+        model = core.Notification
+
+    def filter_boolean(self, queryset, name, value):
+        name = '{}__isnull'.format(name)
+        return queryset.filter(**{name: not value})

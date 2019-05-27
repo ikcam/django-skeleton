@@ -6,7 +6,7 @@
  */
 
 
-$(document).ready(function () {
+$(document).ready(function() {
 
 
     // Fast fix bor position issue with Propper.js

@@ -1,14 +1,12 @@
-import hashlib
-import random
-
 from django.db import models
-from django.template.loader import get_template
 from django.urls import reverse_lazy
-from django.utils import timezone
-from django.utils.translation import activate, ugettext_lazy as _
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.utils.translation import ugettext_lazy as _
 
 from core.constants import LEVEL_ERROR
 from core.models.mixins import AuditableMixin, get_active_mixin
+from core.tokens import default_token_generator
 
 
 class Invite(get_active_mixin(editable=True), AuditableMixin):
@@ -27,10 +25,6 @@ class Invite(get_active_mixin(editable=True), AuditableMixin):
     )
     roles = models.ManyToManyField(
         'core.Role', blank=True, verbose_name=_("roles")
-    )
-    activation_key = models.CharField(
-        max_length=255, blank=True, null=True, editable=False,
-        verbose_name=_("activation key")
     )
     user = models.OneToOneField(
         'core.User', blank=True, null=True, editable=False,
@@ -55,51 +49,37 @@ class Invite(get_active_mixin(editable=True), AuditableMixin):
 
     @property
     def action_list(self):
-        if self.user:
-            return
-        return ('send', 'delete')
+        return ('send', 'delete') if not self.user else None
 
-    @property
     def is_send(self):
         return True if self.date_send else False
+    is_send.boolean = True
 
-    def key_generate(self):
-        if self.activation_key:
-            return
-
-        salt = hashlib.sha1(
-            str(random.random()).encode("utf-8")
-        ).hexdigest()[:5]
-
-        self.activation_key = hashlib.sha1(
-            salt.encode("utf-8") + 'invite-{}'.format(self.pk).encode("utf-8")
-        ).hexdigest()
-
-    def send(self, **kwargs):
+    def send(self, scheme, host, **kwargs):
         if self.user:
-            return (LEVEL_ERROR, _("Invite was used already."))
+            return LEVEL_ERROR, _("Invite was used already.")
 
-        self.key_generate()
-        self.date_send = timezone.now()
-        self.save(update_fields=['activation_key', 'date_send'])
-
-        activate(self.company.language)
-
-        content_template = get_template('public/invite_email.html')
-        content = content_template.render({'object': self})
+        context = dict(
+            object=self,
+            scheme=scheme,
+            host=host,
+            uid=urlsafe_base64_encode(force_bytes(self.pk)),
+            token=default_token_generator.make_token(self)
+        )
         subject = _(
             "You have receive an invitation to join %(company)s"
         ) % dict(
             company=self.company
         )
 
-        message = self.company.message_set.create(
+        message = self.company.message_set.create_html_email(
             from_name=self.company.name,
             from_email=self.company.email,
             model=self,
             to_email=self.email,
             subject=subject,
-            content=content,
+            template_name='panel/invite/invite_email.html',
+            context=context,
             user=kwargs.get('user', None),
         )
-        return message.send()
+        return message.send(scheme=scheme, host=host)

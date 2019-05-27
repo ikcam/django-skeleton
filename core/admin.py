@@ -39,6 +39,7 @@ admin.site.unregister(Group)
 
 @admin.register(Colaborator)
 class ColaboratorAdmin(admin.ModelAdmin):
+    filter_horizontal = ('roles', 'permissions')
     list_display = ('user', 'company', 'date_creation', 'is_active', )
     list_filter = ('company', )
 
@@ -139,6 +140,11 @@ class UserAdmin(UserAdmin):
     list_filter = (
         'is_staff', 'is_superuser', 'is_active', 'company'
     )
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return ()
+        return super().get_inline_instances(request, obj)
 
 
 TokenAdmin.raw_id_fields = ('user',)

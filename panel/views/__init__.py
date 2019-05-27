@@ -9,7 +9,8 @@ from panel.views.account import (
     AccountPasswordResetConfirmView,
     AccountPasswordResetDoneView,
     AccountPasswordResetView,
-    AccountUpdateView
+    AccountUpdateView,
+    AccountSignupInviteView
 )
 from panel.views.company import (
     CompanyActivateView,
@@ -41,8 +42,7 @@ from panel.views.link import (
 from panel.views.message import (
     MessageDetailView,
     MessageFrameView,
-    MessageListView,
-    MessagePixelView
+    MessageListView
 )
 from panel.views.notification import (
     NotificationDetailView,
@@ -57,6 +57,7 @@ from panel.views.role import (
 )
 from panel.views.user import (
     UserCreateView,
+    UserDeleteView,
     UserListView,
     UserPasswordView,
     UserPermissionsView,
@@ -76,6 +77,7 @@ __all__ = [
     'AccountPasswordResetDoneView',
     'AccountPasswordResetView',
     'AccountUpdateView',
+    'AccountSignupInviteView',
     'CompanyActivateView',
     'CompanyDetailView',
     'CompanyUpdateView',
@@ -107,6 +109,7 @@ __all__ = [
     'RoleListView',
     'RoleUpdateView',
     'UserCreateView',
+    'UserDeleteView',
     'UserListView',
     'UserPasswordView',
     'UserPermissionsView',

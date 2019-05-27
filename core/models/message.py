@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.db import models
+from django.template.engine import Context, Template
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -20,6 +21,19 @@ from core.models.mixins import AuditableMixin
 
 
 class MessageManager(models.Manager):
+    def create_html_email(self, subject, template_name, context, **kwargs):
+        activate(self.instance.language)
+
+        content_template = get_template(template_name)
+        content = content_template.render(context)
+        subject = Template(subject).render(Context(context))
+
+        return self.create(
+            content=content,
+            subject=subject,
+            **kwargs
+        )
+
     def read_all(self):
         return self.filter(
             direction=DIRECTION_INBOUND,
@@ -98,6 +112,7 @@ class Message(AuditableMixin):
     content = models.TextField(
         verbose_name=_("content")
     )
+
     objects = MessageManager()
 
     class Meta:
@@ -213,18 +228,18 @@ class Message(AuditableMixin):
         email.attach_alternative(content_html, 'text/html')
         return email.send() > 0
 
-    def send(self):
-        return self._send_email()
+    def send(self, *args, **kwargs):
+        return self._send_email(*args, **kwargs)
 
-    def _send_email(self):
+    def _send_email(self, scheme=None, host=None, **kwargs):
         if self.is_send():
             return LEVEL_ERROR, _("Message was sent already.")
 
         activate(self.company.language)
-        content_raw, content_html = self.set_links()
+        content_raw, content_html = self.set_links(scheme, host)
 
         if content_html:
-            content_html = self.set_pixel(content_html)
+            content_html = self.set_pixel(content_html, scheme, host)
 
         from_email = "%s <%s>" % (self.from_name, self.from_email)
         headers = {
@@ -255,7 +270,7 @@ class Message(AuditableMixin):
         else:
             return LEVEL_ERROR, _("An error has ocurred.")
 
-    def set_links(self):
+    def set_links(self, scheme=None, host=None):
         if self.is_html():
             content_html = self.content
             regex = re.compile(HREF_REGEX, re.IGNORECASE)
@@ -269,7 +284,9 @@ class Message(AuditableMixin):
                     company=self.company,
                     destination=destination,
                 )
-                replace = href.replace(destination, link.get_public_url())
+                replace = href.replace(
+                    destination, link.get_public_url(scheme, host)
+                )
                 content_html = content_html.replace(href, replace)
         else:
             content_html = None
@@ -285,20 +302,24 @@ class Message(AuditableMixin):
                 company=self.company,
                 destination=destination,
             )
-            replace = href.replace(destination, link.get_public_url())
+            replace = href.replace(
+                destination, link.get_public_url(scheme, host)
+            )
             content_raw = content_raw.replace(href, replace)
 
         return content_raw, content_html
 
-    def set_pixel(self, content):
+    def set_pixel(self, content, scheme=None, host=None):
         bs_content = BeautifulSoup(content, "html.parser")
         pixel = bs_content.new_tag(
             'img',
             alt='x',
             height='1px',
             src='{scheme}://{domain}{path}'.format(
-                scheme='http' if settings.DEBUG else 'https',
-                domain=self.company.domain,
+                scheme=(
+                    scheme if scheme else 'http' if settings.DEBUG else 'https'
+                ),
+                domain=host if host else self.company.domain,
                 path=reverse_lazy(
                     'public:message_pixel', args=[self.pk]
                 )

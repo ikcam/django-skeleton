@@ -19,6 +19,10 @@ urlpatterns = [
         include(('core.api.urls', 'api'), namespace='api')
     ),
     path(
+        '',
+        include(('public.urls', 'public'), namespace='public')
+    ),
+    path(
         _('panel/'),
         include(('panel.urls', 'panel'), namespace='panel')
     ),

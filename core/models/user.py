@@ -70,9 +70,6 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['username', ]
-        permissions = (
-            ('remove_user', 'Can remove user'),
-        )
         verbose_name = _('user')
         verbose_name_plural = _('user')
 
@@ -90,7 +87,7 @@ class User(AbstractUser):
         return reverse_lazy('panel:user_list')
 
     def action_list(self):
-        return ('change', )
+        return ('permissions', 'change', 'delete')
 
     def as_colaborator(self, company):
         if any([self.is_staff, self.is_superuser]):
@@ -192,14 +189,13 @@ class User(AbstractUser):
         email.add_context_data('object', self)
         return email.send()
 
-    @cached_property
-    def perms(self):
-        if not self.company or not self.company.is_active:
+    def get_perms(self, company):
+        if not company or not company.is_active:
             return []
 
         try:
             role_perms = self.colaborator_set \
-                .get(company=self.company, is_active=True) \
+                .get(company=company, is_active=True) \
                 .roles.all() \
                 .select_related('permissions__content_type') \
                 .values(
@@ -208,7 +204,7 @@ class User(AbstractUser):
                 )
 
             user_perms = self.colaborator_set \
-                .get(company=self.company, is_active=True) \
+                .get(company=company, is_active=True) \
                 .permissions.all() \
                 .select_related('content_type') \
                 .values('content_type__app_label', 'codename')
@@ -259,36 +255,33 @@ class User(AbstractUser):
                 destination=destination,
             )
 
-    def companies_available(self):
-        return self.colaborator_set.filter(
-            is_active=True
-        ).exclude(company_id=self.company.pk)
-
     def notifications_unread(self):
         return self.notification_set.filter(
             company=self.company,
             date_read__isnull=True
         )
 
-    def has_company_perm(self, perm, obj=None):
+    def has_company_perm(self, company, perm, obj=None):
         if self.is_superuser:
             return True
         elif self.is_staff:
             return self.has_perm(perm, obj)
-        elif self == self.company.user:
+        elif self == company.user:
             return True
 
-        return perm in self.perms
+        return perm in self.get_perms(company)
 
-    def has_company_perms(self, perm_list, obj=None):
+    def has_company_perms(self, company, perm_list, obj=None):
         if self.is_superuser:
             return True
         elif self.is_staff:
             return self.has_perms(perm_list, obj)
-        elif self == self.company.user:
+        elif self == company.user:
             return True
 
-        return all(self.has_company_perm(perm, obj) for perm in perm_list)
+        return all(
+            self.has_company_perm(company, perm, obj) for perm in perm_list
+        )
 
 
 def post_save_user(sender, instance, created, **kwargs):

@@ -21,11 +21,11 @@ ACTIONS = {
         'icon': 'trash',
         'permission_prefix': 'delete',
     },
-    'remove': {
-        'title': _("Remove"),
-        'level': 'danger',
-        'icon': 'remove',
-        'permission_prefix': 'remove',
+    'permissions': {
+        'title': _("Permissions"),
+        'level': 'info',
+        'icon': 'wrench',
+        'permission_prefix': 'change',
     },
     'send': {
         'title': _("Send"),

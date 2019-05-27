@@ -67,6 +67,39 @@ class AccountPasswordResetForm(PasswordResetForm):
             )
 
 
+class AccountSignupInviteForm(UserCreationForm):
+    email = forms.EmailField(disabled=True)
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+
+    class Meta:
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'password1',
+            'password2'
+        )
+        model = core.User
+
+    def __init__(self, invite, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.invite = invite
+        self.fields['email'].initial = self.invite.email
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.invite.email
+        if commit:
+            user.save()
+            self.invite.user = user
+            self.invite.save(update_fields=['user'])
+            self.invite.deactivate()
+            colaborator, created = user.colaborator_set.get_or_create(
+                company=self.invite.company
+            )
+            for role in self.invite.roles.all():
+                colaborator.roles.add(role)
+        return user
+
+
 class CompanyForm(forms.ModelForm):
     domain = forms.CharField(disabled=True)
     email = forms.EmailField(disabled=True)
@@ -85,6 +118,39 @@ class CompanyForm(forms.ModelForm):
             'address': forms.TextInput,
             'address_2': forms.TextInput,
         }
+
+
+def get_colaborator_form(company):
+    class ModelForm(forms.ModelForm):
+        roles = forms.ModelMultipleChoiceField(
+            queryset=company.role_set.all(),
+            required=False
+        )
+        permissions = forms.ModelMultipleChoiceField(
+            queryset=company.permission_queryset,
+            required=False
+        )
+
+        class Media:
+            css = {
+                'all': (
+                    'node_modules/bootstrap-duallistbox/'
+                    'dist/bootstrap-duallistbox.min.css',
+                ),
+            }
+            js = (
+                'node_modules/bootstrap-duallistbox/'
+                'dist/jquery.bootstrap-duallistbox.min.js',
+                'panel/js/colaborator_form.js'
+            )
+
+        class Meta:
+            fields = (
+                'is_active', 'roles', 'permissions'
+            )
+            model = core.Colaborator
+
+    return ModelForm
 
 
 def get_event_form(company):
@@ -205,7 +271,6 @@ class LinkForm(forms.ModelForm):
 def get_role_form(company):
     class ModelForm(forms.ModelForm):
         permissions = forms.ModelMultipleChoiceField(
-            label=_("Permissions"),
             queryset=company.permission_queryset,
             required=False,
         )
@@ -220,7 +285,7 @@ def get_role_form(company):
             js = (
                 'node_modules/bootstrap-duallistbox/'
                 'dist/jquery.bootstrap-duallistbox.min.js',
-                'js/role_form.js',
+                'panel/js/role_form.js',
             )
 
         class Meta:
@@ -255,6 +320,10 @@ class UserCreateForm(UserCreationForm):
         )
         model = core.User
 
+    def __init__(self, company, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.company = company
+
     def clean_email(self):
         data = self.cleaned_data['email']
 
@@ -264,6 +333,15 @@ class UserCreateForm(UserCreationForm):
             )
 
         return data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        if commit:
+            user.save()
+            user.colaborator_set.get_or_create(company=self.company)
+
+        return user
 
 
 class UserUpdateForm(UserChangeForm):

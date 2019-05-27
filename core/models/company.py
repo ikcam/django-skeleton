@@ -290,6 +290,10 @@ class Company(get_active_mixin(editable=True), AuditableMixin):
             'content_type__app_label', 'content_type', 'codename'
         ).select_related('content_type')
 
+    @property
+    def short_name(self):
+        return '{}+'.format(self.name[:2].upper())
+
 
 def post_save_company(sender, instance, created, **kwargs):
     if created:

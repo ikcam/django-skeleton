@@ -1,6 +1,5 @@
 import uuid
 
-from django.conf import settings
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.functional import cached_property
@@ -26,16 +25,15 @@ class Link(get_active_mixin(editable=True), AuditableMixin):
         'core.User', editable=False, blank=True, null=True,
         db_index=True, on_delete=models.SET_NULL, verbose_name=_("user")
     )
-    token = models.CharField(
-        max_length=150, blank=True, null=True, editable=False,
-        verbose_name=_("token")
-    )
     destination = models.URLField(
         verbose_name=_("destination")
     )
 
     class Meta:
         ordering = ['-date_creation', ]
+        permissions = (
+            ('view_all_link', 'Can view all link'),
+        )
         verbose_name = _("link")
         verbose_name_plural = _("links")
 
@@ -47,11 +45,11 @@ class Link(get_active_mixin(editable=True), AuditableMixin):
     def get_absolute_url(self):
         return reverse_lazy('panel:link_detail', args=[self.pk])
 
-    def get_public_url(self):
+    def get_public_url(self, scheme=None, host=None):
         return '{scheme}://{domain}{path}'.format(
-            scheme='http' if settings.DEBUG else 'https',
-            domain=self.company.domain,
-            path=reverse_lazy('panel:link_public', args=[self.pk])
+            scheme=scheme if scheme else 'https',
+            domain=host if host else self.company.domain,
+            path=reverse_lazy('public:link_detail', args=[self.pk])
         )
 
     @property
@@ -69,5 +67,5 @@ class Link(get_active_mixin(editable=True), AuditableMixin):
     def total_visits(self):
         return self.visit_set.all().count()
 
-    def visit_create(self, ip_address):
+    def visit_create(self, ip_address, **kwargs):
         return self.visit_set.create(ip_address=ip_address)

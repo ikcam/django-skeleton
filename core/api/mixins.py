@@ -94,7 +94,9 @@ class CompanyReadOnlyViewSet(
 
         if (
             not self.get_bypass_permissions() and
-            not request.user.has_company_perm(permission_name)
+            not request.user.has_company_perm(
+                self.request.company, permission_name
+            )
         ):
             return self.handle_no_permission()
 
@@ -103,7 +105,9 @@ class CompanyReadOnlyViewSet(
     def retrieve(self, request, *args, **kwargs):
         permission_name = self.get_permission_name('view')
 
-        if not request.user.has_company_perm(permission_name):
+        if not request.user.has_company_perm(
+            self.request.company, permission_name
+        ):
             return self.handle_no_permission()
 
         return super().retrieve(request, *args, **kwargs)

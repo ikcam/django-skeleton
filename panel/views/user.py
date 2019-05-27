@@ -1,9 +1,12 @@
 from django.contrib.auth.forms import SetPasswordForm
+from django.http import Http404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import (
+    CreateView, DeleteView, ListView, UpdateView
+)
 
 from boilerplate.mixins import (
-    ActionListMixin, CreateMessageMixin, UpdateMessageMixin
+    ActionListMixin, CreateMessageMixin, DeleteMessageMixin, UpdateMessageMixin
 )
 
 from core.models import Colaborator, User
@@ -46,14 +49,28 @@ class UserCreateView(
     success_url = reverse_lazy("panel:user_list")
     permission_required = 'core:add_user'
 
-    def form_valid(self, form):
-        form.instance.first_name = form.cleaned_data.get('first_name')
-        form.instance.last_name = form.cleaned_data.get('last_name')
-        form.instance.email = form.cleaned_data.get('email')
-        form.instance.company = self.request.company
-        form.instance.language = self.request.company.language
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['company'] = self.request.company
+        return kwargs
 
-        return super().form_valid(form)
+
+class UserDeleteView(
+    CompanyRequiredMixin, DeleteMessageMixin, DeleteView
+):
+    model = Colaborator
+    permission_required = 'core:delete_user'
+    template_name = 'panel/user/user_form.html'
+    success_url = reverse_lazy("panel:user_list")
+
+    def get_object(self):
+        try:
+            return self.model._default_manager.get(
+                company=self.request.company,
+                user=self.kwargs.get('pk')
+            )
+        except self.model.DoesNotExist:
+            raise Http404
 
 
 class UserUpdateView(
@@ -118,7 +135,16 @@ class UserPermissionsView(
     model = Colaborator
     permission_required = 'core:change_user'
     success_url = reverse_lazy('panel:user_list')
-    template_name = 'public/user_form.html'
+    template_name = 'panel/user/user_form.html'
 
     def get_form_class(self):
         return forms.get_colaborator_form(self.request.company)
+
+    def get_object(self):
+        try:
+            return self.model._default_manager.get(
+                company=self.request.company,
+                user=self.kwargs.get('pk')
+            )
+        except self.model.DoesNotExist:
+            raise Http404

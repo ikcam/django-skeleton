@@ -33,17 +33,17 @@ def create_default_company(
         # # and #16353. This can also crop up outside of tests - see #15346.
         if verbosity >= 2:
             print("Creating example.com Company and admin User objects")
-        User(
-            pk=1,
+        user = User(
             username="admin",
             email="example@example.com",
             is_superuser=True,
             is_staff=True,
             password=make_password('admin')
-        ).save(using=using)
+        )
+        user.save(using=using)
         Company(
             pk=getattr(settings, 'COMPANY_ID', 1),
-            user_id=1,
+            user=user,
             domain="example.com",
             name="example.com",
             email="example@example.com"

@@ -23,14 +23,3 @@ class MessageListView(CompanyQuerySetMixin, ListView):
     paginate_by = 30
     permission_required = 'core:view_message'
     template_name = 'panel/message/message_list.html'
-
-
-class MessagePixelView(
-    DetailView
-):
-    model = Message
-
-    def get(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.set_read()
-        return HttpResponse(PIXEL_GIF_DATA, content_type='image/gif')
