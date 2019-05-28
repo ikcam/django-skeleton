@@ -159,7 +159,6 @@ def get_event_form(company):
             required=False,
             widget=forms.DateTimeInput(
                 attrs={
-                    'data-toggle': 'datetimepicker',
                     'addon_after': (
                         '<span class="glyphicon glyphicon-calendar"></span>'
                     ),
@@ -170,7 +169,6 @@ def get_event_form(company):
             required=False,
             widget=forms.DateTimeInput(
                 attrs={
-                    'data-toggle': 'datetimepicker',
                     'addon_after': (
                         '<span class="glyphicon glyphicon-calendar"></span>'
                     ),

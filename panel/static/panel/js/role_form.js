@@ -1,6 +1,7 @@
-jQuery(document).ready(function($){
-    $('#id_permissions').bootstrapDualListbox({
-        moveOnSelect: false,
-        selectorMinimalHeight: 200,
-    });
-});
+/* global jQuery */
+jQuery(document).ready(function ($) {
+  $('#id_permissions').bootstrapDualListbox({
+    moveOnSelect: false,
+    selectorMinimalHeight: 200
+  })
+})
