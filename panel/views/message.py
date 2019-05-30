@@ -1,7 +1,5 @@
-from django.http import HttpResponse
 from django.views.generic import DetailView, ListView
 
-from core.constants import PIXEL_GIF_DATA
 from core.models import Message
 from core.views.mixins import CompanyQuerySetMixin
 

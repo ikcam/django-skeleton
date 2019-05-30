@@ -54,7 +54,7 @@ class Link(get_active_mixin(editable=True), AuditableMixin):
 
     @property
     def action_list(self):
-        if self.is_open:
+        if self.is_open():
             return
 
         return ('change', 'delete')

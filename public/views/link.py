@@ -10,6 +10,13 @@ from core.utils import get_client_ip
 class LinkDetailView(DetailView):
     model = Link
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(
+            is_active=True,
+            company=self.request.company
+        )
+
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
         ip = get_client_ip(request)

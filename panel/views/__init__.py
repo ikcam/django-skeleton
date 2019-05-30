@@ -36,8 +36,7 @@ from panel.views.link import (
     LinkDetailView,
     LinkCreateView,
     LinkUpdateView,
-    LinkDeleteView,
-    LinkPublicView
+    LinkDeleteView
 )
 from panel.views.message import (
     MessageDetailView,
@@ -46,8 +45,7 @@ from panel.views.message import (
 )
 from panel.views.notification import (
     NotificationDetailView,
-    NotificationListView,
-    NotificationReadAllView
+    NotificationListView
 )
 from panel.views.role import (
     RoleCreateView,
@@ -96,14 +94,11 @@ __all__ = [
     'LinkCreateView',
     'LinkUpdateView',
     'LinkDeleteView',
-    'LinkPublicView',
     'MessageDetailView',
     'MessageFrameView',
     'MessageListView',
-    'MessagePixelView',
     'NotificationDetailView',
     'NotificationListView',
-    'NotificationReadAllView',
     'RoleCreateView',
     'RoleDeleteView',
     'RoleListView',

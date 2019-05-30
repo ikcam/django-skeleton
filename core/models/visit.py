@@ -12,7 +12,7 @@ class Visit(AuditableMixin):
         verbose_name=_("id")
     )
     link = models.ForeignKey(
-        'core.Link', editable=False, on_delete=models.CASCADE,
+        'core.Link', editable=False, on_delete=models.PROTECT,
         db_index=True, verbose_name=_("link")
     )
     ip_address = models.GenericIPAddressField(

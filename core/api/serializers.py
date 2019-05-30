@@ -25,7 +25,7 @@ class ActionSerializer(serializers.ModelSerializer):
         for action in object.action_list:
             action_details = ACTIONS[action]
             app_name = object._meta.app_label
-            app_name = app_name if app_name != 'core' else 'public'
+            app_name = app_name if app_name != 'core' else 'panel'
             args = []
             model = object.__class__.__name__.lower()
             parent = None

@@ -162,11 +162,6 @@ urlpatterns += [
         views.LinkDeleteView.as_view(),
         name='link_delete'
     ),
-    path(
-        _('l/<pk>/'),
-        views.LinkPublicView.as_view(),
-        name='link_public'
-    ),
     # Message - messages - message
     path(
         _('messages/'),
@@ -185,9 +180,9 @@ urlpatterns += [
     ),
     # Notification
     path(
-        _('notifications/read-all/'),
-        views.NotificationReadAllView.as_view(),
-        name='notification_readall'
+        _('notifications/'),
+        views.NotificationListView.as_view(),
+        name='notification_list'
     ),
     path(
         _('notifications/<pk>/'),

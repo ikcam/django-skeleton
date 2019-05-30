@@ -9,16 +9,16 @@
     <table class="table table-hover table-striped">
       <thead>
         <tr>
-          <th>{% trans "Destination" %}</th>
-          <th>{% trans "Creation date" %}</th>
-          <th class="text-center">{% trans "Open" %}</th>
-          <th class="text-right">{% trans "Total visits" %}</th>
+          <th scope="col">{% trans "Destination" %}</th>
+          <th scope="col">{% trans "Creation date" %}</th>
+          <th scope="col" class="text-center">{% trans "Open" %}</th>
+          <th scope="col" class="text-right">{% trans "Total visits" %}</th>
         </tr>
       </thead>
       <tbody>
         {% verbatim %}
         <tr ng-repeat="link in data.results">
-          <td><a href="{{ link.action_list.view.url }}">{{ link.destination }}</a></td>
+          <th scope="row"><a href="{{ link.action_list.view.url }}">{{ link.destination }}</a></th>
           <td>{{ link.date_creation | amTimeAgo }}</td>
           <td class="text-center">
             <span ng-if="!link.is_open" class="glyphicon glyphicon-remove text-danger"></span>
