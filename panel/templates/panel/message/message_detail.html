@@ -1,0 +1,92 @@
+{% extends "panel/base/detail.html" %}
+
+{% load i18n static %}
+
+{% block ngApps %}{{ block.super }},RemoteTable{% endblock ngApps %}
+
+{% block content %}
+<div class="ibox">
+  <div class="ibox-title">
+    <h5>{% trans "Details" %}</h5>
+  </div>
+  <div class="ibox-content">
+    <table class="table table-borderless table-sm">
+      <tbody>
+        <tr>
+          <th class="w-25 text-right">{% trans "User" %}</th>
+          <td>{{ object.user|default_if_none:'' }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "Creation date" %}</th>
+          <td><span data-toggle="tooltip"
+              title="{{ object.date_creation|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</span></td>
+        </tr>
+        {% if object.model %}
+        <tr>
+          <th class="w-25 text-right">{% trans "Modification date" %}</th>
+          <td><span data-toggle="tooltip"
+              title="{{ object.date_modification|date:'DATETIME_FORMAT' }}">{{ object.date_creation|timesince }}</span>
+          </td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{{ object.content_type }}</th>
+          <td><a href="{{ object.model.get_absolute_url }}">{{ object.model }}</a></td>
+        </tr>
+        {% endif %}
+        <tr>
+          <th class="w-25 text-right">{% trans "Status" %}</th>
+          <td><span class="label label-default">{{ object.status }}</span></td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "Direction" %}</th>
+          <td>{{ object.get_direction_display }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "From" %}</th>
+          <td>{{ object.from_ }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "To" %}</th>
+          <td>{{ object.to }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "CC" %}</th>
+          <td>{{ object.to_email_cc }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "BCC" %}</th>
+          <td>{{ object.to_email_bcc }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "Reply to" %}</th>
+          <td>{{ object.reply_to_email }}</td>
+        </tr>
+        <tr>
+          <th class="w-25 text-right">{% trans "Subject" %}</th>
+          <td>{{ object.subject }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="ibox float-e-margins">
+  <div class="ibox-title">
+    <h5>{% trans "Content" %}</h5>
+  </div>
+  <div class="ibox-content">
+    {% if object.is_html %}
+    <iframe src="{% url 'panel:message_frame' object.pk %}" width="100%" height="500px" frameborder="0"></iframe>
+    {% else %}
+    <pre>{{ object.content_raw }}</pre>
+    {% endif %}
+  </div>
+</div>
+
+{% include "panel/blocks/link_list.html" %}
+{% endblock %}
+
+
+{% block scripts_footer %}
+<script src="{% static 'panel/js/remote-table.js' %}"></script>
+{% endblock scripts_footer %}

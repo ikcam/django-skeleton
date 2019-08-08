@@ -1,34 +1,79 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models import signals
+from django.http.request import split_domain_port
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.utils.functional import cached_property
-from django.utils.text import slugify
-from django.utils.translation import activate, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
-from dateutil.relativedelta import relativedelta
+from boilerplate.mail import SendEmail
 from django_countries.fields import CountryField
 
 from core.constants import (
-    MODULE_LIST, MODULE_PRICE_LIST, RECURRING_CICLE, RECURRING_FEE
+    LEVEL_ERROR, LEVEL_SUCCESS, MODULE_LIST, MODULE_PRICE_LIST
 )
 from core.context_processors import settings as secure_settings
-from core.mixins import AuditableMixin
-from core.validators import validate_comma_separated_str_list
+from core.models.mixins import AuditableMixin, get_active_mixin
+from core.validators import validate_domain, validate_comma_separated_str_list
 
 
-class Company(AuditableMixin):
+COMPANY_CACHE = {}
+
+
+class CompanyManager(models.Manager):
+    use_in_migrations = True
+
+    def _get_company_by_id(self, company_id):
+        if company_id not in COMPANY_CACHE:
+            company = self.get(pk=company_id)
+            COMPANY_CACHE[company_id] = company
+        return COMPANY_CACHE[company_id]
+
+    def _get_company_by_request(self, request):
+        host = request.get_host()
+        try:
+            if host not in COMPANY_CACHE:
+                COMPANY_CACHE[host] = self.get(domain__iexact=host)
+            return COMPANY_CACHE[host]
+        except self.model.DoesNotExist:
+            domain, port = split_domain_port(host)
+            if domain not in COMPANY_CACHE:
+                COMPANY_CACHE[domain] = self.get(domain__iexact=domain)
+            return COMPANY_CACHE[domain]
+
+    def get_current(self, request=None):
+        from django.conf import settings
+        if getattr(settings, 'COMPANY_ID', ''):
+            company_id = settings.COMPANY_ID
+            return self._get_company_by_id(company_id)
+        elif request:
+            return self._get_company_by_request(request)
+
+        raise ImproperlyConfigured(
+            "You're using \"companies\" without having "
+            "set the COMPANY_ID setting. Create a site in your database and "
+            "set the COMPANY_ID setting or pass a request to "
+            "Company.objects.get_current() to fix this error."
+        )
+
+    def clear_cache(self):
+        """Clear the ``Company`` object cache."""
+        global COMPANY_CACHE
+        COMPANY_CACHE = {}
+
+    def get_by_natural_key(self, domain):
+        return self.get(domain=domain)
+
+
+class Company(get_active_mixin(editable=True), AuditableMixin):
     name = models.CharField(
         max_length=50, unique=True, verbose_name=_("name")
     )
-    slug = models.SlugField(
-        editable=False, unique=True, verbose_name=_("slug")
-    )
     user = models.ForeignKey(
-        'core.User', related_name='company_created_set',
-        db_index=True, on_delete=models.CASCADE, verbose_name=_("user")
+        'core.User', db_index=True, on_delete=models.CASCADE,
+        verbose_name=_("user")
     )
     email = models.EmailField(
         verbose_name=_("email")
@@ -70,8 +115,14 @@ class Company(AuditableMixin):
         validators=[validate_comma_separated_str_list],
         verbose_name=_("modules")
     )
-    custom_domain = models.URLField(
-        blank=True, null=True, verbose_name=_("custom domain")
+    domain = models.CharField(
+        max_length=255, validators=[validate_domain],
+        unique=True, verbose_name=_("custom domain")
+    )
+    users = models.ManyToManyField(
+        'core.User', blank=True,
+        through='Colaborator', related_name='+',
+        verbose_name=_("users")
     )
     # API Fields
     mailgun_email = models.EmailField(
@@ -83,6 +134,7 @@ class Company(AuditableMixin):
         verbose_name=_('mailgun password'),
         help_text=_("on mailgun: default password.")
     )
+    objects = CompanyManager()
 
     class Meta:
         ordering = ['name', ]
@@ -90,28 +142,11 @@ class Company(AuditableMixin):
         verbose_name_plural = _("companies")
 
     def __str__(self):
-        return "%s" % self.name
+        return self.name
 
     @property
     def action_list(self):
         return ('change', )
-
-    @classmethod
-    def check_all(cls):
-        for company in cls.objects.filter(is_active=True):
-            company.generate_next_invoice()
-            invoice = company.last_invoice
-
-            if (
-                invoice and
-                not invoice.is_payed and
-                timezone.now() > invoice.date_expiration
-            ):
-                company.deactivate()
-
-    @property
-    def domain(self):
-        return self.custom_domain or settings.SITE_URL
 
     @property
     def full_address(self):
@@ -129,7 +164,7 @@ class Company(AuditableMixin):
         return address
 
     def get_absolute_url(self):
-        return reverse_lazy('public:company_detail')
+        return reverse_lazy('panel:company_detail')
 
     def get_module_display(self, module):
         return dict(self.MODULE_LIST).get(module)
@@ -141,67 +176,30 @@ class Company(AuditableMixin):
         assert isinstance(module, str)
         return module in self.module_list
 
-    @cached_property
-    def last_invoice(self):
-        return self.core_invoice_set.all().first()
-
     @property
     def mailgun_available(self):
-        if self.mailgun_email and self.mailgun_password:
-            return True
-        return False
+        return all([self.mailgun_email, self.mailgun_password])
 
     def module_add(self, module, force=False, **kwargs):
         assert module in dict(MODULE_LIST), _(
             'Invalid module "%s"' % module
         )
-        assert not self.has_module(module), _(
-            'Module "%s" already added.' % module
-        )
-        if not force:
-            assert self.card_set.all().exists(), _(
-                "At least one credit card is required."
-            )
+
         module_name = self.get_module_display(module)
-        module_price = self.module_price(module)
+
+        if self.has_module(module):
+            return LEVEL_ERROR, _(
+                'Module "%s" already added.' % module_name
+            )
+
         module_list = self.module_list
-
-        if not force:
-            card = self.card_set.all().first()
-
-            try:
-                charge = card.charge(
-                    amount=module_price,
-                    description=module_name,
-                    email=self.email
-                )
-            except stripe.error.InvalidRequestError as e:
-                body = e.json_body
-                err = body.get('error', {'message', _("Unknown error.")})
-                return LEVEL_ERROR, err['message']
-            except stripe.error.CardError as e:
-                body = e.json_body
-                err = body.get('error', {'message', _("Unknown error.")})
-                return LEVEL_ERROR, err['message']
-
-            invoice = self.company_invoice_set.create(
-                description=module_name,
-                total=module_price,
-            )
-            invoice.payment_set.create(
-                api=card.api,
-                api_id=charge['id'],
-                total=float(charge['amount'])/100,
-            )
-
         module_list.append(module)
-        self.recurring_fee = (
-            float(self.recurring_fee or 0) + float(module_price or 0)
-        )
         self.modules = ','.join(module_list)
-        self.save(update_fields=['modules', 'recurring_fee'])
+        self.save(update_fields=['modules'])
 
-        return LEVEL_SUCCESS, _("Module added successfully.")
+        return LEVEL_SUCCESS, _(
+            'Module "%s" added successfully.'
+        ) % module_name
 
     @property
     def module_excluded(self):
@@ -220,12 +218,13 @@ class Company(AuditableMixin):
         assert module in dict(MODULE_LIST), _(
             'Invalid module "%s"' % module
         )
-        assert self.has_module(module), _(
-            'Module "%s" already not added.' % module
-        )
-
         module_name = self.get_module_display(module)
-        module_price = self.module_price(module)
+
+        if not self.has_module(module):
+            return LEVEL_ERROR, _(
+                'Module "%s" already not added.' % module_name
+            )
+
         module_list = self.module_list
         index = 0
         for mod in module_list:
@@ -234,16 +233,18 @@ class Company(AuditableMixin):
                 break
             index += 1
 
-        self.recurring_fee = (
-            float(self.recurring_fee or 0) - float(module_price or 0)
-        )
         self.modules = ','.join(module_list)
-        self.save(update_fields=['modules', 'recurring_fee'])
+        self.save(update_fields=['modules'])
 
-        return LEVEL_SUCCESS, _("Module removed successfully.")
+        return LEVEL_SUCCESS, _(
+            'Module removed successfully.'
+        ) % module_name
 
     def notify_admins(self):
         emails = [email for name, email in settings.MANAGERS]
+
+        if not emails:
+            return
 
         settings_secure = secure_settings()
         email = SendEmail(
@@ -257,7 +258,6 @@ class Company(AuditableMixin):
         response = email.send()
         return response > 0
 
-
     @cached_property
     def permission_queryset(self):
         perms = Permission.objects.all().exclude(
@@ -266,21 +266,18 @@ class Company(AuditableMixin):
             )
         ).exclude(
             content_type__app_label='core', content_type__model__in=(
-                'colaborator', 'notification', 'payment'
+                'colaborator', 'notification'
             )
         ).exclude(
             content_type__app_label='auth', content_type__model__in=(
-                'group', 'permission', 'colaborator'
+                'group', 'permission'
             )
         ).exclude(
             content_type__app_label='core', codename__in=(
                 'add_attachment', 'change_attachment', 'delete_attachment',
                 'add_company', 'delete_company',
-                'add_invoice', 'change_invoice', 'delete_invoice',
                 'add_message', 'change_message', 'delete_message',
-                'send_message',
-                'add_visit', 'change_visit', 'delete_visit',
-                'delete_user', 'view_user'
+                'add_visit', 'change_visit', 'delete_visit'
             )
         )
 
@@ -293,13 +290,9 @@ class Company(AuditableMixin):
             'content_type__app_label', 'content_type', 'codename'
         ).select_related('content_type')
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        return super().save(*args, **kwargs)
-
     @property
-    def switch_url(self):
-        return reverse_lazy('public:company_switch', args=[self.pk])
+    def short_name(self):
+        return '{}+'.format(self.name[:2].upper())
 
 
 def post_save_company(sender, instance, created, **kwargs):
@@ -313,4 +306,21 @@ def post_save_company(sender, instance, created, **kwargs):
         instance.notify_admins()
 
 
+def clear_company_cache(sender, **kwargs):
+    instance = kwargs['instance']
+    using = kwargs['using']
+    try:
+        del COMPANY_CACHE[instance.pk]
+    except KeyError:
+        pass
+    try:
+        del COMPANY_CACHE[
+            Company.objects.using(using).get(pk=instance.pk).domain
+        ]
+    except (KeyError, Company.DoesNotExist):
+        pass
+
+
+signals.pre_delete.connect(clear_company_cache, sender=Company)
+signals.pre_save.connect(clear_company_cache, sender=Company)
 signals.post_save.connect(post_save_company, sender=Company)

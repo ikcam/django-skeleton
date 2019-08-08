@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<nav class="nav nav-tabs">
+  {% with request.resolver_match as resolver_match %}
+    <li class="nav-item"><a class="nav-link {% if 'company_' in resolver_match.url_name %}active{% endif %}" href="{% url 'panel:company_detail' %}">{% trans "company" %}</a></li>
+    <li class="nav-item"><a class="nav-link {% if 'invite_' in resolver_match.url_name %}active{% endif %}" href="{% url 'panel:invite_list' %}">{% trans "invitations" %}</a></li>
+    <li class="nav-item"><a class="nav-link {% if 'role_' in resolver_match.url_name %}active{% endif %}" href="{% url 'panel:role_list' %}">{% trans "roles" %}</a></li>
+    <li class="nav-item"><a class="nav-link {% if 'user_' in resolver_match.url_name %}active{% endif %}" href="{% url 'panel:user_list' %}">{% trans "users" %}</a></li>
+  {% endwith %}
+</nav>

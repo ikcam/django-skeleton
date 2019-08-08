@@ -1,0 +1,58 @@
+{% load core_tags bootstrap4 i18n staticfiles %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {% block meta_header %}{% endblock meta_header %}
+
+    <title>{% block title %}| {{ request.company }}{% endblock title %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'node_modules/animate.css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block css_header %}{% endblock css_header %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {% block scripts_header %}{% endblock scripts_header %}
+  </head>
+  <body class="gray-bg">
+    {% if settings.FB_APP_ID %}
+        <script>
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId   : '{{ settings.FB_APP_ID }}',
+                    cookie  : true,
+                    xfbml   : true,
+                    version : 'v3.2'
+                });
+                FB.AppEvents.logPageView();
+            };
+
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/{{ LANGUAGE_CODE|lower }}_{{ LANGUAGE_CODE|upper }}/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    {% block scripts_footer %}{% endblock %}
+  </body>
+</html>

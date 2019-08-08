@@ -1,0 +1,35 @@
+{% extends "panel/layout-email.html" %}
+
+{% load i18n core_tags %}
+
+{% block content %}
+<tr>
+  <td class="content-block">
+    {% blocktrans %}You're receiving this email because you have been invited to join{% endblocktrans %}
+    {{ object.company }}.
+  </td>
+</tr>
+<tr>
+  <td class="content-block">
+    {% blocktrans %}Click on the following button to join {% endblocktrans %}{{ object.company }}.
+  </td>
+</tr>
+<tr>
+  <td class="aligncenter">
+    <a href="{{ scheme }}://{{ host }}{% url 'panel:account_signup_invite' uid token %}" class="btn-primary">
+      {% trans "Join now" %}
+    </a>
+  </td>
+</tr>
+<tr>
+  <td class="content-block">
+    {% blocktrans %}In case the upper button doesn't work you can click on the link bellow.{% endblocktrans %}
+  </td>
+</tr>
+<tr>
+  <td class="content-block">
+    <a
+      href="{{ scheme }}://{{ host }}{% url 'panel:account_signup_invite' uid token %}">{{ scheme }}://{{ host }}{% url 'panel:account_signup_invite' uid token %}</a>
+  </td>
+</tr>
+{% endblock content %}

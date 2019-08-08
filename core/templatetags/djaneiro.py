@@ -1,7 +1,5 @@
 from django import template
 from django.apps import apps
-from django.db.models.query import QuerySet
-from django.db.models.base import ModelBase
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import EMPTY_VALUES
@@ -30,6 +28,7 @@ def render(tag, content=None, **kwargs):
 
 
 def build_breadcrumb_item(**kwargs):
+    kwargs.update({'class': 'breadcrumb-item'})
     if kwargs.get('href', None):
         content = render('a', kwargs.pop('content'), href=kwargs.pop('href'))
     else:
@@ -47,12 +46,6 @@ def build_button(**kwargs):
     action_details = ACTIONS[kwargs['action']]
     href = build_url(**kwargs)
     icon = build_icon(action_details['icon'])
-    if kwargs['object']:
-        model_app = kwargs['object']._meta.app_label.lower()
-        model = kwargs['object'].__class__.__name__.lower()
-    elif kwargs['object_list'] is not None:
-        model_app = kwargs['object_list'].model._meta.app_label.lower()
-        model = kwargs['object_list'].model.__name__.lower()
     title = action_details['title']
     class_ = 'btn btn-%(size)s btn-%(level)s' % dict(
         size=kwargs['size'],
@@ -62,14 +55,6 @@ def build_button(**kwargs):
     inline = kwargs.get('inline', False)
     index = kwargs.get('index')
     total = kwargs.get('total')
-    permission_name = '{model_app}:{prefix}_{model}'.format(
-        model_app=model_app,
-        model=model,
-        prefix=action_details['permission_prefix'],
-    )
-
-    if not kwargs['user'].has_company_perm(permission_name):
-        return ''
 
     if inline:
         return render(
@@ -89,7 +74,7 @@ def build_button(**kwargs):
             )
             button_second = render(
                 'button',
-                content=render('span', '', **{'class': 'caret'}),
+                content=render('span', ''),
                 **{
                     'class': class_ + ' dropdown-toggle',
                     'data-toggle': 'dropdown',
@@ -168,6 +153,25 @@ def action_buttons(context, **kwargs):
     response_items = []
 
     for action in action_list:
+        if object:
+            model_app = object._meta.app_label.lower()
+            model = object.__class__.__name__.lower()
+        elif object_list is not None:
+            model_app = object_list.model._meta.app_label.lower()
+            model = object_list.model.__name__.lower()
+        action_details = ACTIONS[action] if action else None
+
+        permission_name = '{model_app}:{prefix}_{model}'.format(
+            model_app=model_app,
+            model=model,
+            prefix=action_details['permission_prefix'],
+        )
+
+        if not context['user'].has_company_perm(
+            context['request'].company, permission_name
+        ):
+            continue
+
         button = build_button(
             action=action,
             app_name=app_name,
@@ -178,7 +182,6 @@ def action_buttons(context, **kwargs):
             parent_object=parent_object,
             size=size,
             total=len(action_list),
-            user=context['request'].user,
         )
 
         if inline or index == 0:
@@ -190,11 +193,15 @@ def action_buttons(context, **kwargs):
     if inline:
         return mark_safe(response)
 
-    response_items = render(
-        'ul',
-        content=''.join(response_items),
-        **{'class': 'dropdown-menu dropdown-menu-right'}
-    )
+    if len(response_items) == 0:
+        response_items = ''
+    else:
+        response_items = render(
+            'ul',
+            content=''.join(response_items),
+            **{'class': 'dropdown-menu dropdown-menu-right'}
+        )
+
     return mark_safe(
         render(
             'div',
@@ -370,6 +377,7 @@ def sortable_column(context, **kwargs):
             href='?{}'.format(href)
         )
     )
+
 
 @register.filter(name='has_module')
 def has_module(company, module):

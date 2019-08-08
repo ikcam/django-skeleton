@@ -6,14 +6,19 @@ from rest_framework import mixins, viewsets
 
 
 class CompanyCreateMixin:
+    company_field = 'company'
+
+    def get_company_field(self):
+        return self.company_field
+
     def get_perform_create_kwargs(self):
         try:
             kwargs = super().get_perform_create_kwargs()
-        except Exception:
+        except AttributeError:
             kwargs = {}
 
         kwargs.update({
-            'company': self.request.user.company,
+            self.get_company_field(): self.request.company,
         })
 
         return kwargs
@@ -53,12 +58,12 @@ class CompanyReadOnlyViewSet(
         return self.related_properties
 
     def get_queryset(self):
-        if not self.company:
+        if not self.request.company:
             raise Exception(_("Company must be set."))
 
         qs = super().get_queryset()
         qs = qs.filter(**{
-            self.get_company_field(): self.company
+            self.get_company_field(): self.request.company
         })
 
         related_properties = self.get_related_properties()
@@ -80,9 +85,8 @@ class CompanyReadOnlyViewSet(
 
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs)
-        self.company = request.user.company
 
-        if not self.company.is_active:
+        if not self.request.company.is_active:
             return self.handle_no_permission()
 
     def list(self, request, *args, **kwargs):
@@ -90,7 +94,9 @@ class CompanyReadOnlyViewSet(
 
         if (
             not self.get_bypass_permissions() and
-            not request.user.has_company_perm(permission_name)
+            not request.user.has_company_perm(
+                self.request.company, permission_name
+            )
         ):
             return self.handle_no_permission()
 
@@ -99,7 +105,9 @@ class CompanyReadOnlyViewSet(
     def retrieve(self, request, *args, **kwargs):
         permission_name = self.get_permission_name('view')
 
-        if not request.user.has_company_perm(permission_name):
+        if not request.user.has_company_perm(
+            self.request.company, permission_name
+        ):
             return self.handle_no_permission()
 
         return super().retrieve(request, *args, **kwargs)

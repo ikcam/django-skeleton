@@ -1,14 +1,29 @@
+import uuid
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from core.constants import LEVEL_INFO, LEVEL_SUCCESS
-from core.mixins import AuditableMixin
+from core.constants import LEVEL_ERROR, LEVEL_SUCCESS
+from core.models.mixins import AuditableMixin
+
+
+class NotificationManager(models.Manager):
+    def set_all_read(self, company, user, *args, **kwargs):
+        return self.filter(
+            company=company,
+            user=user,
+            date_read__isnull=True
+        ).update(date_read=timezone.now())
 
 
 class Notification(AuditableMixin):
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     company = models.ForeignKey(
         'core.Company', editable=False, on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")
@@ -18,15 +33,16 @@ class Notification(AuditableMixin):
         db_index=True, verbose_name=_("user")
     )
     # Related model
-    contenttype = models.ForeignKey(
+    content_type = models.ForeignKey(
         'contenttypes.ContentType', editable=False,
         on_delete=models.CASCADE, db_index=True,
         verbose_name=_("content type")
     )
-    object_id = models.PositiveIntegerField(
-        blank=True, null=True, editable=False, verbose_name=_("object ID")
+    object_id = models.CharField(
+        blank=True, null=True, max_length=150, editable=False,
+        verbose_name=_("object id")
     )
-    model = GenericForeignKey('contenttype', 'object_id')
+    model = GenericForeignKey('content_type', 'object_id')
     # Hidden fields
     date_read = models.DateTimeField(
         blank=True, null=True, editable=False, verbose_name=_("read date")
@@ -41,6 +57,8 @@ class Notification(AuditableMixin):
         editable=False, verbose_name=_("destination")
     )
 
+    objects = NotificationManager()
+
     class Meta:
         ordering = ["-date_creation", ]
         verbose_name = _("notification")
@@ -50,35 +68,26 @@ class Notification(AuditableMixin):
         return "%s %s" % (self.model or self.contenttype, self.content)
 
     def get_absolute_url(self):
-        return reverse_lazy('public:notification_detail', args=[self.pk])
+        return reverse_lazy('panel:notification_detail', args=[self.pk])
 
-    @property
     def is_read(self):
         return True if self.date_read else False
+    is_read.boolean = True
 
     @property
     def parent(self):
-        if self.model:
-            return self.model
-
-    @classmethod
-    def set_read_all(cls, user):
-        user.notification_set.filter(
-            company=user.company,
-            date_read__isnull=True
-        ).update(date_read=timezone.now())
-        return (LEVEL_SUCCESS, _("All notifications were mark as read."))
+        return self.model if self.model else None
 
     def set_read(self):
-        if self.is_read:
-            return (LEVEL_INFO, _("Notification was read already."))
+        if self.is_read():
+            return LEVEL_ERROR, _("Notification is read already.")
         self.date_read = timezone.now()
         self.save(update_fields=['date_read'])
-        return (LEVEL_SUCCESS, _("Notification has been marked as read."))
+        return LEVEL_SUCCESS, _("Notification has been marked as read.")
 
     def set_unread(self):
-        if not self.is_read:
-            return (LEVEL_INFO, _("Notification is unread already."))
+        if not self.is_read():
+            return LEVEL_ERROR, _("Notification is unread already.")
         self.date_read = None
         self.save(update_fields=['date_read'])
-        return (LEVEL_SUCCESS, _("Notification has been marked as unread."))
+        return LEVEL_SUCCESS, _("Notification has been marked as unread.")

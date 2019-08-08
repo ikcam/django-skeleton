@@ -1,0 +1,21 @@
+{% extends 'panel/layout.html' %}
+
+{% load i18n %}
+
+{% block title %}{% trans "Change your account" %} {{ block.super }}{% endblock title %}
+
+{% block breadcrumb %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'panel:index' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'panel:account_detail' %}">{% trans "Your account" %}</a></li>
+      <li class="breadcrumb-item active"><strong>{% trans "Change your account" %}</strong></li>
+    </ol>
+  </nav>
+{% endblock breadcrumb %}
+
+{% block page_header %}<h2>{% trans "Change your account" %}</h2>{% endblock %}
+
+{% block content %}
+  {% include 'panel/snippets/_form.html' %}
+{% endblock content %}

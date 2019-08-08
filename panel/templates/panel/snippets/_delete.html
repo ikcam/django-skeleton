@@ -1,0 +1,38 @@
+{% load boilerplate djaneiro i18n %}
+
+<div class="ibox float-e-margins">
+  <div class="ibox-content">
+    {% if protected %}
+    <p>{% blocktrans %}Deleting the selected {{ objects_name }} would require deleting the following protected related
+      objects:{% endblocktrans %}</p>
+    <ul>
+      {% for obj in protected %}
+      <li>{{ obj }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>{% blocktrans %}Are you sure you want to delete the selected {{ objects_name }}? All of the following objects and
+      their related items will be deleted:{% endblocktrans %}</p>
+    <h3>{% trans "Summary" %}</h3>
+    <ul>
+      {% for model_name, object_count in model_count %}
+      <li>{{ model_name|capfirst }}: {{ object_count }}</li>
+      {% endfor %}
+    </ul>
+    <h3>{% trans "Objects" %}</h3>
+    {% for deletable_object in to_delete %}
+    <ul>{{ deletable_object|unordered_list }}</ul>
+    {% endfor %}
+    <div class="row">
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
+        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          {% trans 'Delete' %}</button>
+      </div>
+      <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-center">
+        <a class="btn btn-default" href="javascript:history.back(-1)"><span class="glyphicon glyphicon-remove"
+            aria-hidden="true"></span> {% trans 'Back' %}</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>

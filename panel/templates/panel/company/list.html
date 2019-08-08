@@ -1,0 +1,32 @@
+{% extends 'panel/layout.html' %}
+
+{% load boilerplate djaneiro i18n %}
+
+{% block title %}{{ object_list|queryset_model_name_plural }} {{ block.super }}{% endblock title %}
+
+{% block page_header %}<h2>{{ object_list|queryset_model_name_plural }}</h2>{% endblock %}
+
+{% block breadcrumb %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'panel:index' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'panel:company_detail' %}">{{ request.company }}</a></li>
+      <li class="breadcrumb-item active"><strong>{{ object_list|queryset_model_name_plural }}</strong></li>
+    </ol>
+  </nav>
+{% endblock breadcrumb %}
+
+{% block page_actions %}{% action_buttons %}{% endblock %}
+
+{% block content %}
+  {% include "panel/snippets/_company-nav.html" %}
+  <div class="tab-content">
+    <div class="tab-panel show active">
+      <div class="ibox">
+        <div class="ibox-content border-top-0">
+          {% block content_inner %}{% endblock content_inner %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

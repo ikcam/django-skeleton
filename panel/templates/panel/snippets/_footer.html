@@ -1,0 +1,13 @@
+{% load core_tags i18n %}
+
+
+{% if not view.is_popup %}
+  <div class="footer">
+    <div class="row">
+      <div class="col ml-auto">
+        <strong>{% trans "Copyright" %}</strong> &copy; {% now 'Y' %}.
+        {% include 'panel/snippets/_footer-text.html' %}
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -1,17 +1,12 @@
 import os
 
-from django.urls import reverse
-
 from myapp.settings import BASE_DIR, TIME_ZONE
 
 
 DEBUG = False
 
 
-ALLOWED_HOSTS = [
-    'myapp.com',
-    'www.myapp.com',
-]
+ALLOWED_HOSTS = ['*']
 
 
 ADMINS = [
@@ -50,7 +45,6 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 EMAIL_USE_SSL = True if os.getenv('EMAIL_USE_SSL') == 'True' else False
-
 
 
 LOGGING = {
@@ -122,14 +116,6 @@ CSRF_COOKIE_SECURE = True
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-SECURE_REDIRECT_EXEMPT = [
-    '/',
-    '/en/',
-    '/en/status/',
-    '/es/',
-    '/es/status/',
-]
-
 
 # Celery
 # http://docs.celeryproject.org/en/latest/django/index.html
@@ -139,12 +125,3 @@ CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_ACCEPT_CONTENT = ['application/json']
 
 CELERY_TIMEZONE = TIME_ZONE
-
-
-# Site info
-
-SITE_URL = 'https://myapp.com'
-
-SITE_NAME = 'My App'
-
-SITE_SHORT_NAME = 'MA+'

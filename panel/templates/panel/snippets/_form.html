@@ -1,0 +1,27 @@
+{% load bootstrap4 djaneiro i18n %}
+
+<form class="form" method="POST" action="" novalidate>
+    {% csrf_token %}
+
+    {% if form %}
+      {% with form_layout|default:'horizontal' as form_layout %}
+        <div class="ibox-content {% if formset_list %}mb-3{% endif %}">
+          {% bootstrap_form form layout=form_layout %}
+
+          {% if not formset_list %}
+            <div class="row pt-3">
+              <div class="col-md-9 offset-md-3">
+                <button type="submit" class="btn btn-primary" name="_save" value="{% trans 'submit' %}">{% trans 'submit' %}</button>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endwith %}
+
+      {% for formset in formset_list %}
+        {% include 'panel/snippets/_formset.html' with formset=formset %}
+      {% endfor %}
+    {% else %}
+      {% include 'panel/snippets/_delete.html' %}
+    {% endif %}
+</form>

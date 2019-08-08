@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from core.models.mixins import AuditableMixin, get_active_mixin
 
-class Colaborator(models.Model):
+
+class Colaborator(get_active_mixin(editable=True), AuditableMixin):
     user = models.ForeignKey(
         'core.User', on_delete=models.CASCADE,
         db_index=True, verbose_name=_("user")
@@ -10,12 +12,6 @@ class Colaborator(models.Model):
     company = models.ForeignKey(
         'core.Company', on_delete=models.CASCADE,
         db_index=True, verbose_name=_("company")
-    )
-    date_joined = models.DateTimeField(
-        auto_now=True, verbose_name=_("join date")
-    )
-    is_active = models.BooleanField(
-        default=True, verbose_name=_("active")
     )
     roles = models.ManyToManyField(
         'core.Role', blank=True, verbose_name=_("roles")
@@ -31,7 +27,7 @@ class Colaborator(models.Model):
         verbose_name_plural = _("colaborators")
 
     def __str__(self):
-        return "%s" % self.user
+        return str(self.user)
 
     def get_absolute_url(self):
         return self.parent.get_absolute_url()

@@ -49,9 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Modules
     'boilerplate',
-    'bootstrap3',
-    'ckeditor',
-    'ckeditor_uploader',
+    'bootstrap4',
     'corsheaders',
     'dal',
     'dal_select2',
@@ -63,6 +61,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # Apps
     'core',
+    'panel',
     'public',
 ]
 
@@ -77,8 +76,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.TimezoneMiddleware',
-    'core.middleware.SiteURLMiddleware',
+    'core.middleware.CurrentCompanyMiddleware',
 ]
 
 ROOT_URLCONF = 'myapp.urls'
@@ -86,9 +84,7 @@ ROOT_URLCONF = 'myapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,11 +103,8 @@ WSGI_APPLICATION = 'myapp.wsgi.application'
 ASGI_APPLICATION = 'myapp.routing.application'
 
 
-AUTHENTICATION_BACKENDS = ('core.backends.AuthenticationBackend',)
-
-
 # Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -141,7 +134,7 @@ AUTH_USER_MODEL = 'core.User'
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://docs.djangoproject.com/en/dev/topics/i18n/
 
 LANGUAGE_CODE = 'en'
 
@@ -173,15 +166,15 @@ DEFAULT_FROM_EMAIL = 'My App <no-reply@myapp.com>'
 
 # Login
 
-LOGIN_URL = reverse_lazy('public:account_login')
+LOGIN_URL = reverse_lazy('panel:account_login')
 
-LOGIN_REDIRECT_URL = reverse_lazy('public:dashboard')
+LOGIN_REDIRECT_URL = reverse_lazy('panel:index')
 
-LOGOUT_REDIRECT_URL = reverse_lazy('public:index')
+LOGOUT_REDIRECT_URL = reverse_lazy('panel:index')
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets/'),
@@ -199,6 +192,20 @@ STATIC_URL = '/static/'
 SESSION_COOKIE_NAME = 'myappsessionid'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+
+# Bootstrap4
+
+BOOTSTRAP4 = {
+    'horizontal_label_class': 'col-md-3 text-md-right',
+    'required_css_class': 'font-weight-bold',
+    "field_renderers": {
+        "default": "core.renderers.FieldRenderer",
+    },
+    "form_renderers": {
+        "default": "core.renderers.FormRenderer",
+    },
+}
 
 
 # CKEditor
@@ -239,34 +246,6 @@ FB_APP_SECRET = os.getenv('FB_APP_SECRET')
 GA_ID = os.getenv('GA_ID')
 
 
-# Authy
-
-AUTHY_API_KEY = os.getenv('AUTHY_API_KEY')
-
-
-# Braintree
-
-BRAINTREE_MERCHANT_ID = os.getenv('BRAINTREE_MERCHANT_ID')
-
-BRAINTREE_PUBLIC_KEY = os.getenv('BRAINTREE_PUBLIC_KEY')
-
-BRAINTREE_PRIVATE_KEY = os.getenv('BRAINTREE_PRIVATE_KEY')
-
-
-# Culqi
-
-CULQI_PUBLIC_KEY = os.getenv('CULQI_PUBLIC_KEY')
-
-CULQI_PRIVATE_KEY = os.getenv('CULQI_PRIVATE_KEY')
-
-
-# Stripe
-
-STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
-
-STRIPE_PRIVATE_KEY = os.getenv('STRIPE_PRIVATE_KEY')
-
-
 # OneSignal (for notifications)
 
 ONESIGNAL_APP_ID = os.getenv('ONESIGNAL_APP_ID')
@@ -286,7 +265,8 @@ elif APP_ENV == 'tests':
     from .tests_settings import *  # NOQA
 else:
     from .development_settings import *  # NOQA
-    try:
-        from .local_settings import *  # NOQA
-    except ImportError:
-        pass
+
+try:
+    from .local_settings import *  # NOQA
+except ImportError:
+    pass

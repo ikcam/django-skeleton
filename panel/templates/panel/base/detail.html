@@ -1,0 +1,12 @@
+{% extends "panel/layout.html" %}
+
+{% load boilerplate djaneiro humanize i18n %}
+
+{% block title %}{{ object }} {{ block.super }}{% endblock %}
+
+{% block breadcrumb %}{% breadcrumb %}{% endblock %}
+
+{% block page_header %}<h2>{{ object }}</h2>{% endblock %}
+
+{% block page_actions %}{% action_buttons %}{% endblock %}
+

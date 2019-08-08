@@ -4,20 +4,20 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin
 
 
 class Attachment(AuditableMixin):
     # Related model
-    contenttype = models.ForeignKey(
+    content_type = models.ForeignKey(
         'contenttypes.ContentType', blank=True, null=True, editable=False,
-        on_delete=models.SET_NULL, db_index=True,
+        on_delete=models.PROTECT, db_index=True,
         verbose_name=_("content type")
     )
     object_id = models.PositiveIntegerField(
         blank=True, null=True, editable=False, verbose_name=_("object ID")
     )
-    model = GenericForeignKey('contenttype', 'object_id')
+    model = GenericForeignKey('content_type', 'object_id')
     # Model fields
     user = models.ForeignKey(
         'core.User', blank=True, null=True, editable=False,
@@ -36,7 +36,7 @@ class Attachment(AuditableMixin):
         verbose_name_plural = _("attachments")
 
     def __str__(self):
-        return "%s" % self.file.name
+        return self.file.name
 
     def get_absolute_url(self):
         return self.parent.get_absolute_url()

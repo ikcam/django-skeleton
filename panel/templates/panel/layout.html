@@ -1,0 +1,108 @@
+{% load core_tags bootstrap4 i18n staticfiles tz %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_timezone as TIME_ZONE %}
+<!DOCTYPE html>
+
+<html ng-apps="{% block ngApps %}NotificationWidget{% endblock ngApps %}" lang="{{ LANGUAGE_CODE }}"
+  tz="{{ TIME_ZONE }}">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  {% block meta_header %}{% endblock meta_header %}
+
+  <title>{% block title %}| {{ request.company }}{% endblock title %}</title>
+
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/animate.css/animate.min.css' %}">
+  <link rel="stylesheet" href="{% static 'panel/css/style.css' %}">
+  {% block css_header %}{% endblock css_header %}
+  {% block scripts_header %}{% endblock scripts_header %}
+</head>
+
+<body>
+  {% if settings.FB_APP_ID %}
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '{{ settings.FB_APP_ID }}',
+        cookie: true,
+        xfbml: true,
+        version: 'v3.2'
+      });
+      FB.AppEvents.logPageView();
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://connect.facebook.net/{{ LANGUAGE_CODE|lower }}_{{ LANGUAGE_CODE|upper }}/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+  </script>
+  {% endif %}
+
+  <div id="wrapper">
+    {% if not view.is_popup %}
+    {% include "panel/snippets/_sidebar.html" %}
+    {% endif %}
+
+    <div {% if not view.is_popup %}id="page-wrapper" {% endif %} class="gray-bg">
+      {% if not view.is_popup %}
+      {% include "panel/snippets/_top-navigation.html" %}
+      {% endif %}
+
+      {% block page_header_wrap %}
+      <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-8">
+          {% block page_header %}{% endblock page_header %}
+          {% if not view.is_popup %}
+          {% block breadcrumb %}{% endblock breadcrumb %}
+          {% endif %}
+        </div>
+        <div class="col-sm-4">
+          <div class="title-action">
+            {% block page_actions %}{% endblock page_actions %}
+          </div>
+        </div>
+      </div>
+      {% endblock page_header_wrap %}
+
+      <div id="mainContent" class="wrapper wrapper-content animated fadeIn">
+        {% bootstrap_messages %}
+
+        {% block content %}{% endblock content %}
+      </div>
+
+      {% include "panel/snippets/_footer.html" %}
+    </div>
+  </div>
+
+  {% block css_footer %}{% endblock css_footer %}
+
+  <script src="{% url 'javascript-catalog' %}"></script>
+  <script src="{% static 'node_modules/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'node_modules/popper.js/dist/umd/popper.min.js' %}"></script>
+  <script src="{% static 'node_modules/moment/min/moment.min.js' %}"></script>
+  <script src="{% static 'node_modules/moment/min/locales.min.js' %}"></script>
+  <script src="{% static 'node_modules/angular/angular.min.js' %}"></script>
+  <script src="{% static 'node_modules/angular-moment/angular-moment.min.js' %}"></script>
+  <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'node_modules/clipboard/dist/clipboard.min.js' %}"></script>
+  <script src="{% static 'node_modules/metismenu/dist/metisMenu.min.js' %}"></script>
+  <script src="{% static 'node_modules/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+  <script src="{% static 'node_modules/pace-js/pace.min.js' %}"></script>
+  <script src="{% static 'panel/js/inspinia.js' %}"></script>
+  <script src="{% static 'panel/js/notifications.js' %}"></script>
+  <script src="{% static 'panel/js/main.js' %}"></script>
+  {% block scripts_footer %}{% endblock scripts_footer %}
+</body>
+
+</html>

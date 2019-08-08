@@ -1,12 +1,18 @@
+import uuid
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from core.mixins import AuditableMixin
+from core.models.mixins import AuditableMixin
 
 
 class Visit(AuditableMixin):
+    id = models.UUIDField(
+        default=uuid.uuid4, primary_key=True, editable=False,
+        verbose_name=_("id")
+    )
     link = models.ForeignKey(
-        'core.Link', editable=False, on_delete=models.CASCADE,
+        'core.Link', editable=False, on_delete=models.PROTECT,
         db_index=True, verbose_name=_("link")
     )
     ip_address = models.GenericIPAddressField(
